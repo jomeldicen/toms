@@ -1,0 +1,1024 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div ng-controller="UnitQTHistoricalMgmnt" ng-init="init('@ViewBag.PageUrl', '@ViewBag.Variable')">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3" ng-init="GetSearchData()">
+                    <div class="card">
+                        <div class="card-header card-gray card-outline">
+                            <h3 class="card-title">
+                                <i class="fas fa-bars mr-1"></i>Search
+                            </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form name="UnitQualification" novalidate role="form" ng-submit="$event.preventDefault()">
+                                <div class="row">
+                                    <div class="col-12 form-group mb-2 has-feedback">
+                                        <label class="mb-1" for="SProjectCode">Project Name</label>
+                                        <md-autocomplete ng-disabled="false" md-no-cache="true" md-selected-item="selectedProject" md-search-text-change="searchTextChange(searchProject, 'Project')"
+                                                         md-search-text="searchProject" md-selected-item-change="selectedItemChange(item, 'Project')" md-items="item in querySearch(searchProject, 'Project')"
+                                                         md-item-text="item.ProjectCodeName" md-min-length="0" placeholder="Ex. Bay Garden" input-aria-labelledby="favoriteStateLabel"
+                                                         md-menu-class="autocomplete-custom-template" md-menu-container-class="custom-container">
+                                            <md-item-template>
+                                                <span class="item-title">
+                                                    <i class="fas fa-building"></i>
+                                                    <span md-highlight-text="searchProject" md-highlight-flags="i">{{item.CompanyCode}} : {{item.ProjectCode}} </span>
+                                                </span>
+                                                <span class="item-metadata">
+                                                    <span md-highlight-text="searchProject" md-highlight-flags="i">{{item.BusinessEntity}}</span>
+                                                </span>
+                                            </md-item-template>
+                                            <md-not-found>
+                                                No states matching "{{searchProject}}" were found.
+                                            </md-not-found>
+                                        </md-autocomplete>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-2 has-feedback">
+                                        <label class="mb-1" for="SProjectLocation">Project Location</label>
+                                        <textarea class="form-control form-control-sm" id="SProjectLocation" name="SProjectLocation" rows="2" ng-model="paramInfo.ProjectLocation" placeholder="Location" readonly="readonly"></textarea>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-2 has-feedback">
+                                        <label class="mb-1" for="SUnitCategory">Unit Category</label>
+                                        <md-autocomplete ng-disabled="false" md-no-cache="true" md-selected-item="selectedUnitCategory" md-search-text-change="searchTextChange(searchUnitCategory, 'UnitCategory')"
+                                                         md-search-text="searchUnitCategory" md-selected-item-change="selectedItemChange(item, 'UnitCategory')" md-items="item in querySearch(searchUnitCategory, 'UnitCategory')"
+                                                         md-item-text="item.name" md-min-length="0" placeholder="Ex. Residential Unit" input-aria-labelledby="favoriteStateLabel">
+                                            <md-item-template>
+                                                <span md-highlight-text="searchUnitCategory" md-highlight-flags="^i">{{item.name}}</span>
+                                            </md-item-template>
+                                            <md-not-found>
+                                                No states matching "{{searchUnitCategory}}" were found.
+                                            </md-not-found>
+                                        </md-autocomplete>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-2 has-feedback">
+                                        <label class="mb-1" for="SUnitNos">Unit Nos</label>
+                                        <md-autocomplete ng-disabled="false" md-no-cache="true" md-selected-item="selectedUnit" md-search-text-change="searchTextChange(searchUnit, 'Unit')"
+                                                         md-search-text="searchUnit" md-selected-item-change="selectedItemChange(item, 'Unit')" md-items="item in querySearch(searchUnit, 'Unit')"
+                                                         md-item-text="item.RefNos" md-min-length="0" placeholder="Ex. 1A" input-aria-labelledby="favoriteStateLabel">
+                                            <md-item-template>
+                                                <span md-highlight-text="searchUnit" md-highlight-flags="^i">{{item.RefNos}}</span>
+                                            </md-item-template>
+                                            <md-not-found>
+                                                No states matching "{{searchUnit}}" were found.
+                                            </md-not-found>
+                                        </md-autocomplete>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-3 has-feedback">
+                                        <label class="mb-1" for="SCustomerNos">Customer Nos</label>
+                                        <md-autocomplete ng-disabled="false" md-no-cache="true" md-selected-item="selectedCustomer" md-search-text-change="searchTextChange(searchCustomer, 'Customer')"
+                                                         md-search-text="searchCustomer" md-selected-item-change="selectedItemChange(item, 'Customer')" md-items="item in querySearch(searchCustomer, 'Customer')"
+                                                         md-item-text="item.CustomerNos" md-min-length="0" placeholder="Ex. 0000000001" input-aria-labelledby="favoriteStateLabel">
+                                            <md-item-template>
+                                                <span class="item-title">
+                                                    <span md-highlight-text="searchCustomer" md-highlight-flags="^i">{{item.CustomerNos}}</span>
+                                                    <small>- {{item.CustomerName1}}</small>
+                                                </span>
+                                            </md-item-template>
+                                            <md-not-found>
+                                                No states matching "{{searchCustomer}}" were found.
+                                            </md-not-found>
+                                        </md-autocomplete>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-0">
+                                        <button type="button" class="btn btn-default btn-sm float-right" data-dismiss="modal" ng-click="clearSearch()">
+                                            <i class="fas fa-times-circle"></i> Clear
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm float-right  mr-1" ng-click="GetUnitQualifyData()">
+                                            <i class="fas fa-search"></i> Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-9">
+                    <div class="loading" ng-if="loading">Loading &#8230;</div>
+                    <div class="card">
+                        <div class="card-header card-gray card-outline">
+                            <h3 class="card-title">
+                                <i class="fas fa-th mr-1"></i>Unit Details
+                            </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="UnitNos" class="col-sm-5 col-form-label">Unit Nos</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="UnitNos" name="UnitNos" ng-model="HistoricalInfo.RefNos" placeholder="0" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="CustomerNos" class="col-sm-5 col-form-label">Customer Nos</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="CustomerNos" name="CustomerNos" ng-model="HistoricalInfo.CustomerNos" placeholder="0" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="CompanyCode" class="col-sm-5 col-form-label font-weight-normal">Company Code</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="CompanyCode" name="CompanyCode" ng-model="HistoricalInfo.CompanyCode" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="CompanyName" class="col-sm-5 col-form-label font-weight-normal">Company Name</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="CompanyName" name="CompanyName" ng-model="HistoricalInfo.CompanyName" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="ProjectCode" class="col-sm-5 col-form-label font-weight-normal">Project Code</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="ProjectCode" name="ProjectCode" ng-model="HistoricalInfo.ProjectCode" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="ProjectName" class="col-sm-5 col-form-label font-weight-normal">Project Name</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="ProjectName" name="ProjectName" ng-model="HistoricalInfo.BusinessEntity" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="ProjectLocation" class="col-sm-5 col-form-label font-weight-normal">Project Location</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="ProjectLocation" name="ProjectLocation" ng-model="HistoricalInfo.ProjectLocation" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="FloorNos" class="col-sm-5 col-form-label font-weight-normal">Floor Nos</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="FloorNos" name="FloorNos" ng-model="HistoricalInfo.Phase" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="UnitTypeCode" class="col-sm-5 col-form-label font-weight-normal">Unit Type Code</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="UnitTypeCode" name="UnitTypeCode" ng-model="HistoricalInfo.UnitType" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="UnitDescription" class="col-sm-5 col-form-label font-weight-normal">Unit Description</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="UnitDescription" name="UnitDescription" ng-model="HistoricalInfo.UnitTypeDesc" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="UnitCategory" class="col-sm-5 col-form-label font-weight-normal">Unit Category</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="UnitCategory" name="UnitCategory" ng-model="HistoricalInfo.UnitCategoryDesc" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="UnitArea" class="col-sm-5 col-form-label font-weight-normal">Unit Area (sqm)</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="UnitArea" name="UnitArea" ng-model="HistoricalInfo.UnitArea" placeholder="0" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="CustomerName" class="col-sm-5 col-form-label">Customer Name</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="CustomerName" name="CustomerName" ng-model="HistoricalInfo.CustomerName1" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="AccountType" class="col-sm-5 col-form-label font-weight-normal">Account Type</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="AccountType" name="AccountType" ng-model="HistoricalInfo.AccountTypeDesc" placeholder="0" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-0">
+                                <div class="col-12">
+                                    <div class="card card-gray card-tabs">
+                                        <div class="card-header p-0 pt-1">
+                                            <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" id="custom-unit-tab1" data-toggle="pill" href="#custom-tab1" role="tab" aria-controls="custom-tab1" aria-selected="true">Unit Qualification</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="custom-notice-tab2" data-toggle="pill" href="#custom-tab2" role="tab" aria-controls="custom-tab2" aria-selected="false">Notice of Unit Turnover</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="custom-turnover-tab3" data-toggle="pill" href="#custom-tab3" role="tab" aria-controls="custom-tab3" aria-selected="false">Turnover Schedule &amp; Option</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="custom-clients-tab4" data-toggle="pill" href="#custom-tab4" role="tab" aria-controls="custom-tab4" aria-selected="false">Clients Information</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="tab-content" id="custom-content-below-tabContent">
+                                                <div class="tab-pane fade show active" id="custom-tab1" role="tabpanel" aria-labelledby="custom-tab1">
+                                                    <form name="unitqualifyForm" novalidate role="form">
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="OccupancyPermit1" class="col-sm-5 col-form-label font-weight-normal">Occupancy Permit</label>
+                                                                    <div class="col-sm-2">
+                                                                        <input type="text" class="form-control form-control-sm" id="OccupancyPermit1" name="OccupancyPermit1" ng-model="HistoricalInfo.HasOccupancyPermit" placeholder="" ng-disabled="true">
+                                                                    </div>
+                                                                    <div class="col-sm-5">
+                                                                        <div class="input-group mb-0">
+                                                                            <input type="text" class="form-control form-control-sm" id="OccupancyPermitDate" name="OccupancyPermitDate" ng-model="HistoricalInfo.OccupancyPermitDate" ng-disabled="true">
+                                                                            <div class="input-group-append">
+                                                                                <div class="input-group-text">
+                                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="OccupancyPermitRemarks" class="col-sm-3 col-form-label font-weight-normal">Remarks</label>
+                                                                    <div class="col-sm-9">
+                                                                        <input type="text" class="form-control form-control-sm" id="OccupancyPermitRemarks" name="OccupancyPermitRemarks" ng-model="HistoricalInfo.OccupancyPermitRemarks" placeholder="" ng-disabled="true">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0 has-feedback" show-errors>
+                                                                    <label for="QCDAcceptanceDate" class="col-sm-5 col-form-label font-weight-normal">QCD Acceptance Date</label>
+                                                                    <div class="col-sm-7">
+                                                                        <div class="input-group mb-0">
+                                                                            <input type="text" name="QCDAcceptanceDate" id="QCDAcceptanceDate" class="form-control form-control-sm" onkeydown="return false" @*alt-input-formats="altInputFormats"*@
+                                                                                   uib-datepicker-popup="{{dateFormat}}" ng-model="UnitHistorical.QCDAcceptanceDate" is-open="popup7.opened" datepicker-options="dateOptionsCurrent"
+                                                                                   ng-click="open7()" placeholder="mm/dd/yyyy" close-text="Close" ng-disabled="disableButton || NUTFields.QCDAcceptanceDate || !(HistoricalInfo.UnitCategoryCode === 'UN')" />
+                                                                            <div class="input-group-append">
+                                                                                <div class="input-group-text" ng-click="open7()">
+                                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div style="color:red" class="invalid-feedback" ng-if="!unitqualifyForm.QCDAcceptanceDate.$valid">Date format should be (MM/dd/yyyy)</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="UnitAcceptanceRemarks" class="col-sm-3 col-form-label font-weight-normal">Remarks</label>
+                                                                    <div class="col-sm-9">
+                                                                        <input type="text" class="form-control form-control-sm" id="UnitAcceptanceRemarks" name="UnitAcceptanceRemarks" ng-model="HistoricalInfo.UnitAcceptanceRemarks" placeholder="" ng-disabled="true">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0 has-feedback" show-errors>
+                                                                    <label for="FPMCAcceptanceDate" class="col-sm-5 col-form-label font-weight-normal">FPMC Acceptance Date</label>
+                                                                    <div class="col-sm-7">
+                                                                        <div class="input-group mb-0">
+                                                                            <input type="text" name="FPMCAcceptanceDate" id="FPMCAcceptanceDate" class="form-control form-control-sm" onkeydown="return false" @*alt-input-formats="altInputFormats"*@
+                                                                                   uib-datepicker-popup="{{dateFormat}}" ng-model="UnitHistorical.FPMCAcceptanceDate" is-open="popup8.opened" datepicker-options="dateOptionsCurrent"
+                                                                                   ng-click="open8()" placeholder="mm/dd/yyyy" close-text="Close" ng-disabled="disableButton || NUTFields.FPMCAcceptanceDate || !(HistoricalInfo.UnitCategoryCode === 'PK')" />
+                                                                            <div class="input-group-append">
+                                                                                <div class="input-group-text" ng-click="open8()">
+                                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div style="color:red" class="invalid-feedback" ng-if="!unitqualifyForm.FPMCAcceptanceDate.$valid">Date format should be (MM/dd/yyyy)</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="TOASDate" class="col-sm-5 col-form-label font-weight-normal">TOAS Date</label>
+                                                                    <div class="col-sm-7">
+                                                                        <div class="input-group mb-0">
+                                                                            <input type="date" class="form-control form-control-sm" id="TOASDate" name="TOASDate" ng-model="HistoricalInfo.TOAS" ng-disabled="true">
+                                                                            <div class="input-group-append">
+                                                                                <div class="input-group-text">
+                                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-0 mt-1" ng-if="Ctrl">
+                                                            <div class="col-12">
+                                                                <button type="button" class="btn btn-default btn-sm float-right" ng-click="CancelNoticeUnitTurnoverModal()" ng-disabled="disableButton">
+                                                                    <i class="fas fa-ban"></i> Cancel
+                                                                </button>
+                                                                <button type="button" class="btn btn-success btn-sm float-right mr-1" ng-if="Ctrl.wAdd" ng-click="SaveNoticeUnitTurnoverModal()" ng-disabled="disableButton">
+                                                                    <i class="fas fa-check"></i> Apply
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div> <!-- /.custom-tab1 -->
+
+                                                <div class="tab-pane fade" id="custom-tab2" role="tabpanel" aria-labelledby="custom-tab2">
+                                                    <p class="font-italic"><strong>Note:</strong> Essential information is marked with an asterisk (<span class="text-danger font-weight-bold">*</span>)</p>
+                                                    <form name="noticeunittoForm" novalidate role="form">
+                                                        <p class="font-weight-bold mb-2"><u>Details: Email Notice</u></p>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0 has-feedback" show-errors>
+                                                                    <label for="DateNoticeSent1" class="col-sm-5 col-form-label font-weight-normal">Date Notice Sent</label>
+                                                                    <div class="col-sm-7">
+                                                                        <div class="input-group mb-0">
+                                                                            <input type="text" name="EmailDateNoticeSent" id="EmailDateNoticeSent" class="form-control form-control-sm" onkeydown="return false" @*alt-input-formats="altInputFormats"*@
+                                                                                    uib-datepicker-popup="{{dateFormat}}" ng-model="UnitHistorical.EmailDateNoticeSent" is-open="popup1.opened" datepicker-options="dateOptionsCurrent"
+                                                                                    ng-click="open1()" placeholder="mm/dd/yyyy" close-text="Close" ng-disabled="disableButton || NUTFields.EmailDateNoticeSent" />
+                                                                            <div class="input-group-append">
+                                                                                <div class="input-group-text" ng-click="open1()">
+                                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div style="color:red" class="invalid-feedback" ng-if="!noticeunittoForm.EmailDateNoticeSent.$valid">Date format should be (MM/dd/yyyy)</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="EmailNoticeAttachment" class="col-sm-3 col-form-label font-weight-normal">Attachment</label>
+                                                                    <div class="col-sm-5">
+                                                                        <input type="text" class="form-control form-control-sm" id="EmailNoticeAttachment" name="EmailNoticeAttachment" ng-model="UnitHistorical.EmailNoticeAttachment" placeholder="" ng-disabled="true">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0 has-feedback" show-errors>
+                                                                    <label for="TurnoverDate" class="col-sm-5 col-form-label font-weight-normal">Turnover Date</label>
+                                                                    <div class="col-sm-7">
+                                                                        <div class="input-group mb-0">
+                                                                            <input type="text" name="EmailTurnoverDate" id="EmailTurnoverDate" class="form-control form-control-sm" onkeydown="return false" @*alt-input-formats="altInputFormats"*@
+                                                                                    uib-datepicker-popup="{{dateFormat}}" ng-model="UnitHistorical.EmailTurnoverDate" is-open="popup2.opened" datepicker-options="dateOptionsCurrent"
+                                                                                    ng-click="open2()" ng-disabled="disableButton || !((UnitHistorical.EmailDateNoticeSent | date : 'yy').length > 0) || NUTFields.EmailTurnoverDate" placeholder="mm/dd/yyyy" close-text="Close" />
+                                                                            <div class="input-group-append">
+                                                                                <div class="input-group-text" ng-click="open2()">
+                                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div style="color:red" class="invalid-feedback" ng-if="!noticeunittoForm.EmailTurnoverDate.$valid">Date format should be (MM/dd/yyyy)</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row mb-0 has-feedback" show-errors>
+                                                                    <label for="EmailTurnoverTime" class="col-sm-5 col-form-label font-weight-normal">Turnover Time <span class="text-danger font-weight-bold" ng-show="((UnitHistorical.EmailTurnoverDate | date : 'yy').length > 0)">*</span></label>
+                                                                    <div class="col-sm-7">
+                                                                        <input type="time" class="form-control form-control-sm" id="EmailTurnoverTime" name="EmailTurnoverTime" ng-model="UnitHistorical.EmailTurnoverTime"
+                                                                                placeholder="HH:mm:ss" min="{{SysParam.BusinessHourFrom}}" max="{{SysParam.BusinessHourTo}}" ng-required="((UnitHistorical.EmailTurnoverDate | date : 'yy').length > 0)" ng-disabled="disableButton || !((UnitHistorical.EmailDateNoticeSent | date : 'yy').length > 0) || NUTFields.EmailTurnoverTime" />
+                                                                        <div style="color:red" class="invalid-feedback mt-0 mb-1" ng-if="((UnitHistorical.EmailTurnoverDate | date : 'yy').length > 0)? noticeunittoForm.EmailTurnoverTime.$error.required : ''">You can't leave this empty.</div>
+                                                                        <div style="color:red" class="invalid-feedback mt-0 mb-1" ng-if="noticeunittoForm.EmailTurnoverTime.$error.max || noticeunittoForm.EmailTurnoverTime.$error.min">Time should be during business hours only.</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="EmailNoticeRemarks" class="col-sm-3 col-form-label font-weight-normal">Remarks</label>
+                                                                    <div class="col-sm-9">
+                                                                        <textarea class="form-control form-control-sm" id="EmailNoticeRemarks" rows="2" name="EmailNoticeRemarks" ng-model="UnitHistorical.EmailNoticeRemarks" ng-disabled="disableButton || NUTFields.EmailNoticeRemarks" placeholder=""></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <p class="font-weight-bold mt-2 mb-2"><u>Details: Notice thru Courier</u></p>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0 has-feedback" show-errors>
+                                                                    <label for="CourierDateNoticeSent" class="col-sm-5 col-form-label font-weight-normal">Date Notice Sent</label>
+                                                                    <div class="col-sm-7">
+                                                                        <div class="input-group mb-0">
+                                                                            <input type="text" name="CourierDateNoticeSent" id="CourierDateNoticeSent" class="form-control form-control-sm" onkeydown="return false" @*alt-input-formats="altInputFormats"*@ 
+                                                                                    ng-change="SetCourierDateNotice(UnitHistorical.CourierDateNoticeSent)" uib-datepicker-popup="{{dateFormat}}" ng-model="UnitHistorical.CourierDateNoticeSent" is-open="popup3.opened" datepicker-options="dateOptionsCurrent"
+                                                                                    ng-click="open3()" ng-disabled="disableButton || NUTFields.CourierDateNoticeSent" placeholder="mm/dd/yyyy" close-text="Close" />
+                                                                            <div class="input-group-append">
+                                                                                <div class="input-group-text" ng-click="open3()">
+                                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div style="color:red" class="invalid-feedback" ng-if="!noticeunittoForm.CourierDateNoticeSent.$valid">Date format should be (MM/dd/yyyy)</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="CourierNoticeAttachment" class="col-sm-3 col-form-label font-weight-normal">Attachment</label>
+                                                                    <div class="col-sm-5">
+                                                                        <input type="text" class="form-control form-control-sm" id="CourierNoticeAttachment" name="CourierNoticeAttachment" ng-model="UnitHistorical.CourierNoticeAttachment" placeholder="" ng-disabled="true">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0 has-feedback" show-errors>
+                                                                    <label for="CourierDateNoticeReceived" class="col-sm-5 col-form-label font-weight-normal">Date Notice Received <span class="text-danger font-weight-bold" ng-show="(UnitHistorical.CourierReceivedBy.length > 0)">*</span></label>
+                                                                    <div class="col-sm-7">
+                                                                        <div class="input-group mb-0">
+                                                                            <input type="text" name="CourierDateNoticeReceived" id="CourierDateNoticeReceived" class="form-control form-control-sm" onkeydown="return false" @*alt-input-formats="altInputFormats"*@ 
+                                                                                    uib-datepicker-popup="{{dateFormat}}" ng-model="UnitHistorical.CourierDateNoticeReceived" is-open="popup4.opened" datepicker-options="dateOptionsCurrent"
+                                                                                    ng-click="open4()" ng-disabled="disableButton || !((UnitHistorical.CourierDateNoticeSent | date : 'yy').length > 0) || NUTFields.CourierDateNoticeReceived"
+                                                                                    ng-required="(UnitHistorical.CourierReceivedBy.length > 0)" placeholder="mm/dd/yyyy" close-text="Close" />
+                                                                            <div class="input-group-append">
+                                                                                <div class="input-group-text" ng-click="open4()">
+                                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div style="color:red" class="invalid-feedback mt-0 mb-1" ng-if="(UnitHistorical.CourierReceivedBy.length > 0)? noticeunittoForm.CourierDateNoticeReceived.$error.required : ''">You can't leave this empty.</div>
+                                                                        <div style="color:red" class="invalid-feedback" ng-if="!noticeunittoForm.CourierDateNoticeReceived.$valid">Date format should be (MM/dd/yyyy)</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row mb-0 has-feedback" show-errors>
+                                                                    <label for="CourierReceivedBy" class="col-sm-5 col-form-label font-weight-normal">Received By <span class="text-danger font-weight-bold" ng-show="((UnitHistorical.CourierDateNoticeReceived | date : 'yy').length > 0)">*</span></label>
+                                                                    <div class="col-sm-7">
+                                                                        <input type="text" class="form-control form-control-sm" id="CourierReceivedBy" name="CourierReceivedBy"
+                                                                                ng-model="UnitHistorical.CourierReceivedBy" ng-disabled="disableButton || !((UnitHistorical.CourierDateNoticeSent | date : 'yy').length > 0) || NUTFields.CourierReceivedBy" placeholder=""
+                                                                                ng-required="((UnitHistorical.CourierDateNoticeReceived | date : 'yy').length > 0)">
+                                                                        <div style="color:red" class="invalid-feedback mt-0 mb-1" ng-if="((UnitHistorical.CourierDateNoticeReceived | date : 'yy').length > 0)? noticeunittoForm.CourierReceivedBy.$error.required : ''">You can't leave this empty.</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="CourierNoticeRemarks" class="col-sm-3 col-form-label font-weight-normal">Remarks</label>
+                                                                    <div class="col-sm-9">
+                                                                        <textarea class="form-control form-control-sm" id="CourierNoticeRemarks" rows="2" name="CourierNoticeRemarks" ng-model="UnitHistorical.CourierNoticeRemarks" ng-disabled="disableButton || NUTFields.CourierNoticeRemarks" placeholder=""></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-2">
+                                                            <div class="col-7">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="HandoverAssociate" class="col-sm-4 col-form-label"><u>Handover Associate</u></label>
+                                                                    <div class="col-sm-7">
+                                                                        <input type="text" class="form-control form-control-sm" id="HandoverAssociate" name="HandoverAssociate" ng-model="UnitHistorical.HandoverAssociate" ng-disabled="true" placeholder="">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-0 mt-1" ng-if="Ctrl">
+                                                            <div class="col-12">
+                                                                <button type="button" class="btn btn-default btn-sm float-right" ng-click="CancelNoticeUnitTurnoverModal()" ng-disabled="disableButton || NUTButtons.CancelButton">
+                                                                    <i class="fas fa-ban"></i> Cancel
+                                                                </button>
+                                                                <button type="button" class="btn btn-success btn-sm float-right mr-1" ng-if="Ctrl.wAdd" ng-click="SaveNoticeUnitTurnoverModal()" ng-disabled="disableButton || NUTButtons.AddButton">
+                                                                    <i class="fas fa-check"></i> Apply
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div> <!-- /.custom-tab2 -->
+
+                                                <div class="tab-pane fade" id="custom-tab3" role="tabpanel" aria-labelledby="custom-tab3">
+                                                    <p class="font-italic"><strong>Note:</strong> Essential information is marked with an asterisk (<span class="text-danger font-weight-bold">*</span>)</p>
+                                                    <form name="turnoverscheduleForm" novalidate role="form">
+                                                        <p class="font-weight-bold mb-2"><u>Details: Confirmed Turnover Schedule &amp; Option</u></p>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="TurnoverDate1" class="col-sm-6 col-form-label font-weight-normal">Turnover Date <small>(1st)</small> </label>
+                                                                    <div class="col-sm-6">
+                                                                        <div class="input-group mb-0 has-feedback" show-errors>
+                                                                            <input type="text" name="TurnoverDate1" id="TurnoverDate1" class="form-control form-control-sm" onkeydown="return false" @*alt-input-formats="altInputFormats"*@ 
+                                                                                    uib-datepicker-popup="{{dateFormat}}" ng-model="UnitHistorical.TurnoverDate1" is-open="popup5.opened" datepicker-options="dateTSOTurnover"
+                                                                                    ng-click="open5()" ng-disabled="disableButton || TSOFields.TurnoverDate1" placeholder="mm/dd/yyyy" close-text="Close" />
+                                                                            <div class="input-group-append">
+                                                                                <div class="input-group-text" ng-click="open5()">
+                                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div style="color:red" class="invalid-feedback" ng-if="!turnoverscheduleForm.TurnoverDate1.$valid">Date format should be (MM/dd/yyyy)</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="TurnoverAttachment1" class="col-sm-3 col-form-label font-weight-normal">Attachment</label>
+                                                                    <div class="col-sm-5">
+                                                                        <input type="text" class="form-control form-control-sm" id="TurnoverAttachment1" name="TurnoverAttachment1" ng-model="UnitHistorical.TurnoverAttachment1" placeholder="" ng-disabled="true">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0 has-feedback" show-errors>
+                                                                    <label for="TurnoverTime1" class="col-sm-6 col-form-label font-weight-normal">Turnover Time <small>(1st)</small> <span class="text-danger font-weight-bold" ng-show="((UnitHistorical.TurnoverDate1 | date : 'yy').length > 0)">*</span></label>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="time" class="form-control form-control-sm" id="TurnoverTime1" name="TurnoverTime1" ng-model="UnitHistorical.TurnoverTime1"
+                                                                                placeholder="HH:mm:ss" min="{{SysParam.BusinessHourFrom}}" max="{{SysParam.BusinessHourTo}}" ng-required="((UnitHistorical.TurnoverDate1 | date : 'yy').length > 0)" ng-disabled="disableButton || TSOFields.TurnoverTime1" />
+                                                                        <div style="color:red" class="invalid-feedback mt-0 mb-1" ng-if="((UnitHistorical.TurnoverDate1 | date : 'yy').length > 0)? turnoverscheduleForm.TurnoverTime1.$error.required : ''">You can't leave this empty.</div>
+                                                                        <div style="color:red" class="invalid-feedback mt-0 mb-1" ng-if="turnoverscheduleForm.TurnoverTime1.$error.max || turnoverscheduleForm.TurnoverTime1.$error.min">Time should be during business hours only.</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="TurnoverOption1" class="col-sm-6 col-form-label font-weight-normal">Turnover Option <small>(1st)</small></label>
+                                                                    <div class="col-sm-6">
+                                                                        <select class="form-control form-control-sm" id="TurnoverOption1" name="TurnoverOption1" ng-model="UnitHistorical.TurnoverOption1" ng-disabled="disableButton || TSOFields.TurnoverOption1">
+                                                                            <option value="">Select Please ...</option>
+                                                                            <option ng-repeat="to in TurnoverOptions" value="{{to.Name}}">{{to.Name}}</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="TurnoverRemarks1" class="col-sm-3 col-form-label font-weight-normal">Remarks</label>
+                                                                    <div class="col-sm-9">
+                                                                        <textarea class="form-control form-control-sm" id="TurnoverRemarks1" rows="2" name="TurnoverRemarks1" ng-model="UnitHistorical.TurnoverRemarks1" ng-disabled="disableButton || TSOFields.TurnoverRemarks1" placeholder=""></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <br />
+
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0 has-feedback" show-errors>
+                                                                    <label for="TurnoverDate2" class="col-sm-6 col-form-label font-weight-normal">Turnover Date <small>(Reschedule)</small></label>
+                                                                    <div class="col-sm-6">
+                                                                        <div class="input-group mb-0">
+                                                                            <input type="text" name="TurnoverDate2" id="TurnoverDate2" class="form-control form-control-sm" onkeydown="return false" @*alt-input-formats="altInputFormats"*@
+                                                                                    uib-datepicker-popup="{{dateFormat}}" ng-model="UnitHistorical.TurnoverDate2" is-open="popup6.opened" datepicker-options="dateTSOTurnover"
+                                                                                    ng-click="open6()" ng-disabled="disableButton || !((UnitHistorical.TurnoverDate1 | date : 'yy').length > 0) || TSOFields.TurnoverDate2" placeholder="mm/dd/yyyy" close-text="Close" />
+                                                                            <div class="input-group-append">
+                                                                                <div class="input-group-text" ng-click="open6()">
+                                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div style="color:red" class="invalid-feedback" ng-if="!turnoverscheduleForm.TurnoverDate2.$valid">Date format should be (MM/dd/yyyy)</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="TurnoverAttachment2" class="col-sm-3 col-form-label font-weight-normal">Attachment</label>
+                                                                    <div class="col-sm-5">
+                                                                        <input type="text" class="form-control form-control-sm" id="TurnoverAttachment2" name="TurnoverAttachment2" ng-model="UnitHistorical.TurnoverAttachment2" placeholder="" ng-disabled="true"> @*|| (UnitHistorical.TOIsPosted) || UnitHistorical.wAcceptance*@
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0 has-feedback" show-errors>
+                                                                    <label for="TurnoverTime2" class="col-sm-6 col-form-label font-weight-normal">Turnover Time <small>(Reschedule)</small> <span class="text-danger font-weight-bold" ng-show="((UnitHistorical.TurnoverDate2 | date : 'yy').length > 0)">*</span></label>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="time" class="form-control form-control-sm" id="TurnoverTime2" name="TurnoverTime2" ng-model="UnitHistorical.TurnoverTime2"
+                                                                                placeholder="HH:mm:ss" min="{{SysParam.BusinessHourFrom}}" max="{{SysParam.BusinessHourTo}}" ng-required="((UnitHistorical.TurnoverDate2 | date : 'yy').length > 0)" ng-disabled="disableButton || TSOFields.TurnoverTime2" />
+                                                                        <div style="color:red" class="invalid-feedback mt-0 mb-1" ng-if="((UnitHistorical.TurnoverDate2 | date : 'yy').length > 0)? turnoverscheduleForm.TurnoverTime2.$error.required : ''">You can't leave this empty.</div>
+                                                                        <div style="color:red" class="invalid-feedback mt-0 mb-1" ng-if="turnoverscheduleForm.TurnoverTime2.$error.max || turnoverscheduleForm.TurnoverTime2.$error.min">Time should be during business hours only.</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="TurnoverOption2" class="col-sm-6 col-form-label font-weight-normal">Turnover Option <small>(Updated)</small></label>
+                                                                    <div class="col-sm-6">
+                                                                        <select class="form-control form-control-sm" id="TurnoverOption2" name="TurnoverOption2" ng-model="UnitHistorical.TurnoverOption2" ng-disabled="disableButton || TSOFields.TurnoverOption2">
+                                                                            <option value="">Select Please ...</option>
+                                                                            <option ng-repeat="to in TurnoverOptions" value="{{to.Name}}">{{to.Name}}</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="TurnoverRemarks2" class="col-sm-3 col-form-label font-weight-normal">Remarks</label>
+                                                                    <div class="col-sm-9">
+                                                                        <textarea class="form-control form-control-sm" id="TurnoverRemarks2" name="TurnoverRemarks2" rows="2" ng-model="UnitHistorical.TurnoverRemarks2" ng-disabled="disableButton || TSOFields.TurnoverRemarks2" placeholder=""></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-0 mt-1" ng-if="Ctrl">
+                                                            <div class="col-12">
+                                                                <button type="button" class="btn btn-default btn-sm float-right" ng-click="CancelTurnoverScheduleModal()" ng-disabled="disableButton || TSOButtons.CancelButton">
+                                                                    <i class="fas fa-ban"></i> Cancel
+                                                                </button>
+                                                                <button type="button" class="btn btn-success btn-sm float-right mr-1" ng-if="Ctrl.wAdd" ng-click="SaveTurnoverScheduleModal(UnitHistorical.Id)" ng-disabled="disableButton || TSOButtons.AddButton">
+                                                                    <i class="fas fa-check"></i> Confirm
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div> <!-- /.custom-tab3 -->
+
+                                                <div class="tab-pane fade" id="custom-tab4" role="tabpanel" aria-labelledby="custom-tab4">
+                                                    <form name="clientForm" novalidate role="form">
+                                                        <p class="font-weight-bold mb-2"><u>Details: Contact Information</u></p>
+                                                        <div class="row mb-2">
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="ClientName" class="col-sm-4 col-form-label font-weight-normal">Contact  Name</label>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="text" class="form-control form-control-sm" id="ClientName" name="ClientName" ng-model="HistoricalInfo.CustomerName1" placeholder="" ng-disabled="true">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="ClientContactNos" class="col-sm-4 col-form-label font-weight-normal">Contact Nos</label>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="text" class="form-control form-control-sm" id="ClientContactNos" name="ClientContactNos" ng-model="HistoricalInfo.TelNos" placeholder="" ng-disabled="true">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="ClientEmail" class="col-sm-4 col-form-label font-weight-normal">Email Address</label>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="text" class="form-control form-control-sm" id="ClientEmail" name="ClientEmail" ng-model="HistoricalInfo.EmailAdd" placeholder="" ng-disabled="true">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group row mb-1">
+                                                                    <label for="ClientAddress" class="col-sm-4 col-form-label font-weight-normal">Address</label>
+                                                                    <div class="col-sm-8">
+                                                                        <textarea class="form-control form-control-sm" id="ClientAddress" rows="3" name="ClientAddress" ng-model="HistoricalInfo.Addrs" placeholder="" ng-disabled="true"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="ClientAttachment" class="col-sm-4 col-form-label font-weight-normal">Attachment</label>
+                                                                    <div class="col-sm-5">
+                                                                        <input type="text" class="form-control form-control-sm" id="ClientAttachment" name="ClientAttachment" ng-model="data4b.ClientAttachment" placeholder="" ng-disabled="true">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <p class="font-weight-bold mb-2"><u>Contact Update(s) History</u></p>
+                                                        <div class="row mb-0">
+                                                            <div class="col-md-12 mb-0">
+                                                                <div class="row mb-1" ng-if="totalItems > 0" ng-repeat="ci in ClientInfo">
+                                                                    <div class="col-6">
+                                                                        <div class="form-group row mb-0">
+                                                                            <label for="ClientRemarks{{$index + 1}}" class="col-sm-4 col-form-label font-weight-normal">Remarks</label>
+                                                                            <div class="col-sm-8">
+                                                                                <textarea class="form-control form-control-sm" id="ClientRemarks{{$index + 1}}" name="ClientRemarks" ng-model="ci.ClientRemarks" placeholder="" ng-disabled="true"></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <div class="form-group row mb-0">
+                                                                            <label for="CreatedDate{{$index + 1}}" class="col-sm-4 col-form-label font-weight-normal">Date &amp; Time</label>
+                                                                            <div class="col-sm-8">
+                                                                                <input type="date" class="form-control form-control-sm" id="CreatedDate{{$index + 1}}" name="CreatedDate" ng-model="ci.CreatedDate" placeholder="" ng-disabled="true">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row has-feedback mb-0" ng-show="totalItems === 0 || !disableClientButton" show-errors>
+                                                                    <label for="ClientRemarks" class="col-sm-2 col-form-label font-weight-normal"> Remarks *</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control form-control-sm" id="ClientRemarks" name="ClientRemarks" ng-model="data4b.ClientRemarks" placeholder="" ng-required="true" ng-disabled="disableButton || HistoricalInfo.wAcceptance">
+                                                                        <div style="color:red" class="invalid-feedback mt-0 mb-1" ng-if="clientForm.ClientRemarks.$error.required">You can't leave this empty.</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-0 mt-1" ng-if="Ctrl">
+                                                            <div class="col-12">
+                                                                <button type="button" class="btn btn-default btn-sm float-right" ng-click="CancelClientInfoModal()" ng-disabled="disableButton || HistoricalInfo.wAcceptance">
+                                                                    <i class="fas fa-ban"></i> Cancel
+                                                                </button>
+                                                                <button type="button" class="btn btn-success btn-sm float-right mr-1" ng-if="Ctrl.wAdd" ng-click="SaveClientInfoModal()" ng-disabled="(totalItems > 0 && (disableButton || disableClientButton)) || HistoricalInfo.wAcceptance">
+                                                                    <i class="fas fa-check"></i> Apply
+                                                                </button>
+                                                                <button type="button" class="btn btn-secondary btn-sm float-right mr-1" ng-if="Ctrl.wEdit" ng-click="UpdateClientRemarks()" ng-disabled="totalItems === 0 || disableButton || !disableClientButton || HistoricalInfo.wAcceptance">
+                                                                    <i class="fas fa-pencil-alt"></i> Update
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div> <!-- /.custom-tab4 -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> <!-- /.row -->
+
+                            <div class="row mb-0">
+                                <div class="col-12 text-right">
+                                    <a href="#" class="mt-2 text-xs" ng-click="GetTransactionLog()"><u> transaction logs</u></a>
+                                </div>
+                            </div> <!-- /.row -->
+
+                        </div> <!-- /.card-body -->
+                    </div>  <!-- /.card -->
+                </div> <!-- /.col -->
+            </div> <!-- /.row -->
+        </div> <!-- /.container-fluid -->
+
+        <div class="modal fade" id="applyChangesModal1a">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">System Message Validation</h5>
+                    </div>
+                    <div class="modal-body">
+                        <h6>Please ensure all information provided is correct.</h6>
+                        <p class="mb-0">Click OK to confirm the information provided.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success btn-sm" ng-click="SaveNoticeUnitTurnover(UnitHistorical)"><i class="fas fa-check"></i> OK</button>
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
+        <div class="modal fade" id="applyChangesModal1b">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">System Message Confirmation</h5>
+                    </div>
+                    <div class="modal-body">
+                        <h6>Are you sure you want to CANCEL the transaction?</h6>
+                        <p class="mb-0">Clicking OK button means any information provided will not be considered or will be void.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success btn-sm" ng-click="CancelNoticeUnitTurnover()"><i class="fas fa-check"></i> OK</button>
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                    </div>
+                </div> <!-- /.modal-content -->
+            </div> <!-- /.modal-dialog -->
+        </div> <!-- /.modal --> <!-- End Notice Unit Turnover Notification Modal -->
+
+        <div class="modal fade" id="applyChangesModal2a">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">System Message Validation</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>You had just confirmed the following Turnover Details:</p>
+                        <div class="form-group row mb-0">
+                            <label for="CustomerName1M" class="col-sm-4 col-form-label">Customer Name</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control form-control-sm" id="CustomerName1M" name="CustomerName1M" ng-model="HistoricalInfo.CustomerName1" ng-disabled="true" placeholder="Customer Name" />
+                            </div>
+                        </div>
+                        <div class="form-group row mb-0">
+                            <label for="TurnoverDate1M" class="col-sm-4 col-form-label">Date</label>
+                            <div class="col-sm-8">
+                                <input type="date" class="form-control form-control-sm" id="TurnoverDate1M" name="TurnoverDate1M" ng-model="HistoricalInfo.TurnoverDate1" ng-disabled="true" placeholder="mm/dd/yyyy" />
+                            </div>
+                        </div>
+                        <div class="form-group row mb-0">
+                            <label for="TurnoverTime1M" class="col-sm-4 col-form-label">Time</label>
+                            <div class="col-sm-8">
+                                <input type="time" class="form-control form-control-sm" id="TurnoverTime1M" name="TurnoverTime1M" ng-model="HistoricalInfo.TurnoverTime1" ng-disabled="true" placeholder="hh:mm TT" />
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <label for="TurnoverOption1M" class="col-sm-4 col-form-label">Option</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control form-control-sm" id="TurnoverOption1M" name="TurnoverOption1M" ng-model="HistoricalInfo.TurnoverOption1" ng-disabled="true" placeholder="Option" />
+                            </div>
+                        </div>
+                        <p class="font-italic mb-0">Click <span class="badge badge-success">Yes</span> to confirm above information</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success btn-sm" ng-click="SaveTurnoverSchedule(UnitHistorical)"><i class="fas fa-check"></i> Yes</button>
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                    </div>
+                </div>  <!-- /.modal-content -->
+            </div> <!-- /.modal-dialog -->
+        </div> <!-- /.modal -->
+
+        <div class="modal fade" id="applyChangesModal2a2">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">System Message Validation</h5>
+                    </div>
+                    <div class="modal-body">
+                        <h6>Please ensure all information provided is correct.</h6>
+                        <p class="mb-0">Click OK to confirm the information provided.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success btn-sm" ng-click="SaveTurnoverSchedule(UnitHistorical)"><i class="fas fa-check"></i> OK</button>
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                    </div>
+                </div>  <!-- /.modal-content -->
+            </div> <!-- /.modal-dialog -->
+        </div> <!-- /.modal -->
+
+        <div class="modal fade" id="applyChangesModal2b">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">System Message Confirmation</h5>
+                    </div>
+                    <div class="modal-body">
+                        <h6>Are you sure you want to CANCEL the transaction?</h6>
+                        <p class="mb-0">Clicking OK button means any information provided will not be considered or will be void.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success btn-sm" ng-click="CancelTurnoverSchedule()"><i class="fas fa-check"></i> OK</button>
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                    </div>
+                </div> <!-- /.modal-content -->
+            </div> <!-- /.modal-dialog -->
+        </div> <!-- /.modal --> <!-- End Turnover Schedule Notification Modal -->
+
+        <div class="modal fade" id="applyChangesModal3a">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">System Message Validation</h5>
+                    </div>
+                    <div class="modal-body">
+                        <h6>Please ensure all information provided is correct.</h6>
+                        <p class="mb-0">Click OK to confirm the information provided.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success btn-sm" ng-click="SaveClientInfo(data4b)"><i class="fas fa-check"></i> OK</button>
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
+        <div class="modal fade" id="applyChangesModal3b">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">System Message Confirmation</h5>
+                    </div>
+                    <div class="modal-body">
+                        <h6>Are you sure you want to CANCEL the transaction?</h6>
+                        <p class="mb-0">Clicking OK button means any information provided will not be considered or will be void.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success btn-sm" ng-click="CancelClientInfo()"><i class="fas fa-check"></i> OK</button>
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                    </div>
+                </div> <!-- /.modal-content -->
+            </div> <!-- /.modal-dialog -->
+        </div> <!-- /.modal --> <!-- End Client Information Notification Modal -->
+    </section>
+
+    <div class="modal fade" id="changeLogModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" ng-controller="ChangeLog">
+                <div class="modal-header">
+                    <h4 class="modal-title">Transaction Logs</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" ng-init="searchObjectType('UnitQualifyTurnoverMgmntController')">
+                    <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4 changelog">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_length form-inline">
+                                    <label>
+                                        Show
+                                        <select name="example1_length" class="form-control form-control-sm" ng-model="pagingInfo.itemsPerPage" ng-change="setItemsPerPage(pagingInfo.itemsPerPage)">
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select> entries
+                                    </label>
+                                    <img src="~/Content/dist/img/ajax-loader2.gif" ng-show="loading" />
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <form ng-submit="search()" role="form">
+                                    <div class="form-inline dataTables_filter">
+                                        <label>
+                                            Search:
+                                            <input type="search" class="form-control form-control-sm" placeholder="" ng-model="pagingInfo.search">
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="example1" class="table table-bordered table-striped dataTable dtr-inline" role="grid" aria-describedby="example1_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting" width="3%" ng-click="sort('Id')">Nos</th>
+                                            <th class="sorting" ng-click="sort('Description')">Description</th>
+                                            <th class="sorting" ng-click="sort('UserName')">Modified By</th>
+                                            <th class="sorting" ng-click="sort('CreatedDate')">Date Modified</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-if="pagingInfo.totalItems == 0">
+                                            <td colspan="4"><center>No data to display</center></td>
+                                        </tr>
+                                        <tr ng-if="pagingInfo.totalItems > 0" ng-repeat="log in ChangeLog">
+                                            <td class="text-center" ng-bind="(pagingInfo.itemsPerPage * (pagingInfo.page - 1)) + $index + 1"></td>
+                                            <td ng-bind="log.Description"></td>
+                                            <td ng-bind="log.UserName"></td>
+                                            <td class="text-center">{{ log.CreatedDate | date:'MM/dd/yyyy h:mma'}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-5">
+                                <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">Showing {{pagingInfo.page}} to {{pagingInfo.totalItems/pagingInfo.itemsPerPage | roundup }} of {{pagingInfo.totalItems}} entries</div>
+                            </div>
+                            <div class="col-sm-12 col-md-7">
+                                <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                                    <ul uib-pagination total-items="(10 * pagingInfo.totalItems)/pagingInfo.itemsPerPage" ng-model="pagingInfo.page" ng-change="selectPage(pagingInfo.page)" max-size="10" class="pagination-sm" boundary-links="true" force-ellipses="true"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+</div>
+
+@section scripts{
+    <script src="~/Scripts/ProjectScriptFile/UnitQTHistoricalMgmnt.js"></script>
+    <script src="~/Scripts/ProjectScriptFile/ChangeLog.js"></script>
+}

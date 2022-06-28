@@ -1,0 +1,412 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="DashboardTOPipeline" ng-init="init('@ViewBag.PageUrl')">
+    <section class="content">
+        <div class="loading" ng-if="loading">Loading &#8230;</div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12 col-md-8">
+                    <p class="text-xs"><strong>Note: </strong><em>Please take note that any related data coming from SAP will be synched &amp; reflected to TOMS on 12 midnight</em></p>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <p class="text-right text-xs">Data last update: <u>{{DateSync | date: 'EEE, MMM d, y h:mm a'}}</u>. Click here to <a href="#" ng-click="FetchUpdatedTOAS()"><span class="badge badge-info"><i class="fa fa-sync"></i> Snyc Data</span></a></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4" ng-init="GetSearchData()">
+                    <div class="card">
+                        <div class="card-body">
+                            <form name="DashboardTOPipeline" novalidate role="form" ng-submit="$event.preventDefault()">
+                                <div class="row">
+                                    <div class="col-12 form-group">
+                                        <label for="parent">Project Name <small>*</small></label>
+                                        <div ng-dropdown-multiselect="" options="Projects" selected-model="data.OptionIDs" checkboxes="true" extra-settings="setting1"></div>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-0">
+                                        <button type="button" class="btn btn-default btn-sm float-right" data-dismiss="modal" ng-click="clearSearch()">
+                                            <i class="fas fa-times-circle"></i> Clear
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm float-right  mr-1" ng-click="GetDetailByProject(data.OptionIDs)">
+                                            <i class="fas fa-search"></i> Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-8" ng-init="GetMainSummary()">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-bordered table-striped table-sm table-valign-middle text-xs">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th ng-if="!maindashloading1">&nbsp;</th>
+                                        <th ng-if="!maindashloading1">&nbsp;</th>
+                                        <th>Qualified</th>
+                                        <th>For Processing</th>
+                                        <th>For Confirmation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-if="maindashloading1">
+                                        <td class="text-center p-3" colspan="3">
+                                            <p>Please wait while we load summary data...</p>
+                                            <div class="spinner-border" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="text-info text-center" ng-if="!maindashloading1">
+                                        <td class="text-left text-dark font-weight-bold p-2" rowspan="3">All Projects</td>
+                                        <td class="text-left"><b>Total</b></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-info" ng-click="GetDetailBySummary('Qtl')">{{DashboardSummary.QualifiedTotal}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-info" ng-click="GetDetailBySummary('Ptl')">{{DashboardSummary.ForProcessTotal}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-info" ng-click="GetDetailBySummary('Ctl')">{{DashboardSummary.ConfirmedTotal}}</a></td>
+                                    </tr>
+                                    <tr class="text-success text-center" ng-if="!maindashloading1">
+                                        <td class="text-left"><b>Within TAT</b></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-success" ng-click="GetDetailBySummary('Qwt')">{{DashboardSummary.QualifiedWithinTAT}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-success" ng-click="GetDetailBySummary('Pwt')">{{DashboardSummary.ForProcessWithinTAT}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-success" ng-click="GetDetailBySummary('Cwt')">{{DashboardSummary.ConfirmedWithinTAT}}</a></td>
+                                    </tr>
+                                    <tr class="text-danger text-center" ng-if="!maindashloading1">
+                                        <td class="text-left"><b>Beyond TAT</b></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-danger" ng-click="GetDetailBySummary('Qbt')">{{DashboardSummary.QualifiedBeyondTAT}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-danger" ng-click="GetDetailBySummary('Pbt')">{{DashboardSummary.ForProcessBeyondTAT}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-danger" ng-click="GetDetailBySummary('Cbt')">{{DashboardSummary.ConfirmedBeyondTAT}}</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*<div class="row">
+                <div class="col-7">
+                    <button type="button" class="btn btn-secondary btn-sm float-right" data-toggle="modal" data-target="#TurnoverScheduleModal">
+                        <i class="fas fa-calendar"></i> Turnover Schedule
+                    </button>
+                </div>
+            </div>*@
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-gray card-outline">
+                            <h3 class="card-title">
+                                <i class="fas fa-th mr-1"></i> Qualified Units for Turnover
+                            </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body" >
+                            <div class="alert alert-default-light" ng-show="!viewRecord">
+                                <h5><i class="icon fas fa-ban"></i> No Record Found!</h5>
+                            </div>
+                            <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4" ng-show="viewRecord">
+                                <div class="row">
+                                    <div ng-class="(pagingInfo.search2 !== '')? 'col-lg-8' : 'col-lg-4'"></div>
+                                    <div ng-class="(pagingInfo.search2 !== '')? 'col-lg-4' : 'col-lg-8'">
+                                        <table class="table table-bordered table-striped table-sm table-valign-middle text-xs">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th ng-show="pagingInfo.search2 === ''" ng-if="!maindashloading2">&nbsp;</th>
+                                                    <th width="{{(pagingInfo.search2 === '')? '20%' : ''}}" ng-if="!maindashloading2"><span ng-show="pagingInfo.search2 !== ''">All Projects</span> </th>
+                                                    <th ng-show="pagingInfo.search2 === 'Qtl' || pagingInfo.search2 === 'Qwt' ||pagingInfo.search2 === 'Qbt' || pagingInfo.search2 === ''" class="border-top-0">Qualified</th>
+                                                    <th ng-show="pagingInfo.search2 === 'Ptl' || pagingInfo.search2 === 'Pwt' ||pagingInfo.search2 === 'Pbt' || pagingInfo.search2 === ''" class="border-top-0">For Processing</th>
+                                                    <th ng-show="pagingInfo.search2 === 'Ctl' || pagingInfo.search2 === 'Cwt' ||pagingInfo.search2 === 'Cbt' || pagingInfo.search2 === ''" class="border-top-0">For Confirmation</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-if="maindashloading2">
+                                                    <td class="text-center p-3" colspan="3">
+                                                        <p>Please wait while we load summary data...</p>
+                                                        <div class="spinner-border" role="status">
+                                                            <span class="sr-only">Loading...</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-info text-center" ng-if="!maindashloading2">
+                                                    <td ng-show="pagingInfo.search2 === ''" class="text-left text-dark p-2" rowspan="3"><b>{{ProjectName}}</b><br /><span ng-if="ProjSelected.length > 1">.... <a href="" class="text-info text-sm" data-toggle="modal" data-target="#ProjectSelectedModal">click here</a></span></td>
+                                                    <td ng-show="pagingInfo.search2 === 'Qtl' || pagingInfo.search2 === 'Ptl' ||pagingInfo.search2 === 'Ctl' || pagingInfo.search2 === ''" class="text-left"><b>Total</b></td>
+                                                    <td ng-show="pagingInfo.search2 === 'Qtl' || pagingInfo.search2 === ''">{{DashboardSummary2.QualifiedTotal}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'Ptl' || pagingInfo.search2 === ''">{{DashboardSummary2.ForProcessTotal}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'Ctl' || pagingInfo.search2 === ''">{{DashboardSummary2.ConfirmedTotal}}</td>
+                                                </tr>
+                                                <tr class="text-success text-center" ng-if="!maindashloading2">
+                                                    <td ng-show="pagingInfo.search2 === 'Qwt' || pagingInfo.search2 === 'Pwt' ||pagingInfo.search2 === 'Cwt' || pagingInfo.search2 === ''" class="text-left"><b>Within TAT</b></td>
+                                                    <td ng-show="pagingInfo.search2 === 'Qwt' || pagingInfo.search2 === ''">{{DashboardSummary2.QualifiedWithinTAT}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'Pwt' || pagingInfo.search2 === ''">{{DashboardSummary2.ForProcessWithinTAT}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'Cwt' || pagingInfo.search2 === ''">{{DashboardSummary2.ConfirmedWithinTAT}}</td>
+                                                </tr>
+                                                <tr class="text-danger text-center" ng-if="!maindashloading2">
+                                                    <td ng-show="pagingInfo.search2 === 'Qbt' || pagingInfo.search2 === 'Pbt' ||pagingInfo.search2 === 'Cbt' || pagingInfo.search2 === ''" class="text-left"><b>Beyond TAT</b></td>
+                                                    <td ng-show="pagingInfo.search2 === 'Qbt' || pagingInfo.search2 === ''">{{DashboardSummary2.QualifiedBeyondTAT}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'Pbt' || pagingInfo.search2 === ''">{{DashboardSummary2.ForProcessBeyondTAT}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'Cbt' || pagingInfo.search2 === ''">{{DashboardSummary2.ConfirmedBeyondTAT}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-5">
+                                        <div class="dataTables_length form-inline">
+                                            <label>
+                                                Show
+                                                <select name="example1_length" class="form-control form-control-sm" ng-model="pagingInfo.itemsPerPage" ng-change="setItemsPerPage(pagingInfo.itemsPerPage)">
+                                                    <option value="5">5</option>
+                                                    <option value="10">10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select> entries
+                                            </label>
+                                            <img src="~/Content/dist/img/ajax-loader2.gif" ng-show="loading" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-7">
+                                        <form name="searchForm" novalidate role="form" ng-submit="search()">
+                                            <div class="form-inline dataTables_filter">
+                                                <label class="mr-2"> Search:</label>
+                                                <select class="form-control form-control-sm ml-2" ng-model="pagingInfo.searchcol" ng-change="updatePlaceholder()">
+                                                    <option value="0">All</option>
+                                                    <option value="1">Project Name</option>
+                                                    <option value="2">Category</option>
+                                                    <option value="3">Type</option>
+                                                    <option value="4">Unit Nos</option>
+                                                    <option value="5">Customer Name/Nos</option>
+                                                    <option value="6">Account Type</option>
+                                                    <option value="7">QCD Date</option>
+                                                    <option value="8">TOAS Date</option>
+                                                    <option value="9">Handover Associate</option>
+                                                    <option value="10">Email Notice Date Sent</option>
+                                                    <option value="11">Email Notice Aging (Days)</option>
+                                                    <option value="12">Turnover Date</option>
+                                                    <option value="13">Turnover Option</option>
+                                                </select>
+
+                                                <input type="search" class="form-control form-control-sm ml-2" placeholder="{{formatPlaceholder}}" ng-model="pagingInfo.search">
+                                                <button type="button" class="btn btn-secondary btn-sm ml-2" ng-click="search()"><i class="fa fa-search"></i></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="example1" class="table table-bordered table-striped dataTable dtr-inline custom-pr-table" role="grid" aria-describedby="example1_info">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th width="18%" class="text-center sorting" ng-click="sort('RefNos')">Unit Details</th>
+                                                    <th width="22%" class="text-center sorting" ng-click="sort('CustomerName1')">Customer Details</th>
+                                                    <th width="15%" class="text-center sorting" ng-click="sort('QualificationDate')">Qualification Details</th>
+                                                    <th width="5%" class="text-center sorting" ng-click="sort('HandoverAssociate')">Handover Associate</th>
+                                                    <th width="22%" class="text-center sorting" ng-click="sort('EmailDateNoticeSent')">Turnover Notice Details</th>
+                                                    <th width="20%" class="text-center sorting" ng-click="sort('FinalTurnoverDate')">Turnover Schedule & Options</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-if="pagingInfo.totalItems == 0">
+                                                    <td colspan="6"><center>No data to display</center></td>
+                                                </tr>
+                                                <tr ng-if="pagingInfo.totalItems > 0" ng-repeat="to in DashboardTOPipeline">
+                                                    <td>
+                                                        <dl class="row ddesc-hor">
+                                                            <dt class="col-sm-5 mb-1">Unit Nos</dt>
+                                                            <dd class="col-sm-7"><a href="javascript:void(0)" ng-click="linkRederict(to.UniqueHashKey)">{{to.RefNos}}</a></dd>
+                                                            <dt class="col-sm-5 mb-1">Project Name</dt>
+                                                            <dd class="col-sm-7">{{to.ProjectCode}} : {{to.BusinessEntity}}</dd>
+                                                            <dt class="col-sm-5 mb-1">Category</dt>
+                                                            <dd class="col-sm-7">{{to.UnitCategoryDesc}}</dd>
+                                                            <dt class="col-sm-5">Type</dt>
+                                                            <dd class="col-sm-7">{{to.UnitTypeDesc}}</dd>
+                                                        </dl>
+                                                    </td>
+                                                    <td>
+                                                        <dl class="row ddesc-hor">
+                                                            <dt class="col-sm-5 mb-1">Customer Nos</dt>
+                                                            <dd class="col-sm-7"><a href="javascript:void(0)" ng-click="linkRederict(to.UniqueHashKey)">{{to.CustomerNos}}</a></dd>
+                                                            <dt class="col-sm-5 mb-1">Customer Name</dt>
+                                                            <dd class="col-sm-7">{{to.CustomerName1}}</dd>
+                                                            <dt class="col-sm-5 mb-1">Account Type</dt>
+                                                            <dd class="col-sm-7">{{to.AccountTypeDesc}}</dd>
+                                                            <dt class="col-sm-5 mb-1">Email</dt>
+                                                            <dd class="col-sm-7"><a href="mailto:{{to.EmailAdd}}">{{to.EmailAdd}}</a></dd>
+                                                            <dt class="col-sm-5 mb-1">Contact Person</dt>
+                                                            <dd class="col-sm-7">{{to.ContactPerson}}</dd>
+                                                            <dt class="col-sm-5">Contact Nos</dt>
+                                                            <dd class="col-sm-7">{{to.TelNos}}</dd>
+                                                        </dl>
+                                                    </td>
+                                                    <td>
+                                                        <dl class="row ddesc-hor">
+                                                            <dt class="col-sm-7 mb-1">QCD Date</dt>
+                                                            <dd class="col-sm-5"><em>{{(to.QCDAcceptanceDate.length > 0)? (to.QCDAcceptanceDate | date :  "MM/dd/yyyy") : 'na'}}</em></dd>
+                                                            <dt class="col-sm-7 mb-1">FPMC Date</dt>
+                                                            <dd class="col-sm-5"><em>{{(to.FPMCAcceptanceDate.length > 0)? (to.FPMCAcceptanceDate | date :  "MM/dd/yyyy") : 'na'}}</em></dd>
+                                                            <dt class="col-sm-7 mb-1">Occupancy Permit</dt>
+                                                            <dd class="col-sm-5">{{to.HasOccupancyPermit}}</dd>
+                                                            <dt class="col-sm-7">TOAS Date</dt>
+                                                            <dd class="col-sm-5"><em>{{to.TOAS | date :  "MM/dd/yyyy"}}</em></dd>
+                                                        </dl>
+                                                    </td>
+                                                    <td class="vertical"><div class="vertical">{{to.HandoverAssociate}}</div></td>
+                                                    <td>
+                                                        <dl class="row ddesc-hor">
+                                                            <dt class="col-sm-8 mb-1"><span ng-class="(to.EmailNoticeSentAging > to.EmailNoticeSentAgingDays)? 'text-danger' : ''">Email Notice Date Sent</span></dt>
+                                                            <dd class="col-sm-4"><em ng-class="(to.EmailNoticeSentAging > to.EmailNoticeSentAgingDays)? 'text-danger' : ''">{{to.EmailDateNoticeSent}}</em></dd>
+                                                            <dt class="col-sm-8 mb-1">Courier Notice Date Sent</dt>
+                                                            <dd class="col-sm-4"><em>{{to.CourierDateNoticeSent}}</em></dd>
+                                                            <dt class="col-sm-8 mb-1">Courier Notice Date Received</dt>
+                                                            <dd class="col-sm-4"><em>{{to.CourierDateNoticeReceived}}</em></dd>
+                                                            <dt class="col-sm-8 mb-1">Courier Notice Received by</dt>
+                                                            <dd class="col-sm-4"><em>{{to.CourierReceivedBy}}</em></dd>
+                                                            <dt class="col-sm-8">Email Notice Aging (days)</dt>
+                                                            <dd class="col-sm-4"><span ng-class="(to.EmailNoticeSentAging > to.EmailNoticeSentAgingDays)? 'text-danger' : ''">{{to.EmailNoticeSentAging}}</span></dd>
+                                                        </dl>
+                                                    </td>
+                                                    <td>
+                                                        <dl class="row ddesc-hor">
+                                                            <dt class="col-sm-7 mb-1">Turnover Date</dt>
+                                                            <dd class="col-sm-5">
+                                                                <span class="font-italic" ng-class="(to.FinalTurnoverDate !== 'Null')? 'text-danger' : ((to.EmailTurnoverDate !== 'Null')? 'text-gray' : '')">{{(to.FinalTurnoverDate !== 'Null')? to.FinalTurnoverDate : to.EmailTurnoverDate}}</span>
+                                                            </dd>
+                                                            <dt class="col-sm-7 mb-1">Turnover Time</dt>
+                                                            <dd class="col-sm-5">
+                                                                <span class="font-italic" ng-class="(to.FinalTurnoverTime !== 'Null')? 'text-danger' : ((to.EmailTurnoverDate !== 'Null')? 'text-gray' : '')">{{(to.FinalTurnoverDate !== 'Null')? to.FinalTurnoverTime : to.EmailTurnoverTime}}</span>
+                                                            </dd>
+                                                            <dt class="col-sm-7 mb-1">Turnover Option</dt>
+                                                            <dd class="col-sm-5">
+                                                                <span class="font-italic" ng-class="(to.FinalTurnoverDate !== 'Null')? 'text-danger' : ((to.EmailTurnoverDate !== 'Null')? 'text-gray' : '')">{{(to.FinalTurnoverOption.length > 0)? to.FinalTurnoverOption : (to.EmailTurnoverDate !== 'Null')? 'Express' : to.FinalTurnoverOption}}</span>
+                                                            </dd>
+                                                        </dl>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-sm-12 col-md-5">
+                                        <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">Showing {{pagingInfo.page}} to {{pagingInfo.totalItems/pagingInfo.itemsPerPage | roundup }} of {{pagingInfo.totalItems}} entries</div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-7">
+                                        <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                                            <ul uib-pagination total-items="(10 * pagingInfo.totalItems)/pagingInfo.itemsPerPage" ng-model="pagingInfo.page" ng-change="selectPage(pagingInfo.page)" max-size="10" class="pagination-sm" boundary-links="true" force-ellipses="true"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="button" class="btn btn-secondary btn-sm float-right" ng-if="Ctrl.wPrint" ng-disabled="disableButton" ng-click="ExportReport('Print')">
+                                            <i class="fas fa-print"></i> Report
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm float-right mr-1" ng-if="Ctrl.wDownload" ng-disabled="disableButton" ng-click="ExportReport('Download')">
+                                            <i class="fas fa-download"></i> Download
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       <div class="modal fade" id="ProjectSelectedModal">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <ul>
+                            <li ng-repeat="pr in ProjSelected">{{pr.BusinessEntity}}</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
+        @*<div class="modal fade" id="TurnoverScheduleModal">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Turnover Schedule</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form name="TurnoverScheduleForm" novalidate role="form">
+                        <div class="modal-body">
+                            <div class="form-group has-feedback" show-errors>
+                                <label for="TurnoverAssociate">Turnover Associate</label>
+                                <select class="form-control form-control-sm" id="TurnoverAssociate" name="TurnoverAssociate" ng-model="data.TurnoverAssociate" ng-required="true">
+                                    <option value="">Please Select</option>
+                                </select>
+                                <div style="color:red" class="invalid-feedback" ng-if="TurnoverScheduleForm.TurnoverAssociate.$error.required">You can't leave this empty.</div>
+                            </div>
+                            <div class="form-group has-feedback" show-errors>
+                                <label for="TurnoverOption">Turnover Option</label>
+                                <select class="form-control form-control-sm" id="TurnoverOption" name="TurnoverOption" ng-model="data.TurnoverOption" ng-required="true">
+                                    <option value="">Please Select</option>
+                                </select>
+                                <div style="color:red" class="invalid-feedback" ng-if="TurnoverScheduleForm.TurnoverOption.$error.required">You can't leave this empty.</div>
+                            </div>
+                            <div class="form-group has-feedback" show-errors>
+                                <label for="AccountType">Account Type</label>
+                                <select class="form-control form-control-sm" id="AccountType" name="AccountType" ng-model="data.AccountType" ng-required="true">
+                                    <option value="">Please Select</option>
+                                </select>
+                                <div style="color:red" class="invalid-feedback" ng-if="TurnoverScheduleForm.AccountType.$error.required">You can't leave this empty.</div>
+                            </div>
+                            <div class="form-group has-feedback" show-errors>
+                                <label for="PeriodDateFrom">Period Date</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input type="text" class="form-control form-control-sm" id="PeriodDateFrom" name="PeriodDateFrom" ng-model="data.PeriodDateFrom" ng-required="true" placeholder="mm/dd/yyyy">
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control form-control-sm" id="PeriodDateTo" name="PeriodDateTo" ng-model="data.PeriodDateTo" ng-required="true" placeholder="mm/dd/yyyy">
+                                    </div>
+                                </div>
+                                <div style="color:red" class="invalid-feedback" ng-if="TurnoverScheduleForm.PeriodDate.$error.required">You can't leave this empty.</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="ClearData()">Close</button>
+                            <button type="button" class="btn btn-secondary btn-sm" ng-click="SaveEmailTemplate(data)">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>*@
+        <!-- /.modal -->
+    </section>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/lodash.min.js"></script>
+    <script src="~/Scripts/ProjectScriptFile/DashboardTOPipeline.js"></script>
+}

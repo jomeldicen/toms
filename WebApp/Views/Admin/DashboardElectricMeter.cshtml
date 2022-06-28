@@ -1,0 +1,365 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="DashboardElectricMeter" ng-init="init('@ViewBag.PageUrl')">
+    <section class="content">
+        <div class="loading" ng-if="loading">Loading &#8230;</div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12 col-md-7">
+                    <p class="text-xs"><strong>Note: </strong><em>Please take note that any related data coming from SAP will be synched &amp; reflected to TOMS on 12 midnight</em></p>
+                </div>
+                <div class="col-sm-12 col-md-5">
+                    <p class="text-right text-xs">Data last update: <u>{{DateSync | date: 'EEE, MMM d, y h:mm a'}}</u>. Click here to <a href="#" ng-click="FetchUpdatedElectricStatus()"><span class="badge badge-info"><i class="fa fa-sync"></i> Snyc Data</span></a></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3" ng-init="GetSearchData()">
+                    <div class="card">
+                        <div class="card-body">
+                            <form name="DashboardElectricMeter" novalidate role="form" ng-submit="$event.preventDefault()">
+                                <div class="row">
+                                    <div class="col-12 form-group">
+                                        <label for="parent">Project Name <small>*</small></label>
+                                        <div ng-dropdown-multiselect="" options="Projects" selected-model="data.OptionIDs" checkboxes="true" extra-settings="setting1"></div>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-0">
+                                        <button type="button" class="btn btn-default btn-sm float-right" data-dismiss="modal" ng-click="clearSearch()">
+                                            <i class="fas fa-times-circle"></i> Clear
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm float-right  mr-1" ng-click="GetDetailByProject(data.OptionIDs)">
+                                            <i class="fas fa-search"></i> Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-9" ng-init="GetMainSummary()">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <table class="table table-bordered table-striped table-sm table-valign-middle text-xs">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th ng-if="!maindashloading1">&nbsp;</th>
+                                        <th width="10%" ng-if="!maindashloading1">&nbsp;</th>
+                                        <th>For Documentation Completion</th>
+                                        <th>For RFP Creation</th>
+                                        <th>For Check Payment Release</th>
+                                        <th>For Submission of Requirements to Meralco</th>
+                                        <th>For Transfer of Electric Meter &amp; Service Deposit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-if="maindashloading1">
+                                        <td class="text-center p-3" colspan="7">
+                                            <p>Please wait while we load summary data...</p>
+                                            <div class="spinner-border" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="text-info text-center" ng-if="!maindashloading1">
+                                        <td class="text-left text-dark font-weight-bold p-2" rowspan="3">All Projects</td>
+                                        <td class="text-left"><b>Total</b></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-info" ng-click="GetDetailBySummary('T1')">{{DashboardSummary.DocCompletionTotal}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-info" ng-click="GetDetailBySummary('T2')">{{DashboardSummary.RFPCreationTotal}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-info" ng-click="GetDetailBySummary('T3')">{{DashboardSummary.CheckPaymentReleaseTotal}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-info" ng-click="GetDetailBySummary('T4')">{{DashboardSummary.MeralcoSubmissionTotal}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-info" ng-click="GetDetailBySummary('T5')">{{DashboardSummary.TransferElectricServTotal}}</a></td>
+                                    </tr>
+                                    <tr class="text-success text-center" ng-if="!maindashloading1">
+                                        <td class="text-left"><b>Within TAT</b></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-success" ng-click="GetDetailBySummary('W1')">{{DashboardSummary.DocCompletionWithinTAT}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-success" ng-click="GetDetailBySummary('W2')">{{DashboardSummary.RFPCreationWithinTAT}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-success" ng-click="GetDetailBySummary('W3')">{{DashboardSummary.CheckPaymentReleaseWithinTAT}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-success" ng-click="GetDetailBySummary('W4')">{{DashboardSummary.MeralcoSubmissionWithinTAT}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-success" ng-click="GetDetailBySummary('W5')">{{DashboardSummary.TransferElectricServWithinTAT}}</a></td>
+                                      </tr>
+                                    <tr class="text-danger text-center" ng-if="!maindashloading1">
+                                        <td class="text-left"><b>Beyond TAT</b></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-danger" ng-click="GetDetailBySummary('B1')">{{DashboardSummary.DocCompletionBeyondTAT}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-danger" ng-click="GetDetailBySummary('B2')">{{DashboardSummary.RFPCreationBeyondTAT}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-danger" ng-click="GetDetailBySummary('B3')">{{DashboardSummary.CheckPaymentReleaseBeyondTAT}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-danger" ng-click="GetDetailBySummary('B4')">{{DashboardSummary.MeralcoSubmissionBeyondTAT}}</a></td>
+                                        <td><a href="javascript:void(0)" class="font-weight-bold text-danger" ng-click="GetDetailBySummary('B5')">{{DashboardSummary.TransferElectricServBeyondTAT}}</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-gray card-outline">
+                            <h3 class="card-title">
+                                <i class="fas fa-th mr-1"></i> @ViewBag.Title
+                            </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="alert alert-default-light" ng-show="!viewRecord">
+                                <h5><i class="icon fas fa-ban"></i> No Record Found!</h5>
+                            </div>
+                            <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4" ng-show="viewRecord">
+                                <div class="row">
+                                    <div ng-class="(pagingInfo.search2 !== '')? 'col-md-8' : ''" ng-if="pagingInfo.search2 !== ''"></div>
+                                    <div ng-class="(pagingInfo.search2 !== '')? 'col-md-4' : 'col-md-12'">
+                                        <table class="table table-bordered table-striped table-sm table-valign-middle text-xs">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th ng-show="pagingInfo.search2 === ''" ng-if="!maindashloading2">&nbsp;</th>
+                                                    <th width="{{(pagingInfo.search2 === '')? '10%' : ''}}" ng-if="!maindashloading2"><span ng-show="pagingInfo.search2 !== ''">All Projects</span> </th>
+                                                    <th ng-show="pagingInfo.search2 === 'T1' || pagingInfo.search2 === 'W1' ||pagingInfo.search2 === 'B1' || pagingInfo.search2 === ''" class="border-top-0">For Documentation Completion</th>
+                                                    <th ng-show="pagingInfo.search2 === 'T2' || pagingInfo.search2 === 'W2' ||pagingInfo.search2 === 'B2' || pagingInfo.search2 === ''" class="border-top-0">For RFP Creation</th>
+                                                    <th ng-show="pagingInfo.search2 === 'T3' || pagingInfo.search2 === 'W3' ||pagingInfo.search2 === 'B3' || pagingInfo.search2 === ''" class="border-top-0">For Check Payment Release</th>
+                                                    <th ng-show="pagingInfo.search2 === 'T4' || pagingInfo.search2 === 'W4' ||pagingInfo.search2 === 'B4' || pagingInfo.search2 === ''" class="border-top-0">For Submission of Requirements to Meralco</th>
+                                                    <th ng-show="pagingInfo.search2 === 'T5' || pagingInfo.search2 === 'W5' ||pagingInfo.search2 === 'B5' || pagingInfo.search2 === ''" class="border-top-0">For Transfer of Electric Meter &amp; Service Deposit</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-if="maindashloading2">
+                                                    <td class="text-center p-3" colspan="7">
+                                                        <p>Please wait while we load summary data...</p>
+                                                        <div class="spinner-border" role="status">
+                                                            <span class="sr-only">Loading...</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-info text-center" ng-if="!maindashloading2">
+                                                    <td ng-show="pagingInfo.search2 === ''" class="text-left text-dark p-2" rowspan="3"><b>{{ProjectName}}</b><br /><span ng-if="ProjSelected.length > 1">.... <a href="" class="text-info text-sm" data-toggle="modal" data-target="#ProjectSelectedModal">click here</a></span></td>
+                                                    <td ng-show="pagingInfo.search2 === 'T1' || pagingInfo.search2 === 'T2' ||pagingInfo.search2 === 'T3' || pagingInfo.search2 === 'T4' || pagingInfo.search2 === 'T5' || pagingInfo.search2 === ''" class="text-left"><b>Total</b></td>
+                                                    <td ng-show="pagingInfo.search2 === 'T1' || pagingInfo.search2 === ''">{{DashboardSummary2.DocCompletionTotal}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'T2' || pagingInfo.search2 === ''">{{DashboardSummary2.RFPCreationTotal}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'T3' || pagingInfo.search2 === ''">{{DashboardSummary2.CheckPaymentReleaseTotal}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'T4' || pagingInfo.search2 === ''">{{DashboardSummary2.MeralcoSubmissionTotal}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'T5' || pagingInfo.search2 === ''">{{DashboardSummary2.TransferElectricServTotal}}</td>
+                                                </tr>
+                                                <tr class="text-success text-center" ng-if="!maindashloading2">
+                                                    <td ng-show="pagingInfo.search2 === 'W1' || pagingInfo.search2 === 'W2' ||pagingInfo.search2 === 'W3' || pagingInfo.search2 === 'W4' || pagingInfo.search2 === 'W5' || pagingInfo.search2 === ''" class="text-left"><b>Within TAT</b></td>
+                                                    <td ng-show="pagingInfo.search2 === 'W1' || pagingInfo.search2 === ''">{{DashboardSummary2.DocCompletionWithinTAT}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'W2' || pagingInfo.search2 === ''">{{DashboardSummary2.RFPCreationWithinTAT}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'W3' || pagingInfo.search2 === ''">{{DashboardSummary2.CheckPaymentReleaseWithinTAT}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'W4' || pagingInfo.search2 === ''">{{DashboardSummary2.MeralcoSubmissionWithinTAT}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'W5' || pagingInfo.search2 === ''">{{DashboardSummary2.TransferElectricServWithinTAT}}</td>
+                                                </tr>
+                                                <tr class="text-danger text-center" ng-if="!maindashloading2">
+                                                    <td ng-show="pagingInfo.search2 === 'B1' || pagingInfo.search2 === 'B2' ||pagingInfo.search2 === 'B3' || pagingInfo.search2 === 'B4' || pagingInfo.search2 === 'B5' || pagingInfo.search2 === ''" class="text-left"><b>Beyond TAT</b></td>
+                                                    <td ng-show="pagingInfo.search2 === 'B1' || pagingInfo.search2 === ''">{{DashboardSummary2.DocCompletionBeyondTAT}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'B2' || pagingInfo.search2 === ''">{{DashboardSummary2.RFPCreationBeyondTAT}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'B3' || pagingInfo.search2 === ''">{{DashboardSummary2.CheckPaymentReleaseBeyondTAT}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'B4' || pagingInfo.search2 === ''">{{DashboardSummary2.MeralcoSubmissionBeyondTAT}}</td>
+                                                    <td ng-show="pagingInfo.search2 === 'B5' || pagingInfo.search2 === ''">{{DashboardSummary2.TransferElectricServBeyondTAT}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-2">
+                                        <div class="dataTables_length form-inline">
+                                            <label>
+                                                Show
+                                                <select name="example1_length" class="form-control form-control-sm" ng-model="pagingInfo.itemsPerPage" ng-change="setItemsPerPage(pagingInfo.itemsPerPage)">
+                                                    <option value="5">5</option>
+                                                    <option value="10">10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select> entries
+                                            </label>
+                                            <img src="~/Content/dist/img/ajax-loader2.gif" ng-show="loading" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-10">
+                                        <form name="searchForm" novalidate role="form" ng-submit="search()">
+                                            <div class="form-inline dataTables_filter">
+                                                <label class="mr-2"> Search:</label>
+                                                <select class="form-control form-control-sm ml-2" ng-model="pagingInfo.searchcol" ng-change="updatePlaceholder()">
+                                                    @*<option value="0">All</option>*@
+                                                    <option value="1">Company</option>
+                                                    <option value="2">Project Name</option>
+                                                    <option value="3">Type</option>
+                                                    <option value="4">Unit Nos</option>
+                                                    <option value="5">Customer Name/Nos</option>
+                                                    <option value="6">Application Process Status</option>
+                                                    <option value="7">Document status</option>
+                                                    <option value="8">Documentary Completed Date</option>
+                                                    <option value="9">RFP Rush Ticket Date</option>
+                                                    <option value="10">Received Check Date</option>
+                                                    <option value="11">Unpaid Bill Posted Date</option>
+                                                    <option value="12">Paid Settled Posted Date</option>
+                                                    <option value="13">Meralco Submitted Date</option>
+                                                    <option value="14">Meralco Receipt Date</option>
+                                                    <option value="15"> Unit Owner Receipt Date</option>
+                                                </select>
+
+                                                <input type="search" class="form-control form-control-sm ml-2" placeholder="{{formatPlaceholder}}" ng-if="searchVisibleFilter === '0'" ng-model="pagingInfo.search">
+
+                                                <div ng-if="searchVisibleFilter === '1'" class="input-group mb-0">
+                                                    <input type="text" name="DateFrom" id="DateFrom" class="form-control form-control-sm" @*onkeydown="return false"*@ alt-input-formats="altInputFormats"
+                                                           uib-datepicker-popup="{{dateFormat}}" ng-model="pagingInfo.DateFrom" is-open="popup1.opened" datepicker-options="dateOptionsCurrent"
+                                                           ng-click="open1()" placeholder="mm/dd/yyyy" close-text="Close" />
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text" ng-click="open1()">
+                                                            <span class="fas fa-calendar-alt"></span>
+                                                        </div>
+                                                    </div>
+                                                    <input type="text" name="DateTo" id="DateTo" class="form-control form-control-sm" @*onkeydown="return false"*@ alt-input-formats="altInputFormats"
+                                                           uib-datepicker-popup="{{dateFormat}}" ng-model="pagingInfo.DateTo" is-open="popup2.opened" datepicker-options="dateOptionsCurrent2"
+                                                           ng-click="open2()" placeholder="mm/dd/yyyy" close-text="Close" />
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text" ng-click="open2()">
+                                                            <span class="fas fa-calendar-alt"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <button type="button" class="btn btn-secondary btn-sm ml-2" ng-click="search()"><i class="fa fa-search"></i></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="example1" class="table table-bordered table-striped dataTable dtr-inline custom-pr-table" role="grid" aria-describedby="example1_info">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th width="23%" class="text-center sorting" ng-click="sort('RefNos')">Unit Details</th>
+                                                    <th width="24%" class="text-center sorting" ng-click="sort('CustomerName1')">Customer Details</th>
+                                                    <th width="5%" class="text-center" ng-click="sort('ApplicationProcessStatus')">Application Process Status</th>
+                                                    <th width="24%" class="text-center" ng-click="sort('ElectricMeterStatus')">Meter Deposit &amp; Document Requirement Details</th>
+                                                    <th width="24%" class="text-center">Meralco Process Completion Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-if="pagingInfo.totalItems == 0">
+                                                    <td colspan="7"><center>No data to display</center></td>
+                                                </tr>
+                                                <tr ng-if="pagingInfo.totalItems > 0" ng-repeat="to in DashboardElectricMeter">
+                                                    <td>
+                                                        <dl class="row ddesc-hor">
+                                                            <dt class="col-sm-5 mb-1">Unit Nos</dt>
+                                                            <dd class="col-sm-7"><a href="javascript:void(0)" ng-click="linkRederict(to.UniqueHashKey)">{{to.RefNos}}</a></dd>
+                                                            <dt class="col-sm-5 mb-1">Project Name</dt>
+                                                            <dd class="col-sm-7">{{to.ProjectCode}} : {{to.BusinessEntity}}</dd>
+                                                            <dt class="col-sm-5 mb-1">Company Code</dt>
+                                                            <dd class="col-sm-7">{{to.CompanyCode}}</dd>
+                                                            <dt class="col-sm-5">Type</dt>
+                                                            <dd class="col-sm-7">{{to.UnitTypeDesc}}</dd>
+                                                        </dl>
+                                                    </td>
+                                                    <td>
+                                                        <dl class="row ddesc-hor">
+                                                            <dt class="col-sm-5 mb-1">Customer Nos</dt>
+                                                            <dd class="col-sm-7"><a href="javascript:void(0)" ng-click="linkRederict(to.UniqueHashKey)">{{to.CustomerNos}}</a></dd>
+                                                            <dt class="col-sm-5 mb-1">Customer Name</dt>
+                                                            <dd class="col-sm-7">{{to.CustomerName1}}</dd>
+                                                        </dl>
+                                                    </td>
+                                                    <td>{{to.ApplicationProcessStatus}}</td>
+                                                    <td>
+                                                        <dl class="row ddesc-hor">
+                                                            <dt class="col-sm-7 mb-1">Document Status</dt>
+                                                            <dd class="col-sm-5">{{to.ElectricMeterStatus}}</dd>
+                                                            <dt class="col-sm-7 mb-1">Date Completed</dt>
+                                                            <dd class="col-sm-5">
+                                                                <span class="font-italic">{{ (to.DocumentaryCompletedDate === null)? 'Null' : (to.DocumentaryCompletedDate | date :  "MM/dd/yyyy")}}</span>
+                                                            </dd>
+                                                            <dt class="col-sm-7">Meter Deposit</dt>
+                                                            <dd class="col-sm-5">
+                                                                <span class="font-italic">{{(to.MeterDepositAmount === null)? 'Null' : (to.MeterDepositAmount | number : fractionSize)}}</span>
+                                                            </dd>
+                                                        </dl>
+                                                    </td>
+                                                    <td>
+                                                        <dl class="row ddesc-hor">
+                                                            <dt class="col-sm-7 mb-1">RFP Check Release</dt>
+                                                            <dd class="col-sm-5">
+                                                                <span class="font-italic {{(to.RFPCreationTAT > to.RFPCreationSysTAT)? 'text-danger' : '' }}">{{(to.ReceivedCheckDate === null)? 'Null' : (to.ReceivedCheckDate | date :  "MM/dd/yyyy")}}</span>
+                                                            </dd>
+                                                            <dt class="col-sm-7">Receipt of New CS from Meralco</dt>
+                                                            <dd class="col-sm-5">
+                                                                <span class="font-italic {{(to.TransferElectricServTAT > to.TransferElectricServSysTAT)? 'text-danger' : '' }}">{{(to.MeralcoReceiptDate === null)? 'Null' : (to.MeralcoReceiptDate | date :  "MM/dd/yyyy")}}</span>
+                                                            </dd>
+                                                            <dt class="col-sm-7">Receipt of New CS by Unit Owner</dt>
+                                                            <dd class="col-sm-5">
+                                                                <span class="font-italic">{{(to.UnitOwnerReceiptDate === null)? 'Null' : (to.UnitOwnerReceiptDate | date :  "MM/dd/yyyy")}}</span>
+                                                            </dd>
+                                                        </dl>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-sm-12 col-md-5">
+                                        <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">Showing {{pagingInfo.page}} to {{pagingInfo.totalItems/pagingInfo.itemsPerPage | roundup }} of {{pagingInfo.totalItems}} entries</div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-7">
+                                        <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                                            <ul uib-pagination total-items="(10 * pagingInfo.totalItems)/pagingInfo.itemsPerPage" ng-model="pagingInfo.page" ng-change="selectPage(pagingInfo.page)" max-size="10" class="pagination-sm" boundary-links="true" force-ellipses="true"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="button" class="btn btn-secondary btn-sm float-right" ng-if="Ctrl.wPrint" ng-disabled="disableButton" ng-click="ExportReport('Print')">
+                                            <i class="fas fa-print"></i> Report
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm float-right mr-1" ng-if="Ctrl.wDownload" ng-disabled="disableButton" ng-click="ExportReport('Download')">
+                                            <i class="fas fa-download"></i> Download
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="ProjectSelectedModal">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <ul>
+                            <li ng-repeat="pr in ProjSelected">{{pr.BusinessEntity}}</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+    </section>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/lodash.min.js"></script>
+    <script src="~/Scripts/ProjectScriptFile/DashboardElectricMeter.js"></script>
+}

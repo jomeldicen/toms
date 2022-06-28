@@ -1,0 +1,611 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="WebAppEntitiesModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AspNetUsersMenu">
+          <Key>
+            <PropertyRef Name="vMenuID" />
+          </Key>
+          <Property Name="vMenuID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="nvMenuName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="iSerialNo" Type="int" Nullable="false" />
+          <Property Name="nvFabIcon" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="vParentMenuID" Type="nvarchar" MaxLength="128" />
+          <Property Name="nvPageUrl" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="PrefixCode" Type="varchar" MaxLength="20" />
+          <Property Name="Published" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedByPK" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedByPK" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ChangeLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="vMenuID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="EventType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="EventName" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="ObjectType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ContentDetail" Type="text" />
+          <Property Name="IPAddress" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedByPK" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EmailSendingQueue">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Module" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="Subject" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="Message" Type="text" Nullable="false" />
+          <Property Name="IsEmailSent" Type="bit" Nullable="false" />
+          <Property Name="DateProcess" Type="datetime" Nullable="false" />
+          <Property Name="DateSent" Type="datetime" />
+          <Property Name="Reference" Type="xml" />
+          <Property Name="Remarks" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="EmailTemplate">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="20" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="250" />
+          <Property Name="EmailSubject" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="EmailBody" Type="varchar(max)" Nullable="false" />
+          <Property Name="Published" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedByPK" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedByPK" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="HttpClientLogs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Method" Type="varchar" MaxLength="50" />
+          <Property Name="AbsoluteUri" Type="varchar" MaxLength="250" />
+          <Property Name="CrfToken" Type="varchar" MaxLength="150" />
+          <Property Name="StatusCode" Type="varchar" MaxLength="50" />
+          <Property Name="IsSuccessStatusCode" Type="bit" />
+          <Property Name="ReasonPhrase" Type="varchar" MaxLength="150" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ObjectType" Type="varchar" MaxLength="50" />
+          <Property Name="ContentDetail" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="vSettingID" />
+          </Key>
+          <Property Name="vSettingID" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="vSettingName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="vSettingOption" Type="varchar(max)" />
+          <Property Name="vSettingGroup" Type="varchar" MaxLength="250" />
+          <Property Name="vSettingLabel" Type="varchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="UnitID_DeemedAcceptance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CompanyCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProjectCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="UnitCategory" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="UnitNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CustomerNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="DeemedAcceptanceDate" Type="date" />
+          <Property Name="DeemedAcceptanceRemarks" Type="varchar(max)" />
+          <Property Name="EmailDateNoticeSent" Type="date" />
+          <Property Name="EmailDateNoticeSentMaxDate" Type="date" />
+          <Property Name="EmailNoticeRemarks" Type="varchar(max)" />
+          <Property Name="EmailNoticeAttachment" Type="varchar" MaxLength="250" />
+          <Property Name="CourierDateNoticeSent" Type="date" />
+          <Property Name="CourierDateNoticeReceived" Type="date" />
+          <Property Name="CourierReceivedBy" Type="varchar" MaxLength="150" />
+          <Property Name="CourierNoticeRemarks" Type="varchar(max)" />
+          <Property Name="CourierNoticeAttachment" Type="varchar" MaxLength="250" />
+          <Property Name="HandoverAssociate" Type="varchar" MaxLength="250" />
+          <Property Name="IsDeemedAcceptanceDateSAPSync" Type="int" />
+          <Property Name="DeemedAcceptanceDateSyncDate" Type="datetime" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedByPK" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedByPK" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UnitID_TOAcceptance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CompanyCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProjectCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="UnitCategory" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="UnitNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CustomerNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="TurnoverStatus" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="TurnoverStatusDate" Type="date" Nullable="false" />
+          <Property Name="PunchlistCategory" Type="varchar" MaxLength="50" />
+          <Property Name="PunchlistItem" Type="varchar" MaxLength="250" />
+          <Property Name="PunchlistCategoryTAT" Type="date" />
+          <Property Name="OtherIssues" Type="varchar" MaxLength="250" />
+          <Property Name="TSRemarks" Type="varchar(max)" />
+          <Property Name="TSAttachment" Type="varchar" MaxLength="250" />
+          <Property Name="UnitAcceptanceDate" Type="date" />
+          <Property Name="UnitAcceptanceDateTAT" Type="date" />
+          <Property Name="KeyTransmittalDate" Type="date" />
+          <Property Name="ReinspectionDate" Type="date" />
+          <Property Name="ReinspectionDateTAT" Type="date" />
+          <Property Name="AdjReinspectionDate" Type="date" />
+          <Property Name="AdjReinspectionDateTAT" Type="date" />
+          <Property Name="AdjReinspectionMaxDate" Type="date" />
+          <Property Name="RushTicketNos" Type="varchar" MaxLength="50" />
+          <Property Name="RushTicketNosTAT" Type="date" />
+          <Property Name="SRRemarks" Type="varchar(max)" />
+          <Property Name="DeemedDateTAT1" Type="date" />
+          <Property Name="DeemedDateTAT2" Type="date" />
+          <Property Name="IsUnitAcceptanceDateSAPSync" Type="int" />
+          <Property Name="UnitAcceptanceDateSyncDate" Type="datetime" />
+          <Property Name="TOAllowableDate" Type="date" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedByPK" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedByPK" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_AspNetUsersMenu_AspNetUsersMenu">
+          <End Role="AspNetUsersMenu" Type="Self.AspNetUsersMenu" Multiplicity="0..1" />
+          <End Role="AspNetUsersMenu1" Type="Self.AspNetUsersMenu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsersMenu">
+              <PropertyRef Name="vMenuID" />
+            </Principal>
+            <Dependent Role="AspNetUsersMenu1">
+              <PropertyRef Name="vParentMenuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ChangeLog_AspNetUsersMenu">
+          <End Role="AspNetUsersMenu" Type="Self.AspNetUsersMenu" Multiplicity="1" />
+          <End Role="ChangeLog" Type="Self.ChangeLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsersMenu">
+              <PropertyRef Name="vMenuID" />
+            </Principal>
+            <Dependent Role="ChangeLog">
+              <PropertyRef Name="vMenuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="spProcessBusinessRules" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="spProcessEmailQueueing" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="WebAppEntitiesModelStoreContainer">
+          <EntitySet Name="AspNetUsersMenu" EntityType="Self.AspNetUsersMenu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ChangeLog" EntityType="Self.ChangeLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmailSendingQueue" EntityType="Self.EmailSendingQueue" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmailTemplate" EntityType="Self.EmailTemplate" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HttpClientLogs" EntityType="Self.HttpClientLogs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Setting" EntityType="Self.Setting" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UnitID_DeemedAcceptance" EntityType="Self.UnitID_DeemedAcceptance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UnitID_TOAcceptance" EntityType="Self.UnitID_TOAcceptance" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AspNetUsersMenu_AspNetUsersMenu" Association="Self.FK_AspNetUsersMenu_AspNetUsersMenu">
+            <End Role="AspNetUsersMenu" EntitySet="AspNetUsersMenu" />
+            <End Role="AspNetUsersMenu1" EntitySet="AspNetUsersMenu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ChangeLog_AspNetUsersMenu" Association="Self.FK_ChangeLog_AspNetUsersMenu">
+            <End Role="AspNetUsersMenu" EntitySet="AspNetUsersMenu" />
+            <End Role="ChangeLog" EntitySet="ChangeLog" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="WebAppEntitiesModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ChangeLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="vMenuID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="EventType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="EventName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ObjectType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ContentDetail" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="IPAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedByPK" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AspNetUsersMenu" Relationship="WebAppEntitiesModel.FK_ChangeLog_AspNetUsersMenu" FromRole="ChangeLog" ToRole="AspNetUsersMenu" />
+        </EntityType>
+        <EntityType Name="HttpClientLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Method" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AbsoluteUri" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="CrfToken" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="StatusCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsSuccessStatusCode" Type="Boolean" />
+          <Property Name="ReasonPhrase" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ObjectType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ContentDetail" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="UnitID_DeemedAcceptance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CompanyCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProjectCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UnitCategory" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UnitNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CustomerNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DeemedAcceptanceDate" Type="DateTime" Precision="0" />
+          <Property Name="DeemedAcceptanceRemarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EmailDateNoticeSent" Type="DateTime" Precision="0" />
+          <Property Name="EmailDateNoticeSentMaxDate" Type="DateTime" Precision="0" />
+          <Property Name="EmailNoticeRemarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EmailNoticeAttachment" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="CourierDateNoticeSent" Type="DateTime" Precision="0" />
+          <Property Name="CourierDateNoticeReceived" Type="DateTime" Precision="0" />
+          <Property Name="CourierReceivedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="CourierNoticeRemarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CourierNoticeAttachment" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="HandoverAssociate" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="IsDeemedAcceptanceDateSAPSync" Type="Int32" />
+          <Property Name="DeemedAcceptanceDateSyncDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedByPK" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedByPK" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UnitID_TOAcceptance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CompanyCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProjectCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UnitCategory" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UnitNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CustomerNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TurnoverStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TurnoverStatusDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PunchlistCategory" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PunchlistItem" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="PunchlistCategoryTAT" Type="DateTime" Precision="0" />
+          <Property Name="OtherIssues" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="TSRemarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="TSAttachment" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="UnitAcceptanceDate" Type="DateTime" Precision="0" />
+          <Property Name="UnitAcceptanceDateTAT" Type="DateTime" Precision="0" />
+          <Property Name="KeyTransmittalDate" Type="DateTime" Precision="0" />
+          <Property Name="ReinspectionDate" Type="DateTime" Precision="0" />
+          <Property Name="ReinspectionDateTAT" Type="DateTime" Precision="0" />
+          <Property Name="AdjReinspectionDate" Type="DateTime" Precision="0" />
+          <Property Name="AdjReinspectionDateTAT" Type="DateTime" Precision="0" />
+          <Property Name="AdjReinspectionMaxDate" Type="DateTime" Precision="0" />
+          <Property Name="RushTicketNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RushTicketNosTAT" Type="DateTime" Precision="0" />
+          <Property Name="SRRemarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DeemedDateTAT1" Type="DateTime" Precision="0" />
+          <Property Name="DeemedDateTAT2" Type="DateTime" Precision="0" />
+          <Property Name="IsUnitAcceptanceDateSAPSync" Type="Int32" />
+          <Property Name="UnitAcceptanceDateSyncDate" Type="DateTime" Precision="3" />
+          <Property Name="TOAllowableDate" Type="DateTime" Precision="0" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedByPK" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedByPK" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="WebAppEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ChangeLogs" EntityType="Self.ChangeLog" />
+          <EntitySet Name="HttpClientLogs" EntityType="Self.HttpClientLog" />
+          <EntitySet Name="UnitID_DeemedAcceptance" EntityType="Self.UnitID_DeemedAcceptance" />
+          <EntitySet Name="UnitID_TOAcceptance" EntityType="Self.UnitID_TOAcceptance" />
+          <EntitySet Name="Settings" EntityType="WebAppEntitiesModel.Setting" />
+          <FunctionImport Name="spProcessBusinessRules" />
+          <FunctionImport Name="spProcessEmailQueueing" />
+          <EntitySet Name="EmailSendingQueues" EntityType="WebAppEntitiesModel.EmailSendingQueue" />
+          <EntitySet Name="EmailTemplates" EntityType="WebAppEntitiesModel.EmailTemplate" />
+          <EntitySet Name="AspNetUsersMenus" EntityType="WebAppEntitiesModel.AspNetUsersMenu" />
+          <AssociationSet Name="FK_AspNetUsersMenu_AspNetUsersMenu" Association="WebAppEntitiesModel.FK_AspNetUsersMenu_AspNetUsersMenu">
+            <End Role="AspNetUsersMenu" EntitySet="AspNetUsersMenus" />
+            <End Role="AspNetUsersMenu1" EntitySet="AspNetUsersMenus" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ChangeLog_AspNetUsersMenu" Association="WebAppEntitiesModel.FK_ChangeLog_AspNetUsersMenu">
+            <End Role="AspNetUsersMenu" EntitySet="AspNetUsersMenus" />
+            <End Role="ChangeLog" EntitySet="ChangeLogs" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="vSettingID" />
+          </Key>
+          <Property Name="vSettingID" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="vSettingName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="vSettingOption" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="vSettingGroup" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="vSettingLabel" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="EmailSendingQueue">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Module" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="Subject" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="Message" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="IsEmailSent" Type="Boolean" Nullable="false" />
+          <Property Name="DateProcess" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DateSent" Type="DateTime" Precision="3" />
+          <Property Name="Reference" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="EmailTemplate">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="EmailSubject" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="EmailBody" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Published" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedByPK" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedByPK" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="AspNetUsersMenu">
+          <Key>
+            <PropertyRef Name="vMenuID" />
+          </Key>
+          <Property Name="vMenuID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="nvMenuName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="iSerialNo" Type="Int32" Nullable="false" />
+          <Property Name="nvFabIcon" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="vParentMenuID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="nvPageUrl" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PrefixCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Published" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedByPK" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedByPK" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUsersMenu1" Relationship="WebAppEntitiesModel.FK_AspNetUsersMenu_AspNetUsersMenu" FromRole="AspNetUsersMenu" ToRole="AspNetUsersMenu1" />
+          <NavigationProperty Name="AspNetUsersMenu2" Relationship="WebAppEntitiesModel.FK_AspNetUsersMenu_AspNetUsersMenu" FromRole="AspNetUsersMenu1" ToRole="AspNetUsersMenu" />
+          <NavigationProperty Name="ChangeLogs" Relationship="WebAppEntitiesModel.FK_ChangeLog_AspNetUsersMenu" FromRole="AspNetUsersMenu" ToRole="ChangeLog" />
+        </EntityType>
+        <Association Name="FK_AspNetUsersMenu_AspNetUsersMenu">
+          <End Type="WebAppEntitiesModel.AspNetUsersMenu" Role="AspNetUsersMenu" Multiplicity="0..1" />
+          <End Type="WebAppEntitiesModel.AspNetUsersMenu" Role="AspNetUsersMenu1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsersMenu">
+              <PropertyRef Name="vMenuID" />
+            </Principal>
+            <Dependent Role="AspNetUsersMenu1">
+              <PropertyRef Name="vParentMenuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ChangeLog_AspNetUsersMenu">
+          <End Type="WebAppEntitiesModel.AspNetUsersMenu" Role="AspNetUsersMenu" Multiplicity="1" />
+          <End Type="WebAppEntitiesModel.ChangeLog" Role="ChangeLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsersMenu">
+              <PropertyRef Name="vMenuID" />
+            </Principal>
+            <Dependent Role="ChangeLog">
+              <PropertyRef Name="vMenuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="WebAppEntitiesModelStoreContainer" CdmEntityContainer="WebAppEntities">
+          <EntitySetMapping Name="ChangeLogs">
+            <EntityTypeMapping TypeName="WebAppEntitiesModel.ChangeLog">
+              <MappingFragment StoreEntitySet="ChangeLog">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="vMenuID" ColumnName="vMenuID" />
+                <ScalarProperty Name="EventType" ColumnName="EventType" />
+                <ScalarProperty Name="EventName" ColumnName="EventName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ObjectType" ColumnName="ObjectType" />
+                <ScalarProperty Name="ContentDetail" ColumnName="ContentDetail" />
+                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedByPK" ColumnName="CreatedByPK" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HttpClientLogs">
+            <EntityTypeMapping TypeName="WebAppEntitiesModel.HttpClientLog">
+              <MappingFragment StoreEntitySet="HttpClientLogs">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Method" ColumnName="Method" />
+                <ScalarProperty Name="AbsoluteUri" ColumnName="AbsoluteUri" />
+                <ScalarProperty Name="CrfToken" ColumnName="CrfToken" />
+                <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
+                <ScalarProperty Name="IsSuccessStatusCode" ColumnName="IsSuccessStatusCode" />
+                <ScalarProperty Name="ReasonPhrase" ColumnName="ReasonPhrase" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ObjectType" ColumnName="ObjectType" />
+                <ScalarProperty Name="ContentDetail" ColumnName="ContentDetail" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UnitID_DeemedAcceptance">
+            <EntityTypeMapping TypeName="WebAppEntitiesModel.UnitID_DeemedAcceptance">
+              <MappingFragment StoreEntitySet="UnitID_DeemedAcceptance">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CompanyCode" ColumnName="CompanyCode" />
+                <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
+                <ScalarProperty Name="UnitCategory" ColumnName="UnitCategory" />
+                <ScalarProperty Name="UnitNos" ColumnName="UnitNos" />
+                <ScalarProperty Name="CustomerNos" ColumnName="CustomerNos" />
+                <ScalarProperty Name="DeemedAcceptanceDate" ColumnName="DeemedAcceptanceDate" />
+                <ScalarProperty Name="DeemedAcceptanceRemarks" ColumnName="DeemedAcceptanceRemarks" />
+                <ScalarProperty Name="EmailDateNoticeSent" ColumnName="EmailDateNoticeSent" />
+                <ScalarProperty Name="EmailDateNoticeSentMaxDate" ColumnName="EmailDateNoticeSentMaxDate" />
+                <ScalarProperty Name="EmailNoticeRemarks" ColumnName="EmailNoticeRemarks" />
+                <ScalarProperty Name="EmailNoticeAttachment" ColumnName="EmailNoticeAttachment" />
+                <ScalarProperty Name="CourierDateNoticeSent" ColumnName="CourierDateNoticeSent" />
+                <ScalarProperty Name="CourierDateNoticeReceived" ColumnName="CourierDateNoticeReceived" />
+                <ScalarProperty Name="CourierReceivedBy" ColumnName="CourierReceivedBy" />
+                <ScalarProperty Name="CourierNoticeRemarks" ColumnName="CourierNoticeRemarks" />
+                <ScalarProperty Name="CourierNoticeAttachment" ColumnName="CourierNoticeAttachment" />
+                <ScalarProperty Name="HandoverAssociate" ColumnName="HandoverAssociate" />
+                <ScalarProperty Name="IsDeemedAcceptanceDateSAPSync" ColumnName="IsDeemedAcceptanceDateSAPSync" />
+                <ScalarProperty Name="DeemedAcceptanceDateSyncDate" ColumnName="DeemedAcceptanceDateSyncDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedByPK" ColumnName="CreatedByPK" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedByPK" ColumnName="ModifiedByPK" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UnitID_TOAcceptance">
+            <EntityTypeMapping TypeName="WebAppEntitiesModel.UnitID_TOAcceptance">
+              <MappingFragment StoreEntitySet="UnitID_TOAcceptance">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CompanyCode" ColumnName="CompanyCode" />
+                <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
+                <ScalarProperty Name="UnitCategory" ColumnName="UnitCategory" />
+                <ScalarProperty Name="UnitNos" ColumnName="UnitNos" />
+                <ScalarProperty Name="CustomerNos" ColumnName="CustomerNos" />
+                <ScalarProperty Name="TurnoverStatus" ColumnName="TurnoverStatus" />
+                <ScalarProperty Name="TurnoverStatusDate" ColumnName="TurnoverStatusDate" />
+                <ScalarProperty Name="PunchlistCategory" ColumnName="PunchlistCategory" />
+                <ScalarProperty Name="PunchlistItem" ColumnName="PunchlistItem" />
+                <ScalarProperty Name="PunchlistCategoryTAT" ColumnName="PunchlistCategoryTAT" />
+                <ScalarProperty Name="OtherIssues" ColumnName="OtherIssues" />
+                <ScalarProperty Name="TSRemarks" ColumnName="TSRemarks" />
+                <ScalarProperty Name="TSAttachment" ColumnName="TSAttachment" />
+                <ScalarProperty Name="UnitAcceptanceDate" ColumnName="UnitAcceptanceDate" />
+                <ScalarProperty Name="UnitAcceptanceDateTAT" ColumnName="UnitAcceptanceDateTAT" />
+                <ScalarProperty Name="KeyTransmittalDate" ColumnName="KeyTransmittalDate" />
+                <ScalarProperty Name="ReinspectionDate" ColumnName="ReinspectionDate" />
+                <ScalarProperty Name="ReinspectionDateTAT" ColumnName="ReinspectionDateTAT" />
+                <ScalarProperty Name="AdjReinspectionDate" ColumnName="AdjReinspectionDate" />
+                <ScalarProperty Name="AdjReinspectionDateTAT" ColumnName="AdjReinspectionDateTAT" />
+                <ScalarProperty Name="AdjReinspectionMaxDate" ColumnName="AdjReinspectionMaxDate" />
+                <ScalarProperty Name="RushTicketNos" ColumnName="RushTicketNos" />
+                <ScalarProperty Name="RushTicketNosTAT" ColumnName="RushTicketNosTAT" />
+                <ScalarProperty Name="SRRemarks" ColumnName="SRRemarks" />
+                <ScalarProperty Name="DeemedDateTAT1" ColumnName="DeemedDateTAT1" />
+                <ScalarProperty Name="DeemedDateTAT2" ColumnName="DeemedDateTAT2" />
+                <ScalarProperty Name="IsUnitAcceptanceDateSAPSync" ColumnName="IsUnitAcceptanceDateSAPSync" />
+                <ScalarProperty Name="UnitAcceptanceDateSyncDate" ColumnName="UnitAcceptanceDateSyncDate" />
+                <ScalarProperty Name="TOAllowableDate" ColumnName="TOAllowableDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedByPK" ColumnName="CreatedByPK" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedByPK" ColumnName="ModifiedByPK" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Settings">
+            <EntityTypeMapping TypeName="WebAppEntitiesModel.Setting">
+              <MappingFragment StoreEntitySet="Setting">
+                <ScalarProperty Name="vSettingLabel" ColumnName="vSettingLabel" />
+                <ScalarProperty Name="vSettingGroup" ColumnName="vSettingGroup" />
+                <ScalarProperty Name="vSettingOption" ColumnName="vSettingOption" />
+                <ScalarProperty Name="vSettingName" ColumnName="vSettingName" />
+                <ScalarProperty Name="vSettingID" ColumnName="vSettingID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="spProcessBusinessRules" FunctionName="WebAppEntitiesModel.Store.spProcessBusinessRules" />
+          <FunctionImportMapping FunctionImportName="spProcessEmailQueueing" FunctionName="WebAppEntitiesModel.Store.spProcessEmailQueueing" />
+          <EntitySetMapping Name="EmailSendingQueues">
+            <EntityTypeMapping TypeName="WebAppEntitiesModel.EmailSendingQueue">
+              <MappingFragment StoreEntitySet="EmailSendingQueue">
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="Reference" ColumnName="Reference" />
+                <ScalarProperty Name="DateSent" ColumnName="DateSent" />
+                <ScalarProperty Name="DateProcess" ColumnName="DateProcess" />
+                <ScalarProperty Name="IsEmailSent" ColumnName="IsEmailSent" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Module" ColumnName="Module" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmailTemplates">
+            <EntityTypeMapping TypeName="WebAppEntitiesModel.EmailTemplate">
+              <MappingFragment StoreEntitySet="EmailTemplate">
+                <ScalarProperty Name="ModifiedByPK" ColumnName="ModifiedByPK" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedByPK" ColumnName="CreatedByPK" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Published" ColumnName="Published" />
+                <ScalarProperty Name="EmailBody" ColumnName="EmailBody" />
+                <ScalarProperty Name="EmailSubject" ColumnName="EmailSubject" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUsersMenus">
+            <EntityTypeMapping TypeName="WebAppEntitiesModel.AspNetUsersMenu">
+              <MappingFragment StoreEntitySet="AspNetUsersMenu">
+                <ScalarProperty Name="ModifiedByPK" ColumnName="ModifiedByPK" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedByPK" ColumnName="CreatedByPK" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Published" ColumnName="Published" />
+                <ScalarProperty Name="PrefixCode" ColumnName="PrefixCode" />
+                <ScalarProperty Name="nvPageUrl" ColumnName="nvPageUrl" />
+                <ScalarProperty Name="vParentMenuID" ColumnName="vParentMenuID" />
+                <ScalarProperty Name="nvFabIcon" ColumnName="nvFabIcon" />
+                <ScalarProperty Name="iSerialNo" ColumnName="iSerialNo" />
+                <ScalarProperty Name="nvMenuName" ColumnName="nvMenuName" />
+                <ScalarProperty Name="vMenuID" ColumnName="vMenuID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
