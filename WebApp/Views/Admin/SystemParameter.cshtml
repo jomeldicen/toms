@@ -1,0 +1,951 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content" ng-controller="SystemParameter" ng-init="init('@ViewBag.PageUrl')">
+    <div class="container-fluid" ng-init="GetSystemParameterData()">
+        <div class="row">
+            <div class="col-12">
+                <div class="loading" ng-if="loading">Loading &#8230;</div>
+                <div class="card">
+                    <div class="card-header card-gray card-outline">
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form name="systemParameterForm" novalidate role="form">
+                            <div class="row mb-3">
+                                <div class="col-sm-12 col-md-6">
+                                    <p class="font-italic"><strong>Note:</strong> Essential information is marked with an asterisk (<span class="text-danger font-weight-bold">*</span>)</p>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <button type="button" class="btn btn-secondary btn-sm float-right mr-1" ng-click="GetSystemParameterData()">
+                                        <i class="fas fa-ban"></i> Cancel
+                                    </button>
+                                    <button type="button" class="btn btn-info btn-sm float-right mr-1" ng-if="Ctrl.wEdit" ng-click="UpdateSystemParameter(settings)">
+                                        <i class="fas fa-save"></i> Update
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="col-sm-12 col-md-5">
+                                    <div class="form-group has-feedback" show-errors>
+                                        <label for="Title" class="font-weight-normal">Configuration Name <span class="text-danger font-weight-bold">*</span></label>
+                                        <input type="text" class="form-control form-control-sm" id="Title" name="Title" ng-model="settings.Title" ng-required="true" placeholder="Title">
+                                        <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.Title.$error.required">You can't leave this empty.</div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group has-feedback" show-errors>
+                                        <label for="BsHrFrm" class="font-weight-normal">Business Hours <span class="text-danger font-weight-bold">*</span></label>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input type="time" class="form-control form-control-sm" id="BsHrFrm" name="BsHrFrm" ng-model="settings.BsHrFrm" ng-required="true" placeholder="HH:mm:ss">
+                                                <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.BsHrFrm.$error.required">You can't leave this empty.</div>
+                                            </div>
+                                            <div class="col-6 pl-0">
+                                                <input type="time" class="form-control form-control-sm" id="BsHrTo" name="BsHrTo" ng-model="settings.BsHrTo" ng-required="true" placeholder="HH:mm:ss">
+                                                <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.BsHrTo.$error.required">You can't leave this empty.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-2">
+                                    <div class="form-group has-feedback" show-errors>
+                                        <label for="Applicability" class="font-weight-normal">Applicability <span class="text-danger font-weight-bold">*</span></label>
+                                        <select class="form-control form-control-sm" id="Applicability" name="Applicability" ng-model="settings.Applicability" ng-required="true" ng-disabled="true">
+                                            <option value="">Please Select ...</option>
+                                            <option value="01">Across All</option>
+                                            <option value="02" ng-selected="true">New Transactions Only</option>
+                                        </select>
+                                        <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.Applicability.$error.required">You can't leave this empty.</div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-2">
+                                    <div class="form-group">
+                                        <label for="published" class="font-weight-normal">Published</label>
+                                        <select class="form-control form-control-sm" id="published" name="published" ng-model="settings.Published" ng-required="true" ng-disabled="true">
+                                            <option value="True" ng-selected="true">Active</option>
+                                            <option value="False">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card card-gray card-tabs mb-0">
+                                <div class="card-header p-0 pt-1">
+                                    <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="custom-notice-tab1" data-toggle="pill" href="#custom-tab1" role="tab" aria-controls="custom-tab1" aria-selected="true">Unit Qualification &amp; Turnover Management</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="custom-schedule-tab2" data-toggle="pill" href="#custom-tab2" role="tab" aria-controls="custom-tab2" aria-selected="false">Unit Inspection &amp; Acceptance Management</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="custom-acceptance-tab3" data-toggle="pill" href="#custom-tab3" role="tab" aria-controls="custom-tab3" aria-selected="false">Titling Status</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="custom-acceptance-tab4" data-toggle="pill" href="#custom-tab4" role="tab" aria-controls="custom-tab4" aria-selected="false">Electric Meter</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-body">
+                                    <div class="tab-content" id="custom-content-below-tabContent">
+                                        <div class="tab-pane fade show active" id="custom-tab1" role="tabpanel" aria-labelledby="custom-tab1">
+                                            <p class="mb-3 text-md"><strong><em>Notice of Unit Turnover</em></strong></p>
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6">
+                                                    <p class="mb-1"><strong>Turnover Date Max Calendar Date:</strong> <span class="text-xs font-italic">(day(s) from Date of Email Notice Sent)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="TurnoverMaxDays" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="TurnoverMaxDays" name="TurnoverMaxDays" ng-model="settings.TurnoverMaxDays" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TurnoverMaxDays.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="TurnoverMaxDaysCT" name="TurnoverMaxDaysCT" ng-model="settings.TurnoverMaxDaysCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TurnoverMaxDaysCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- .row -->
+
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6">
+                                                    <div class="form-check mb-2 mt-2">
+                                                        <input type="checkbox" id="NoticeSendRecipient1" name="NoticeSendRecipient1" class="form-check-input" ng-model="settings.NoticeSendRecipient1" ng-checked="(settings.NoticeSendRecipient1)? true : false" />
+                                                        <label class="form-check-label"><u><strong>Notice Turnover Posting:</strong> (1st Notification)</u></label>
+                                                    </div>
+
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="NoticeNosDays1" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="NoticeNosDays1" name="NoticeNosDays1" ng-model="settings.NoticeNosDays1" ng-required="settings.NoticeSendRecipient1? 'true' : 'false'" ng-disabled="!settings.NoticeSendRecipient1" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="(settings.NoticeSendRecipient1)? systemParameterForm.NoticeNosDays1.$error.required : ''">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="NoticeCT1" name="NoticeCT1" ng-model="settings.NoticeCT1" ng-required="settings.NoticeSendRecipient1? 'true' : 'false'" ng-disabled="!settings.NoticeSendRecipient1">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="(settings.NoticeSendRecipient1)? systemParameterForm.NoticeCT1.$error.required : ''">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="NoticeRecipientEmail1" class="col-sm-4 col-form-label font-weight-normal">Email Recipient <span class="text-danger font-weight-bold">*</span> <small>(Multiple emails should be separated by comma)</small></label>
+                                                        <div class="col-sm-6">
+                                                            <textarea class="form-control form-control-sm" id="NoticeRecipientEmail1" name="NoticeRecipientEmail1" ng-model="settings.NoticeRecipientEmail1" ng-required="settings.NoticeSendRecipient1? 'true' : 'false'" ng-disabled="!settings.NoticeSendRecipient1" rows="3" placeholder="Email"></textarea>
+                                                            <div style="color:red" class="invalid-feedback" ng-if="(settings.NoticeSendRecipient1)? systemParameterForm.NoticeRecipientEmail1.$error.required : ''">You can't leave this empty.</div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="NoticeTemplateID1" class="col-sm-4 col-form-label font-weight-normal">Email Template <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <select class="form-control form-control-sm" id="NoticeTemplateID1" name="NoticeTemplateID1" ng-model="settings.NoticeTemplateID1" ng-required="settings.NoticeSendRecipient1? 'true' : 'false'" ng-disabled="!settings.NoticeSendRecipient1">
+                                                                <option value="">Select Please ...</option>
+                                                                <option ng-repeat="et in EmailTemplates" value="{{et.Id}}">{{et.Name}}</option>
+                                                            </select>
+                                                            <div style="color:red" class="invalid-feedback" ng-if="(settings.NoticeSendRecipient1)? systemParameterForm.NoticeTemplateID1.$error.required : ''">You can't leave this empty.</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-12 col-md-6">
+                                                    <div class="form-check mb-2 mt-2">
+                                                        <input type="checkbox" id="NoticeSendRecipient2" name="NoticeSendRecipient2" class="form-check-input" ng-model="settings.NoticeSendRecipient2" ng-checked="(settings.NoticeSendRecipient2)? true : false" />
+                                                        <label class="form-check-label"><u><strong>Notice Turnover Posting:</strong> (2nd Notification)</u></label>
+                                                    </div>
+
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="NoticeNosDays2" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="NoticeNosDays2" name="NoticeNosDays2" ng-model="settings.NoticeNosDays2" ng-required="settings.NoticeSendRecipient2? 'true' : 'false'" ng-disabled="!settings.NoticeSendRecipient2" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="(settings.NoticeSendRecipient2)? systemParameterForm.NoticeNosDays2.$error.required : ''">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="NoticeCT2" name="NoticeCT2" ng-model="settings.NoticeCT2" ng-required="settings.NoticeSendRecipient2? 'true' : 'false'" ng-disabled="!settings.NoticeSendRecipient2">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="(settings.NoticeSendRecipient2)? systemParameterForm.NoticeCT2.$error.required : ''">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="NoticeRecipientEmail2" class="col-sm-4 col-form-label font-weight-normal">Email Recipient <span class="text-danger font-weight-bold">*</span> <small>(Multiple emails should be separated by comma)</small></label>
+                                                        <div class="col-sm-6">
+                                                            <textarea class="form-control form-control-sm" id="NoticeRecipientEmail2" name="NoticeRecipientEmail2" ng-model="settings.NoticeRecipientEmail2" ng-required="settings.NoticeSendRecipient2? 'true' : 'false'" ng-disabled="!settings.NoticeSendRecipient2" rows="3" placeholder="Email"></textarea>
+                                                            <div style="color:red" class="invalid-feedback" ng-if="(settings.NoticeSendRecipient2)? systemParameterForm.NoticeRecipientEmail2.$error.required : ''">You can't leave this empty.</div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="NoticeTemplateID2" class="col-sm-4 col-form-label font-weight-normal">Email Template <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <select class="form-control form-control-sm" id="NoticeTemplateID2" name="NoticeTemplateID2" ng-model="settings.NoticeTemplateID2" ng-required="settings.NoticeSendRecipient2? 'true' : 'false'" ng-disabled="!settings.NoticeSendRecipient2">
+                                                                <option value="">Select Please ...</option>
+                                                                <option ng-repeat="et in EmailTemplates" value="{{et.Id}}">{{et.Name}}</option>
+                                                            </select>
+                                                            <div style="color:red" class="invalid-feedback" ng-if="(settings.NoticeSendRecipient2)? systemParameterForm.NoticeTemplateID2.$error.required : ''">You can't leave this empty.</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- .row -->
+
+                                            <hr />
+                                            <p class="mb-3 text-md"><strong><em>Turnover Schedule &amp; Option</em></strong></p>
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6">
+                                                    <p class="mb-1"><strong>Turnover Date Max Calendar Date:</strong> <span class="text-xs font-italic">(day(s) from Date of Email Notice Sent)</span></p>
+                                                    <div class="form-group row mb-3 has-feedback" show-errors>
+                                                        <label for="TurnoverMaxDays2" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="TurnoverMaxDays2" name="TurnoverMaxDays2" ng-model="settings.TurnoverMaxDays2" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TurnoverMaxDays2.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="TurnoverMaxDays2CT" name="TurnoverMaxDays2CT" ng-model="settings.TurnoverMaxDays2CT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TurnoverMaxDays2CT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-12 col-md-6">
+                                                    <p class="mb-2">
+                                                        If after a given period, there is NO CONFIRMATION or NO RE-SCHEDULE/CHANGES on the Turnover
+                                                        Schedule and Turnover Option on the system, the following paramater will be applied:
+                                                    </p>
+                                                    <p class="mb-1"><strong>NO confirmation</strong> of 1st Turnover Schedule &amp; Turnover Option</p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="ReschedMaxDays1" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="ReschedMaxDays1" name="ReschedMaxDays1" ng-model="settings.ReschedMaxDays1" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.ReschedMaxDays1.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="ReschedMaxDays1CT" name="ReschedMaxDays1CT" ng-model="settings.ReschedMaxDays1CT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.ReschedMaxDays1CT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>NO reschedule or change</strong> on the Turnover Schedule and/or Turnover Option</p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="ReschedMaxDays2" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="ReschedMaxDays2" name="ReschedMaxDays2" ng-model="settings.ReschedMaxDays2" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.ReschedMaxDays2.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="ReschedMaxDays2CT" name="ReschedMaxDays2CT" ng-model="settings.ReschedMaxDays2CT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.ReschedMaxDays2CT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- .row -->
+                                        </div> <!-- /.custom-tab1 -->
+
+                                        <div class="tab-pane fade" id="custom-tab2" role="tabpanel" aria-labelledby="custom-tab2">
+                                            <p class="mb-3 text-md"><strong><em>Turnover &amp; Acceptance Status</em></strong></p>
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6">
+                                                    <p class="mb-1"><strong>Turnover Status Tagging TAT:</strong> <span class="text-xs font-italic">(day(s) from final/confirmed turnover schedule of unit owner)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="TurnoverStatusTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="TurnoverStatusTAT" name="TurnoverStatusTAT" ng-model="settings.TurnoverStatusTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TurnoverStatusTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="TurnoverStatusTATCT" name="TurnoverStatusTATCT" ng-model="settings.TurnoverStatusTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TurnoverStatusTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Punchlist Posting System-Computed :</strong> <span class="text-xs font-italic">(day(s) from the posting of Punchlist Items)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="PunchlistDateTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="PunchlistDateTAT" name="PunchlistDateTAT" ng-model="settings.PunchlistDateTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.PunchlistDateTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="PunchlistDateTATCT" name="PunchlistDateTATCT" ng-model="settings.PunchlistDateTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.PunchlistDateTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Re-inspection Date TAT:</strong> <span class="text-xs font-italic">(day(s) from Date of Re-inspection)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="ReinspectionDateTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="ReinspectionDateTAT" name="ReinspectionDateTAT" ng-model="settings.ReinspectionDateTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.ReinspectionDateTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="ReinspectionDateTATCT" name="ReinspectionDateTATCT" ng-model="settings.ReinspectionDateTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.ReinspectionDateTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Adjusted Re-inspection Max Calendar Date:</strong> <span class="text-xs font-italic">(day(s) from Date of Re-inspection)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="AdjReinspectionMaxDays" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="AdjReinspectionMaxDays" name="AdjReinspectionMaxDays" ng-model="settings.AdjReinspectionMaxDays" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.AdjReinspectionMaxDays.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="AdjReinspectionMaxDaysCT" name="AdjReinspectionMaxDaysCT" ng-model="settings.AdjReinspectionMaxDaysCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.AdjReinspectionMaxDaysCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Adjusted Re-inspection TAT:</strong> <span class="text-xs font-italic">(day(s) from Date of Re-inspection)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="AdjReinspectionTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="AdjReinspectionTAT" name="AdjReinspectionTAT" ng-model="settings.AdjReinspectionTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.AdjReinspectionTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="AdjReinspectionTATCT" name="AdjReinspectionTATCT" ng-model="settings.AdjReinspectionTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.AdjReinspectionTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-12 col-md-6">
+                                                    <p class="mb-1"><strong>Rush.Net Ticket Nos TAT:</strong> <span class="text-xs font-italic">(day(s) from Posted Date of Turnover Status)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="RushTicketMaxTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="RushTicketMaxTAT" name="RushTicketMaxTAT" ng-model="settings.RushTicketMaxTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.RushTicketMaxTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="RushTicketMaxTATCT" name="RushTicketMaxTATCT" ng-model="settings.RushTicketMaxTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.RushTicketMaxTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Unit Acceptance Date TAT:</strong> <span class="text-xs font-italic">(day(s) from Turnover Status Posting Date, applicable only for NAPL and NAOI)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="UnitAcceptanceTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="UnitAcceptanceTAT" name="UnitAcceptanceTAT" ng-model="settings.UnitAcceptanceTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.UnitAcceptanceTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="UnitAcceptanceTATCT" name="UnitAcceptanceTATCT" ng-model="settings.UnitAcceptanceTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.UnitAcceptanceTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>TO Status allowable edit  :</strong> <span class="text-xs font-italic">(day(s) from Turnover Date)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="EnableTOStatusMax" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="EnableTOStatusMax" name="EnableTOStatusMax" ng-model="settings.EnableTOStatusMax" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.EnableTOStatusMax.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="EnableTOStatusMaxCT" name="EnableTOStatusMaxCT" ng-model="settings.EnableTOStatusMaxCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.EnableTOStatusMaxCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-check mb-2 mt-2">
+                                                        <input type="checkbox" id="EnableTOCutOffDate" name="EnableTOCutOffDate" class="form-check-input" ng-model="settings.EnableTOCutOffDate" ng-checked="(settings.EnableTOCutOffDate)? true : false" />
+                                                        <label class="form-check-label"><u><strong>Enable SAP TO Cut-Off Date</strong></u></label>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>SAP TO Cut-Off Date :</strong> <span class="text-xs font-italic">(trigger date when to start Transaction with Business Rule)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="TOCutOffDate" class="col-sm-4 col-form-label font-weight-normal">Cut-Off Date <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="input-group mb-1">
+                                                                <input type="text" name="TOCutOffDate" id="TOCutOffDate" class="form-control form-control-sm" onkeydown="return false"
+                                                                       uib-datepicker-popup="{{dateFormat}}" ng-model="settings.TOCutOffDate" is-open="popup1.opened" datepicker-options="dateOptions"
+                                                                       ng-click="open1()" ng-required="true" ng-disabled="!settings.EnableTOCutOffDate" placeholder="mm/dd/yyyy" close-text="Close" />
+                                                                <div class="input-group-append">
+                                                                    <div class="input-group-text" ng-click="open1()">
+                                                                        <span class="fas fa-calendar-alt"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TOCutOffDate.$error.required">You can't leave this empty.</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- .row -->
+                                            <hr />
+                                            <p class="mb-3 text-md"><strong><em>Deemed Acceptance Status</em></strong></p>
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6">
+                                                    <p class="mb-1"><strong>Deemed Acceptance Date TAT for "No Show":</strong> <span class="text-xs font-italic">(day(s) from the Turnover Date)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="DeemedDaysTAT1" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="DeemedDaysTAT1" name="DeemedDaysTAT1" ng-model="settings.DeemedDaysTAT1" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.DeemedDaysTAT1.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="DeemedDaysTAT1CT" name="DeemedDaysTAT1CT" ng-model="settings.DeemedDaysTAT1CT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.DeemedDaysTAT1CT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Deemed Acceptance Date TAT for "NAPL":</strong> <span class="text-xs font-italic">(day(s) from Reinspection Date or Adjusted Reinspection Date)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="DeemedDaysTAT2" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="DeemedDaysTAT2" name="DeemedDaysTAT2" ng-model="settings.DeemedDaysTAT2" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.DeemedDaysTAT2.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="DeemedDaysTAT2CT" name="DeemedDaysTAT2CT" ng-model="settings.DeemedDaysTAT2CT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.DeemedDaysTAT2CT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6">
+                                                    <p class="mb-1"><strong>Email Notice Sent Max Calendar Date:</strong> <span class="text-xs font-italic">(day(s) from Deemed Acceptance Date)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="DeemedEmailDateSentMaxDays" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="DeemedEmailDateSentMaxDays" name="DeemedEmailDateSentMaxDays" ng-model="settings.DeemedEmailDateSentMaxDays" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.DeemedEmailDateSentMaxDays.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="DeemedEmailDateSentMaxDaysCT" name="DeemedEmailDateSentMaxDaysCT" ng-model="settings.DeemedEmailDateSentMaxDaysCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.DeemedEmailDateSentMaxDaysCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- /.row -->
+                                        </div> <!-- /.custom-tab2 -->
+
+                                        <div class="tab-pane fade" id="custom-tab3" role="tabpanel" aria-labelledby="custom-tab3">
+                                            <p class="mb-3 text-md"><strong><em>Titling Status Related TAT</em></strong></p>
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6">
+                                                    <p class="mb-1"><strong>Title In-Process TAT:</strong> <span class="text-xs font-italic">(day(s) from (a) Turnover Date from SAP or Unit Acceptance/Deemed Acceptance Date from TOMS, (b) Qualification Date from TOMS, (c) TOAS Date from SAP)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="TitleInProcessTAT1" class="col-sm-2 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-8">
+                                                            <div class="row">
+                                                                <div class="col-3">
+                                                                    <input type="number" class="form-control form-control-sm" id="TitleInProcessTAT1" name="TitleInProcessTAT1" ng-model="settings.TitleInProcessTAT1" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TitleInProcessTAT1.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-3">
+                                                                    <input type="number" class="form-control form-control-sm" id="TitleInProcessTAT2" name="TitleInProcessTAT2" ng-model="settings.TitleInProcessTAT2" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TitleInProcessTAT2.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-3">
+                                                                    <input type="number" class="form-control form-control-sm" id="TitleInProcessTAT3" name="TitleInProcessTAT3" ng-model="settings.TitleInProcessTAT3" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TitleInProcessTAT3.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-3 pl-0">
+                                                                    <select class="form-control form-control-sm" id="TitleInProcessTATCT" name="TitleInProcessTATCT" ng-model="settings.TitleInProcessTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TitleInProcessTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Title Transferred TAT:</strong> <span class="text-xs font-italic">(day(s) from end date of tat for Title In-Process in SAP)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="TitleTransferredTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="TitleTransferredTAT" name="TitleTransferredTAT" ng-model="settings.TitleTransferredTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TitleTransferredTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="TitleTransferredTATCT" name="TitleTransferredTATCT" ng-model="settings.TitleTransferredTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TitleTransferredTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Tax Dec. Transferred TAT:</strong> <span class="text-xs font-italic">(day(s) from date of Title Transferred in SAP)</span> </p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="TaxDeclarationTransferredTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="TaxDeclarationTransferredTAT" name="TaxDeclarationTransferredTAT" ng-model="settings.TaxDeclarationTransferredTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TaxDeclarationTransferredTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="TaxDeclarationTransferredTATCT" name="TaxDeclarationTransferredTATCT" ng-model="settings.TaxDeclarationTransferredTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TaxDeclarationTransferredTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Endorsed for Liquidation TAT  :</strong> <span class="text-xs font-italic">(day(s) from Tax Dec. Transferred in SAP)</span> </p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="LiquidationEndorsedTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="LiquidationEndorsedTAT" name="LiquidationEndorsedTAT" ng-model="settings.LiquidationEndorsedTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.LiquidationEndorsedTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="LiquidationEndorsedTATCT" name="LiquidationEndorsedTATCT" ng-model="settings.LiquidationEndorsedTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.LiquidationEndorsedTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Endorsed for Title Release TAT  :</strong> <span class="text-xs font-italic">(day(s) from date of Endorsed For Liquidation in TOMS)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="TitleReleaseEndorsedTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="TitleReleaseEndorsedTAT" name="TitleReleaseEndorsedTAT" ng-model="settings.TitleReleaseEndorsedTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TitleReleaseEndorsedTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="TitleReleaseEndorsedTATCT" name="TitleReleaseEndorsedTATCT" ng-model="settings.TitleReleaseEndorsedTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TitleReleaseEndorsedTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-12 col-md-6">
+                                                    <p class="mb-1"><strong>Title Claimed TAT:</strong> <span class="text-xs font-italic">(day(s) from date of Endorsed for Title Release in TOMS)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="TitleClaimedTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="TitleClaimedTAT" name="TitleClaimedTAT" ng-model="settings.TitleClaimedTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TitleClaimedTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="TitleClaimedTATCT" name="TitleClaimedTATCT" ng-model="settings.TitleClaimedTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TitleClaimedTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Tax Dec. Claimed TAT:</strong> <span class="text-xs font-italic">(day(s) from date of Endorsed for Title Release in TOMS)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="TaxDeclarationClaimedTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="TaxDeclarationClaimedTAT" name="TaxDeclarationClaimedTAT" ng-model="settings.TaxDeclarationClaimedTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TaxDeclarationClaimedTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="TaxDeclarationClaimedTATCT" name="TaxDeclarationClaimedTATCT" ng-model="settings.TaxDeclarationClaimedTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TaxDeclarationClaimedTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Title Released to Buyer TAT:</strong> <span class="text-xs font-italic">(day(s) from date of Endorsed For Title Release in SAP)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="BuyerReleasedTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="BuyerReleasedTAT" name="BuyerReleasedTAT" ng-model="settings.BuyerReleasedTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.BuyerReleasedTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="BuyerReleasedTATCT" name="BuyerReleasedTATCT" ng-model="settings.BuyerReleasedTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.BuyerReleasedTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Title Released to Bank TAT:</strong> <span class="text-xs font-italic">(day(s) from date of Endorsed For Title Release in SAP)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="BankReleasedTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="BankReleasedTAT" name="BankReleasedTAT" ng-model="settings.BankReleasedTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.BankReleasedTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="BankReleasedTATCT" name="BankReleasedTATCT" ng-model="settings.BankReleasedTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.BankReleasedTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Effectivity Date :</strong> <span class="text-xs font-italic">(date when to apply TAT accross all Titling Status Date)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="TitlingStatusEffectivityDate" class="col-sm-4 col-form-label font-weight-normal">Effectivity Date <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="input-group mb-1">
+                                                                <input type="text" name="TitlingStatusEffectivityDate" id="TitlingStatusEffectivityDate" class="form-control form-control-sm" onkeydown="return false"
+                                                                       uib-datepicker-popup="{{dateFormat}}" ng-model="settings.TitlingStatusEffectivityDate" is-open="popup2.opened" datepicker-options="dateOptions"
+                                                                       ng-click="open2()" ng-required="true" ng-disabled="!settings.TitlingStatusEffectivityDate" placeholder="mm/dd/yyyy" close-text="Close" />
+                                                                <div class="input-group-append">
+                                                                    <div class="input-group-text" ng-click="open2()">
+                                                                        <span class="fas fa-calendar-alt"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TitlingStatusEffectivityDate.$error.required">You can't leave this empty.</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-check mb-2 mt-2">
+                                                        <input type="checkbox" id="EnableTSCutOffDate" name="EnableTSCutOffDate" class="form-check-input" ng-model="settings.EnableTSCutOffDate" ng-checked="(settings.EnableTSCutOffDate)? true : false" />
+                                                        <label class="form-check-label"><u><strong>Enable SAP Titling Status Cut-Off Date</strong></u></label>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>SAP Titling Status Cut-Off Date :</strong> <span class="text-xs font-italic">(trigger date when to start Transaction with Business Rule)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="TSCutOffDate" class="col-sm-4 col-form-label font-weight-normal">Cut-Off Date <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="input-group mb-1">
+                                                                <input type="text" name="TSCutOffDate" id="TSCutOffDate" class="form-control form-control-sm" onkeydown="return false"
+                                                                       uib-datepicker-popup="{{dateFormat}}" ng-model="settings.TSCutOffDate" is-open="popup3.opened" datepicker-options="dateOptions"
+                                                                       ng-click="open3()" ng-required="true" ng-disabled="!settings.EnableTSCutOffDate" placeholder="mm/dd/yyyy" close-text="Close" />
+                                                                <div class="input-group-append">
+                                                                    <div class="input-group-text" ng-click="open3()">
+                                                                        <span class="fas fa-calendar-alt"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TSCutOffDate.$error.required">You can't leave this empty.</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- .row -->
+                                        </div> <!-- /.custom-tab3 -->
+
+                                        <div class="tab-pane fade" id="custom-tab4" role="tabpanel" aria-labelledby="custom-tab4">
+                                            <p class="mb-3 text-md"><strong><em>Electric Meter Related TAT</em></strong></p>
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6">
+                                                    <p class="mb-1"><strong>Documentation Completion TAT:</strong> <span class="text-xs font-italic">(day(s) from the date “Photocopy of CCT/ CTS requested thru rush.net c/o Contract Compliance” list from List of Requirements field is tagged/ checked marked Date)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="DocCompletionTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="DocCompletionTAT" name="DocCompletionTAT" ng-model="settings.DocCompletionTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.DocCompletionTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="DocCompletionTATCT" name="DocCompletionTATCT" ng-model="settings.DocCompletionTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.DocCompletionTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>RFP Creation TAT:</strong> <span class="text-xs font-italic">(day(s) from date of Completed for the List of Requirements)</span> </p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="RFPCreationTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="RFPCreationTAT" name="RFPCreationTAT" ng-model="settings.RFPCreationTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.RFPCreationTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="RFPCreationTATCT" name="RFPCreationTATCT" ng-model="settings.RFPCreationTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.RFPCreationTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Check Payment Release TAT  :</strong> <span class="text-xs font-italic">(day(s) from RFP Rush Ticket Date on RFP Status transaction tab)</span> </p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="CheckPaymentReleaseTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="CheckPaymentReleaseTAT" name="CheckPaymentReleaseTAT" ng-model="settings.CheckPaymentReleaseTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.CheckPaymentReleaseTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="CheckPaymentReleaseTATCT" name="CheckPaymentReleaseTATCT" ng-model="settings.CheckPaymentReleaseTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.CheckPaymentReleaseTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Submission of Requirements to Meralco TAT  :</strong> <span class="text-xs font-italic">(day(s) from date of “Received Check?” field is tagged / posted as YES)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="MeralcoSubmissionTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="MeralcoSubmissionTAT" name="MeralcoSubmissionTAT" ng-model="settings.MeralcoSubmissionTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.MeralcoSubmissionTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="MeralcoSubmissionTATCT" name="MeralcoSubmissionTATCT" ng-model="settings.MeralcoSubmissionTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.MeralcoSubmissionTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Transfer of Electric Meter &amp; Service Deposit TAT  :</strong> <span class="text-xs font-italic">(day(s) from date Application Submitted to Meralco)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="TransferElectricServTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="TransferElectricServTAT" name="TransferElectricServTAT" ng-model="settings.TransferElectricServTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TransferElectricServTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="TransferElectricServTATCT" name="TransferElectricServTATCT" ng-model="settings.TransferElectricServTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.TransferElectricServTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-12 col-md-6">
+                                                    <p class="mb-1"><strong> Unit Owner Receipt TAT:</strong> <span class="text-xs font-italic">(day(s) from date Receipt of Unit Owner)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="UnitOwnerReceiptTAT" class="col-sm-4 col-form-label font-weight-normal">Nos of day(s) <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <input type="number" class="form-control form-control-sm" id="UnitOwnerReceiptTAT" name="UnitOwnerReceiptTAT" ng-model="settings.UnitOwnerReceiptTAT" ng-required="true" placeholder="0">
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.UnitOwnerReceiptTAT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                                <div class="col-7 pl-0">
+                                                                    <select class="form-control form-control-sm" id="UnitOwnerReceiptTATCT" name="UnitOwnerReceiptTATCT" ng-model="settings.UnitOwnerReceiptTATCT">
+                                                                        <option value="WD">Working Days</option>
+                                                                        <option value="CD">Calendar Days</option>
+                                                                    </select>
+                                                                    <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.UnitOwnerReceiptTATCT.$error.required">You can't leave this empty.</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-1"><strong>Effectivity Date :</strong> <span class="text-xs font-italic">(date when to apply TAT accross all Electric Meter Date)</span></p>
+                                                    <div class="form-group row mb-1 has-feedback" show-errors>
+                                                        <label for="TitlingStatusEffectivityDate" class="col-sm-4 col-form-label font-weight-normal">Effectivity Date <span class="text-danger font-weight-bold">*</span></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="input-group mb-1">
+                                                                <input type="text" name="ElectricMeterEffectivityDate" id="ElectricMeterEffectivityDate" class="form-control form-control-sm" onkeydown="return false"
+                                                                       uib-datepicker-popup="{{dateFormat}}" ng-model="settings.ElectricMeterEffectivityDate" is-open="popup4.opened" datepicker-options="dateOptions"
+                                                                       ng-click="open4()" ng-required="true" ng-disabled="!settings.ElectricMeterEffectivityDate" placeholder="mm/dd/yyyy" close-text="Close" />
+                                                                <div class="input-group-append">
+                                                                    <div class="input-group-text" ng-click="open4()">
+                                                                        <span class="fas fa-calendar-alt"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div style="color:red" class="invalid-feedback" ng-if="systemParameterForm.ElectricMeterEffectivityDate.$error.required">You can't leave this empty.</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div> <!-- /.custom-tab4 -->
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div><!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+</section>
+
+@section scripts{
+    <script src="~/Scripts/ProjectScriptFile/SystemParameter.js"></script>
+}

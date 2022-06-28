@@ -1,0 +1,219 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="Holiday" ng-init="init('@ViewBag.PageUrl')">
+    <section class="content" ng-init="GetHolidayData()">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-header card-gray card-outline">
+                            <h3 class="card-title">
+                                <i class="fas fa-bars mr-1"></i>Search
+                            </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form name="HolidayCalendar" novalidate role="form" ng-submit="$event.preventDefault()">
+                                <div class="row">
+                                    <div class="col-12 form-group mb-2 has-feedback">
+                                        <label class="mb-1" for="YearList">Select Calendar Year</label>
+                                        <select class="form-control form-control-sm" id="YearList" name="YearList" ng-model="pagingInfo.multiplesearch.Year" >
+                                            <option value="0">Please Select Year ...</option>
+                                            <option ng-repeat="yr in YearList" value="{{yr.Year}}">{{yr.Year}}</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-0">
+                                        <button type="button" class="btn btn-default btn-sm float-right" data-dismiss="modal" ng-click="clearSearch()">
+                                            <i class="fas fa-times-circle"></i> Clear
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm float-right  mr-1" ng-click="search()">
+                                            <i class="fas fa-search"></i> Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="card-header card-gray card-outline">
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                                <div class="row mb-2">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="button" class="btn btn-danger btn-sm float-right" ng-if="Ctrl.wDelete" ng-click="DeleteData(Holiday)">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </button>
+                                        <button type="button" class="btn btn-info btn-sm float-right mr-1" data-toggle="modal" data-target="#createHolidayModal" ng-if="Ctrl.wAdd" ng-click="AddData()">
+                                            <i class="fas fa-plus-circle"></i> Create
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="dataTables_length form-inline">
+                                            <label>
+                                                Show
+                                                <select name="example1_length" class="form-control form-control-sm" ng-model="pagingInfo.itemsPerPage" ng-change="setItemsPerPage(pagingInfo.itemsPerPage)">
+                                                    <option value="5">5</option>
+                                                    <option value="10">10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select> entries
+                                            </label>
+                                            <img src="~/Content/dist/img/ajax-loader2.gif" ng-show="loading" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <form ng-submit="search()" role="form">
+                                            <div class="form-inline dataTables_filter">
+                                                <label>
+                                                    Search:
+                                                    <input type="search" class="form-control form-control-sm" placeholder="" ng-model="pagingInfo.search">
+                                                </label>
+                                            </div>
+                                        </form>
+
+
+                                        
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="example1" class="table table-bordered table-striped dataTable dtr-inline" role="grid" aria-describedby="example1_info">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th class="text-center" width="3%">
+                                                        <input type="checkbox" name="checkAll" id="checkAll" ng-model="selectedAll" ng-click="selectAll()" ng-disabled="!Ctrl.wDelete || !Ctrl.wEdit" />
+                                                    </th>
+                                                    <th width="4%">Nos</th>
+                                                    <th class="sorting" ng-click="sort('TheDate')">Holiday Date</th>
+                                                    <th class="sorting" ng-click="sort('HolidayText')">Event</th>
+                                                    <th class="sorting" ng-click="sort('HolidayType')">Type</th>
+                                                    <th class="text-center" ng-if="Ctrl.wDelete || Ctrl.wEdit">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-if="pagingInfo.totalItems == 0">
+                                                    <td colspan="6"><center>No data to display</center></td>
+                                                </tr>
+                                                <tr ng-if="pagingInfo.totalItems > 0" ng-repeat="hd in Holiday">
+                                                    <td class="text-center">
+                                                        <input type="checkbox" name="check" id="check{{$index + 1}}" ng-model="hd.isChecked" ng-change="checkSelected(hd.isChecked)" ng-disabled="!Ctrl.wDelete || !Ctrl.wEdit" />
+                                                    </td>
+                                                    <td ng-bind="(pagingInfo.itemsPerPage * (pagingInfo.page - 1)) + $index + 1"></td>
+                                                    <td ng-bind="hd.TheDate | date:'MM-dd-yyyy'"></td>
+                                                    <td ng-bind="hd.HolidayText"></td>
+                                                    <td ng-bind="hd.HolidayType"></td>
+                                                    <td class="text-center" ng-if="Ctrl.wDelete || Ctrl.wEdit">
+                                                        <button type="button" class="btn btn-secondary btn-circle btn-sm" data-toggle="modal" data-target="#createHolidayModal" ng-if="Ctrl.wEdit" ng-click="EditHolidayData(hd)"><i class="fas fa-pencil-alt"></i></button>
+                                                        <button type="button" class="btn btn-danger btn-circle btn-sm" ng-if="Ctrl.wDelete" ng-click="DeleteHoliday(hd)"><i class="fas fa-trash-alt"></i></button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-5">
+                                        <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">Showing {{pagingInfo.page}} to {{pagingInfo.totalItems/pagingInfo.itemsPerPage | roundup }} of {{pagingInfo.totalItems}} entries</div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-7">
+                                        <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                                            <ul uib-pagination total-items="(10 * pagingInfo.totalItems)/pagingInfo.itemsPerPage" ng-model="pagingInfo.page" ng-change="selectPage(pagingInfo.page)" max-size="10" class="pagination-sm" boundary-links="true" force-ellipses="true"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+
+        <div class="modal fade" id="createHolidayModal">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Holiday Calendar</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form name="holidayForm" novalidate role="form">
+                        <div class="modal-body">
+                            <div class="form-group has-feedback" show-errors>
+                                <label for="YearCovered">Year Covered</label>
+                                <input type="number" class="form-control form-control-sm" id="YearCovered" name="YearCovered" ng-model="data.YearCovered" ng-maxlength="4" ng-minlength="4" ng-required="true" placeholder="yyyy">
+                                <div style="color:red" class="invalid-feedback" ng-if="holidayForm.YearCovered.$error.required">You can't leave this empty.</div>
+                            </div>
+                            <div class="form-group has-feedback" show-errors>
+                                <label for="TheDate">Date</label>
+                                <div class="input-group mb-0">
+                                    <input type="text" name="TheDate" id="TheDate" class="form-control form-control-sm" onkeydown="return false" uib-datepicker-popup="{{dateFormat}}" ng-model="data.TheDate" is-open="popup1.opened" datepicker-options="dateOptions" ng-click="open1()" ng-required="true" close-text="Close" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text" ng-click="open1()">
+                                            <span class="fas fa-calendar-alt"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="color:red" class="invalid-feedback" ng-if="holidayForm.TheDate.$error.required">You can't leave this empty.</div>
+                            </div>
+                            <div class="form-group has-feedback" show-errors>
+                                <label for="HolidayText">Event</label>
+                                <textarea class="form-control form-control-sm" id="HolidayText" rows="2" name="HolidayText" ng-model="data.HolidayText" placeholder="Event"></textarea>
+                                <div style="color:red" class="invalid-feedback" ng-if="holidayForm.HolidayText.$error.required">You can't leave this empty.</div>
+                            </div>
+                            <div class="form-group has-feedback" show-errors>
+                                <label for="HolidayType">Holiday Type</label>
+                                <select class="form-control form-control-sm" id="HolidayType" name="HolidayType" ng-model="data.HolidayType" ng-required="true">
+                                    <option value="Regular Holidays">Regular Holidays</option>
+                                    <option value="Special (Non-working) Holidays">Special (Non-working) Holidays</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                                <div style="color:red" class="invalid-feedback" ng-if="holidayForm.HolidayType.$error.required">You can't leave this empty.</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="ClearData()">Close</button>
+                            <button type="button" class="btn btn-secondary btn-sm" ng-click="SaveHoliday(data)">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+    </section>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/ProjectScriptFile/Holiday.js"></script>
+}

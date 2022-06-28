@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="603601cae4404eac847fd5cafb8dab3b" Name="Diagram1">
+        <EntityTypeShape EntityType="WebAppEntitiesModel.ChangeLog" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebAppEntitiesModel.HttpClientLog" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebAppEntitiesModel.UnitID_DeemedAcceptance" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebAppEntitiesModel.UnitID_TOAcceptance" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebAppEntitiesModel.Setting" Width="1.5" PointX="7.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WebAppEntitiesModel.EmailSendingQueue" Width="1.5" PointX="7.375" PointY="3.75" />
+        <EntityTypeShape EntityType="WebAppEntitiesModel.EmailTemplate" Width="1.5" PointX="3.375" PointY="7.75" />
+        <EntityTypeShape EntityType="WebAppEntitiesModel.AspNetUsersMenu" Width="1.5" PointX="0.75" PointY="13.875" />
+        <AssociationConnector Association="WebAppEntitiesModel.FK_AspNetUsersMenu_AspNetUsersMenu" />
+        <AssociationConnector Association="WebAppEntitiesModel.FK_ChangeLog_AspNetUsersMenu" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

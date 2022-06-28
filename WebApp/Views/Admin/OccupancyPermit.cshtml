@@ -1,0 +1,347 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="OccupancyPermit" ng-init="init('@ViewBag.PageUrl')">
+    <section class="content" ng-init="GetOccupancyPermitData()">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="loading" ng-if="loading">Loading &#8230;</div>
+                    <div class="card">
+                        <div class="card-header card-gray card-outline">
+                            <h3 class="card-title">
+                                <i class="fas fa-th mr-1"></i> Unit Details
+                            </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-sm-12 col-md-3">
+                                    <form name="OccupancyForm" novalidate role="form" ng-submit="$event.preventDefault()">
+                                        <div class="row">
+                                            <div class="col-12 form-group mb-2 has-feedback" show-errors>
+                                                <label class="mb-1" for="ProjectID">Project Name</label>
+                                                <md-autocomplete ng-disabled="false" md-no-cache="true" md-selected-item="selectedProject" md-search-text-change="searchTextChange(searchProject)"
+                                                                 md-search-text="searchProject" md-selected-item-change="selectedItemChange(item)" md-items="item in querySearch(searchProject)"
+                                                                 md-item-text="item.ProjectCodeName" md-min-length="0" placeholder="Ex. Bay Garden" input-aria-labelledby="favoriteStateLabel"
+                                                                 md-menu-class="autocomplete-custom-template" md-menu-container-class="custom-container">
+                                                    <md-item-template>
+                                                        <span class="item-title">
+                                                            <i class="fas fa-building"></i>
+                                                            <span md-highlight-text="searchProject" md-highlight-flags="i">{{item.CompanyCode}} : {{item.ProjectCode}} </span>
+                                                        </span>
+                                                        <span class="item-metadata">
+                                                            <span md-highlight-text="searchProject" md-highlight-flags="i">{{item.BusinessEntity}}</span>
+                                                        </span>
+                                                    </md-item-template>
+                                                    <md-not-found>
+                                                        No states matching "<span ng-bind="searchProject" />" were found.
+                                                    </md-not-found>
+                                                </md-autocomplete>
+                                            </div>
+
+                                            <div class="col-12 form-group mb-2 has-feedback">
+                                                <label class="mb-1" for="ProjectLocation">Project Location</label>
+                                                <textarea class="form-control form-control-sm" id="SProjectLocation" name="SProjectLocation" rows="2" ng-model="pagingInfo.multiplesearch.ProjectLocation" placeholder="Location" readonly="readonly"></textarea>
+                                            </div>
+
+                                            <div class="col-12 form-group mb-2 has-feedback">
+                                                <label class="mb-1" for="OccupancyPermit">Occupancy Permit Available</label>
+                                                <div class="pt-1">
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="radio" id="OccupancyPermit1" name="OccupancyPermit" ng-model="pagingInfo.multiplesearch.OccupancyPermit" value="true" ng-checked="(pagingInfo.multiplesearch.OccupancyPermit)? true : false">
+                                                        <label for="OccupancyPermit1" class="mr-2 font-weight-normal">
+                                                            Yes
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="radio" id="OccupancyPermit2" name="OccupancyPermit" ng-model="pagingInfo.multiplesearch.OccupancyPermit" value="false" ng-checked="(pagingInfo.multiplesearch.OccupancyPermit === false)? true : false">
+                                                        <label for="OccupancyPermit2" class="mr-2 font-weight-normal">
+                                                            No
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 form-group mb-2 has-feedback" show-errors>
+                                                <label class="mb-1" for="OccupancyPermitDate">Occupancy Permit Date</label>
+                                                <div class="input-group mb-0">
+                                                    <input type="text" name="OccupancyPermitDate" id="OccupancyPermitDate" class="form-control form-control-sm" @*onkeydown="return false"*@ alt-input-formats="altInputFormats"
+                                                           uib-datepicker-popup="{{dateFormat}}" ng-model="OccupancyPermitData.opd" is-open="popup1.opened" datepicker-options="dateOptionsDefault"
+                                                           ng-click="open1()" placeholder="mm/dd/yyyy" close-text="Close"
+                                                           ng-disabled="(pagingInfo.multiplesearch.OccupancyPermit === 'true' && pagingInfo.multiplesearch.ProjectID !== '0')? false : true" />
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text" ng-click="open1()">
+                                                            <span class="fas fa-calendar-alt"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div style="color:red" class="invalid-feedback" ng-if="!OccupancyForm.OccupancyPermitDate.$valid">Date format should be (MM/dd/yyyy)</div>
+                                            </div>
+
+                                            <div class="col-12 form-group mb-2 has-feedback" show-errors>
+                                                <label class="mb-1" for="Remarks">Remarks</label>
+                                                <textarea class="form-control form-control-sm" id="Remarks" name="Remarks" ng-model="OccupancyPermitData.Remarks" rows="3" ng-disabled="(pagingInfo.multiplesearch.OccupancyPermit === 'true' && pagingInfo.multiplesearch.ProjectID !== '0')? false : true"></textarea>
+                                                <div style="color:red" class="invalid-feedback" ng-if="OccupancyForm.Remarks.$error.required">You can't leave this empty.</div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-sm-12 col-md-9 pl-3">
+                                    <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-6">
+                                                <div class="dataTables_length form-inline">
+                                                    <label>
+                                                        Show
+                                                        <select name="example1_length" class="form-control form-control-sm" ng-model="pagingInfo.itemsPerPage" ng-change="setItemsPerPage(pagingInfo.itemsPerPage)">
+                                                            <option value="5">5</option>
+                                                            <option value="10">10</option>
+                                                            <option value="25">25</option>
+                                                            <option value="50">50</option>
+                                                            <option value="100">100</option>
+                                                        </select> entries
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6">
+                                                <form ng-submit="search()" role="form">
+                                                    <div class="form-inline dataTables_filter">
+                                                        <label>
+                                                            Search:
+                                                            <input type="search" class="form-control form-control-sm" placeholder="" ng-model="pagingInfo.search">
+                                                        </label>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <table id="example1" class="table table-bordered table-striped dataTable dtr-inline" role="grid" aria-describedby="example1_info">
+                                                    <thead>
+                                                        <tr role="row">
+                                                            <th class="text-center" width="3%">&nbsp;</th>
+                                                            <th class="sorting" ng-click="sort('Phase')">Floor Number(s)</th>
+                                                            <th class="sorting" ng-click="sort('Available')">with Occupancy?</th>
+                                                            <th class="sorting" ng-click="sort('PostedDate')">Date Posted</th>
+                                                            <th class="sorting" ng-click="sort('PostedDate')">Remarks</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="pt-1 pb-1">
+                                                                <input type="checkbox" name="checkAll" id="checkAll" ng-model="selectedAll" ng-click="selectAll()" ng-disabled="!(Ctrl.wAdd || Ctrl.wEdit)" />
+                                                            </td>
+                                                            <td class="pt-1 pb-1 pl-2"  colspan="4">
+                                                                <span>SELECT ALL</span>
+                                                            </td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-if="pagingInfo.totalItems == 0">
+                                                            <td colspan="5"><center>No data to display</center></td>
+                                                        </tr>
+                                                        <tr ng-if="pagingInfo.totalItems > 0" ng-repeat="fl in Floors">
+                                                            <td class="text-center">
+                                                                <input type="checkbox" name="check" id="check{{$index + 1}}" ng-model="fl.isChecked" ng-change="checkSelected(fl.isChecked)" ng-disabled="(Ctrl.wAdd === false || Ctrl.wEdit === false || fl.Available === 'True')? true : false" />
+                                                            </td>
+                                                            <td><span ng-class="(fl.Available === 'True')? 'font-italic font-weight-bold' : ''">{{fl.Phase}}</span></td>
+                                                            <td class="text-center"><span ng-class="(fl.Available === 'True')? 'badge badge-success' : 'badge badge-danger'" ng-bind="(fl.Available === 'True')? 'Yes' : 'No'"></span></td>
+                                                            <td class="text-center">{{fl.PostedDateStr}}</td>
+                                                            <td class="text-xs" ng-bind="fl.Remarks"></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-5">
+                                                <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">Showing {{pagingInfo.page}} to {{pagingInfo.totalItems/pagingInfo.itemsPerPage | roundup }} of {{pagingInfo.totalItems}} entries</div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-7">
+                                                <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                                                    <ul uib-pagination total-items="(10 * pagingInfo.totalItems)/pagingInfo.itemsPerPage" ng-model="pagingInfo.page" ng-change="selectPage(pagingInfo.page)" max-size="10" class="pagination-sm" boundary-links="true" force-ellipses="true"></ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row mb-0">
+                                <div class="col-8">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="form-group row mb-0">
+                                                <label for="TurnoverPersonnel" class="col-sm-5 col-form-label font-weight-normal text-xs">Turnover Personnel</label>
+                                                <div class="col-sm-7">
+                                                    <input type="text" class="form-control form-control-sm" id="TurnoverPersonnel" name="TurnoverPersonnel" ng-model="GetUser" placeholder="" ng-readonly="true">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="form-group row mb-0">
+                                                <label for="DateTime" class="col-sm-4 col-form-label font-weight-normal text-xs">Date</label>
+                                                <div class="col-sm-8">
+                                                    <div class="input-group mb-0">
+                                                        <input type="date" class="form-control form-control-sm" id="DateTime" name="DateTime" ng-model="dt" placeholder="" ng-readonly="true">
+                                                        <div class="input-group-append">
+                                                            <div class="input-group-text">
+                                                                <span class="fas fa-calendar-alt"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="form-group row mb-0">
+                                                <a href="#" class="mt-2 text-xs" ng-click="GetTransactionLog()"><u> transaction logs</u></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <button type="button" class="btn btn-default btn-sm float-right" ng-click="clearSearch()">
+                                        <i class="fas fa-ban"></i> Cancel
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-sm float-right mr-1" ng-if="Ctrl.wAdd" ng-click="OccupancyPermitModal()" ng-disabled="(pagingInfo.multiplesearch.OccupancyPermit === 'true' && pagingInfo.multiplesearch.ProjectID !== '0')? false : true">
+                                        <i class="fas fa-check"></i> Apply
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+
+        <div class="modal fade" id="applyChangesModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">System Message Validation</h5>
+                    </div>
+                    <div class="modal-body">
+                        <h6>Please ensure all information provided is correct.</h6>
+                        <p class="mb-0">Clicking OK button means tagging of Occupancy Permit will be applied to all units of selected floor no(s).</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success btn-sm" ng-click="SaveOccupancyPermit(Floors)"><i class="fas fa-check"></i> OK</button>
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+    </section>
+
+    <div class="modal fade" id="changeLogModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" ng-controller="ChangeLog">
+                <div class="modal-header">
+                    <h4 class="modal-title">Transaction Logs</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" ng-init="searchObjectType('OccupancyPermitController')">
+                    <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4 changelog">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_length form-inline">
+                                    <label>
+                                        Show
+                                        <select name="example1_length" class="form-control form-control-sm" ng-model="pagingInfo.itemsPerPage" ng-change="setItemsPerPage(pagingInfo.itemsPerPage)">
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select> entries
+                                    </label>
+                                    <img src="~/Content/dist/img/ajax-loader2.gif" ng-show="loading" />
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <form ng-submit="search()" role="form">
+                                    <div class="form-inline dataTables_filter">
+                                        <label>
+                                            Search:
+                                            <input type="search" class="form-control form-control-sm" placeholder="" ng-model="pagingInfo.search">
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="example1" class="table table-bordered table-striped dataTable dtr-inline" role="grid" aria-describedby="example1_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting" width="3%" ng-click="sort('Id')">Nos</th>
+                                            <th class="sorting" ng-click="sort('Description')">Description</th>
+                                            <th class="sorting" ng-click="sort('UserName')">Modified By</th>
+                                            <th class="sorting" ng-click="sort('CreatedDate')">Date Modified</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-if="pagingInfo.totalItems == 0">
+                                            <td colspan="4"><center>No data to display</center></td>
+                                        </tr>
+                                        <tr ng-if="pagingInfo.totalItems > 0" ng-repeat="log in ChangeLog">
+                                            <td class="text-center" ng-bind="(pagingInfo.itemsPerPage * (pagingInfo.page - 1)) + $index + 1"></td>
+                                            <td ng-bind="log.Description"></td>
+                                            <td ng-bind="log.UserName"></td>
+                                            <td class="text-center">{{ log.CreatedDate | date:'MM/dd/yyyy h:mma'}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-5">
+                                <div class="dataTables_info" id="example1_info" role="status" aria-live="polite" >Showing {{pagingInfo.page}} to {{pagingInfo.totalItems/pagingInfo.itemsPerPage | roundup }} of {{pagingInfo.totalItems}} entries</div>
+                            </div>
+                            <div class="col-sm-12 col-md-7">
+                                <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                                    <ul uib-pagination total-items="(10 * pagingInfo.totalItems)/pagingInfo.itemsPerPage" ng-model="pagingInfo.page" ng-change="selectPage(pagingInfo.page)" max-size="10" class="pagination-sm" boundary-links="true" force-ellipses="true"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+</div>
+
+@section scripts{
+    <script src="~/Scripts/lodash.min.js"></script>
+    <script src="~/Scripts/ProjectScriptFile/OccupancyPermit.js"></script>
+    <script src="~/Scripts/ProjectScriptFile/ChangeLog.js"></script>
+}
+

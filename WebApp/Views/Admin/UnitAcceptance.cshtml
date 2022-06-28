@@ -1,0 +1,445 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="UnitAcceptance" ng-init="init('@ViewBag.PageUrl')">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3" ng-init="GetSearchData()">
+                    <div class="card">
+                        <div class="card-header card-gray card-outline">
+                            <h3 class="card-title" >
+                                <i class="fas fa-bars mr-1"></i>Search
+                            </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form name="UnitAcceptance" novalidate role="form" ng-submit="$event.preventDefault()">
+                                <div class="row">
+                                    <div class="col-12 form-group mb-2 has-feedback">
+                                        <label class="mb-1" for="SProjectCode">Project Name</label>
+                                        <md-autocomplete ng-disabled="false" md-no-cache="true" md-selected-item="selectedProject" md-search-text-change="searchTextChange(searchProject)"
+                                                         md-search-text="searchProject" md-selected-item-change="selectedItemChange(item, 'Project')" md-items="item in querySearch(searchProject, 'Project')"
+                                                         md-item-text="item.ProjectCodeName" md-min-length="0" placeholder="Ex. Bay Garden" input-aria-labelledby="favoriteStateLabel"
+                                                         md-menu-class="autocomplete-custom-template" md-menu-container-class="custom-container">
+                                            <md-item-template>
+                                                <span class="item-title">
+                                                    <i class="fas fa-building"></i>
+                                                    <span md-highlight-text="searchProject" md-highlight-flags="i">{{item.CompanyCode}} : {{item.ProjectCode}} </span>
+                                                </span>
+                                                <span class="item-metadata">
+                                                    <span md-highlight-text="searchProject" md-highlight-flags="i">{{item.BusinessEntity}}</span>
+                                                </span>
+                                            </md-item-template>
+                                            <md-not-found>
+                                                No states matching "{{searchProject}}" were found.
+                                            </md-not-found>
+                                        </md-autocomplete>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-2 has-feedback">
+                                        <label class="mb-1" for="SProjectLocation">Project Location</label>
+                                        <textarea class="form-control form-control-sm" id="SProjectLocation" name="SProjectLocation" rows="2" ng-model="paramInfo.ProjectLocation" placeholder="Location" readonly="readonly"></textarea>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-2 has-feedback">
+                                        <label class="mb-1" for="SUnitCategory">Unit Category</label>
+                                        <md-autocomplete ng-disabled="false" md-no-cache="true" md-selected-item="selectedUnitCategory" md-search-text-change="searchTextChange(searchUnitCategory)"
+                                                         md-search-text="searchUnitCategory" md-selected-item-change="selectedItemChange(item, 'UnitCategory')" md-items="item in querySearch(searchUnitCategory, 'UnitCategory')"
+                                                         md-item-text="item.name" md-min-length="0" placeholder="Ex. Residential Unit" input-aria-labelledby="favoriteStateLabel">
+                                            <md-item-template>
+                                                <span md-highlight-text="searchUnitCategory" md-highlight-flags="^i">{{item.name}}</span>
+                                            </md-item-template>
+                                            <md-not-found>
+                                                No states matching "{{searchUnitCategory}}" were found.
+                                            </md-not-found>
+                                        </md-autocomplete>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-3 has-feedback">
+                                        <label class="mb-1" for="SUnitNos">Unit Nos</label>
+                                        <md-autocomplete ng-disabled="false" md-no-cache="true" md-selected-item="selectedUnit" md-search-text-change="searchTextChange(searchUnit)"
+                                                         md-search-text="searchUnit" md-selected-item-change="selectedItemChange(item, 'Unit')" md-items="item in querySearch(searchUnit, 'Unit')"
+                                                         md-item-text="item.RefNos" md-min-length="0" placeholder="Ex. 0000000" input-aria-labelledby="favoriteStateLabel">
+                                            <md-item-template>
+                                                <span md-highlight-text="searchUnit" md-highlight-flags="^i">{{item.RefNos}}</span>
+                                            </md-item-template>
+                                            <md-not-found>
+                                                No states matching "{{searchUnit}}" were found.
+                                            </md-not-found>
+                                        </md-autocomplete>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-0">
+                                        <button type="button" class="btn btn-default btn-sm float-right" data-dismiss="modal" ng-click="clearSearch()">
+                                            <i class="fas fa-times-circle"></i> Clear
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm float-right  mr-1" ng-click="GetUnitAcceptanceData()">
+                                            <i class="fas fa-search"></i> Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+
+                <div class="col-md-9">
+                    <div class="loading" ng-if="loading">Loading &#8230;</div>
+                    <div class="card">
+                        <div class="card-header card-gray card-outline">
+                            <h3 class="card-title">
+                                <i class="fas fa-th mr-1"></i>Unit Details
+                            </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form name="acceptanceForm" novalidate role="form">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group row mb-0">
+                                            <label for="UnitNos" class="col-sm-5 col-form-label">Unit Nos</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control form-control-sm" id="UnitNos" name="UnitNos" ng-model="UnitInfo.RefNos" placeholder="0" ng-readonly="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group row mb-0">
+                                            <label for="CompanyCode" class="col-sm-5 col-form-label font-weight-normal">Company Code</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control form-control-sm" id="CompanyCode" name="CompanyCode" ng-model="UnitInfo.CompanyCode" placeholder="" ng-readonly="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group row mb-0">
+                                            <label for="CompanyName" class="col-sm-5 col-form-label font-weight-normal">Company Name</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control form-control-sm" id="CompanyName" name="CompanyName" ng-model="UnitInfo.CompanyName" placeholder="" ng-readonly="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group row mb-0">
+                                            <label for="ProjectCode" class="col-sm-5 col-form-label font-weight-normal">Project Code</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control form-control-sm" id="ProjectCode" name="ProjectCode" ng-model="UnitInfo.ProjectCode" placeholder="" ng-readonly="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group row mb-0">
+                                            <label for="ProjectName" class="col-sm-5 col-form-label font-weight-normal">Project Name</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control form-control-sm" id="ProjectName" name="ProjectName" ng-model="UnitInfo.BusinessEntity" placeholder="" ng-readonly="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group row mb-0">
+                                            <label for="ProjectLocation" class="col-sm-5 col-form-label font-weight-normal">Project Location</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control form-control-sm" id="ProjectLocation" name="ProjectLocation" ng-model="UnitInfo.ProjectLocation" placeholder="" ng-readonly="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group row mb-0">
+                                            <label for="FloorNos" class="col-sm-5 col-form-label font-weight-normal">Floor Nos</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control form-control-sm" id="FloorNos" name="FloorNos" ng-model="UnitInfo.Phase" placeholder="0" ng-readonly="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group row mb-0">
+                                            <label for="UnitTypeCode" class="col-sm-5 col-form-label font-weight-normal">Unit Type Code</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control form-control-sm" id="UnitTypeCode" name="UnitTypeCode" ng-model="UnitInfo.UnitType" placeholder="" ng-readonly="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group row mb-0">
+                                            <label for="UnitDescription" class="col-sm-5 col-form-label font-weight-normal">Unit Description</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control form-control-sm" id="UnitDescription" name="UnitDescription" ng-model="UnitInfo.UnitTypeDesc" placeholder="" ng-readonly="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-6">
+                                        <div class="form-group row mb-0">
+                                            <label for="UnitCategory" class="col-sm-5 col-form-label font-weight-normal">Unit Category</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control form-control-sm" id="UnitCategory" name="UnitCategory" ng-model="UnitInfo.UnitCategoryDesc" placeholder="" ng-readonly="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group row mb-0">
+                                            <label for="UnitArea" class="col-sm-5 col-form-label font-weight-normal">Unit Area (sqm)</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" class="form-control form-control-sm" id="UnitArea" name="UnitArea" ng-model="UnitInfo.UnitArea" placeholder="0" ng-readonly="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-6">
+                                        <div class="form-group row mb-0 has-feedback" show-errors>
+                                            <label for="QCDAcceptanceDate" class="col-sm-5 col-form-label font-weight-normal">QCD Acceptance Date</label>
+                                            <div class="col-sm-7">
+                                                <div class="input-group mb-0">
+                                                    <input type="text" name="QCDAcceptanceDate" id="QCDAcceptanceDate" class="form-control form-control-sm" onkeydown="return false" @*alt-input-formats="altInputFormats"*@
+                                                           uib-datepicker-popup="{{dateFormat}}" ng-model="UnitAcceptanceInfo.QCDAcceptanceDate" is-open="popup1.opened" datepicker-options="dateOptionsDefault"
+                                                           ng-click="open1()" placeholder="mm/dd/yyyy" close-text="Close"
+                                                           ng-disabled="UAButtons.AddButton || ((!disableButton && UnitInfo.UnitCategoryCode === 'UN')? false : true)" ng-required="(!disableButton && UnitInfo.UnitCategoryCode === 'UN')? true : false" />
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text" ng-click="open1()">
+                                                            <span class="fas fa-calendar-alt"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div style="color:red" class="invalid-feedback mt-0 mb-1" ng-if="acceptanceForm.QCDAcceptanceDate.$error.required">You can't leave this empty.</div>
+                                                <div style="color:red" class="invalid-feedback" ng-if="!acceptanceForm.QCDAcceptanceDate.$valid">Date format should be (MM/dd/yyyy)</div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-0 has-feedback" show-errors>
+                                            <label for="FPMCAcceptanceDate" class="col-sm-5 col-form-label font-weight-normal">FPMC Acceptance Date</label>
+                                            <div class="col-sm-7">
+                                                <div class="input-group mb-0">
+                                                    <input type="text" name="FPMCAcceptanceDate" id="FPMCAcceptanceDate" class="form-control form-control-sm" onkeydown="return false" @*alt-input-formats="altInputFormats"*@
+                                                           uib-datepicker-popup="{{dateFormat}}" ng-model="UnitAcceptanceInfo.FPMCAcceptanceDate" is-open="popup2.opened" datepicker-options="dateOptionsDefault"
+                                                           ng-click="open2()" placeholder="mm/dd/yyyy" close-text="Close"
+                                                           ng-disabled="UAButtons.AddButton || ((!disableButton && UnitInfo.UnitCategoryCode === 'PK')? false : true)" ng-required="(!disableButton && UnitInfo.UnitCategoryCode === 'PK')? true : false" />
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text" ng-click="open2()">
+                                                            <span class="fas fa-calendar-alt"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div style="color:red" class="invalid-feedback mt-0 mb-1" ng-if="acceptanceForm.FPMCAcceptanceDate.$error.required">You can't leave this empty.</div>
+                                                <div style="color:red" class="invalid-feedback" ng-if="!acceptanceForm.FPMCAcceptanceDate.$valid">Date format should be (MM/dd/yyyy)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group row mb-0">
+                                            <label for="Remarks" class="col-sm-5 col-form-label font-weight-normal">Remarks</label>
+                                            <div class="col-sm-7">
+                                                <textarea rows="3" class="form-control form-control-sm" id="Remarks" name="Remarks" ng-model="UnitAcceptanceInfo.Remarks" placeholder="Remarks" ng-disabled="disableButton || UnitAcceptanceInfo.Id"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-0" ng-if="Ctrl">
+                                    <div class="col-12">
+                                        <button type="button" class="btn btn-default btn-sm float-right" ng-click="CancelUnitAcceptanceModal()"  ng-disabled="UAButtons.CancelButton">
+                                            <i class="fas fa-ban"></i> Cancel
+                                        </button>
+                                        <button type="button" class="btn btn-success btn-sm float-right mr-1" ng-if="Ctrl.wAdd" ng-click="UnitAcceptanceModal()" ng-disabled="UAButtons.AddButton">
+                                            <i class="fas fa-check"></i> Apply
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm float-right mr-1" ng-if="Ctrl.wEdit" ng-click="UpdateAcceptance()" ng-disabled="UAButtons.EditButton">
+                                            <i class="fas fa-pencil-alt"></i> Update
+                                        </button>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row mb-0">
+                                    <div class="col-11">
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <div class="form-group row mb-0">
+                                                    <label for="TurnoverPersonnel" class="col-sm-6 col-form-label font-weight-normal text-xs">QCD Personnel</label>
+                                                    <div class="col-sm-6">
+                                                        <input type="text" class="form-control form-control-sm" id="TurnoverPersonnel" name="TurnoverPersonnel" ng-model="GetUser" placeholder="" ng-readonly="true">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5">
+                                                <div class="form-group row mb-0">
+                                                    <label for="DateTime" class="col-sm-3 col-form-label font-weight-normal text-xs">Date</label>
+                                                    <div class="col-sm-8">
+                                                        <div class="input-group mb-0">
+                                                            <input type="date" class="form-control form-control-sm" id="DateTime" name="DateTime" ng-model="dt" placeholder="" ng-readonly="true">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2">
+                                                <div class="form-group row mb-0">
+                                                    <a href="#" class="mt-2 text-xs" ng-click="GetTransactionLog()"><u> transaction logs</u></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> <!-- /.row -->
+                            </form><!-- /.form -->
+                        </div>  <!-- /.card-body -->
+                    </div>  <!-- /.card -->
+                </div> <!-- /.col -->
+            </div> <!-- /.row -->
+        </div> <!-- /.container-fluid -->
+
+        <div class="modal fade" id="applyChangesModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">System Message Validation</h5>
+                    </div>
+                    <div class="modal-body">
+                        <h6>Please ensure all information provided is correct.</h6>
+                        <p class="mb-0">Click OK to confirm the date provided.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success btn-sm" ng-click="SaveUnitAcceptance(UnitAcceptanceInfo)"><i class="fas fa-check"></i> OK</button>
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
+        <div class="modal fade" id="applyChangesModal1b">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">System Message Confirmation</h5>
+                    </div>
+                    <div class="modal-body">
+                        <h6>Are you sure you want to CANCEL the transaction?</h6>
+                        <p class="mb-0">Clicking OK button means any information provided will not be considered or will be void.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success btn-sm" ng-click="CancelUnitAcceptance()"><i class="fas fa-check"></i> OK</button>
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                    </div>
+                </div> <!-- /.modal-content -->
+            </div> <!-- /.modal-dialog -->
+        </div> <!-- /.modal --> <!-- End Notice Unit Turnover Notification Modal -->
+    </section>
+
+    <div class="modal fade" id="changeLogModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" ng-controller="ChangeLog">
+                <div class="modal-header">
+                    <h4 class="modal-title">Transaction Logs</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" ng-init="searchObjectType('UnitAcceptanceController')">
+                    <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4 changelog">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_length form-inline">
+                                    <label>
+                                        Show
+                                        <select name="example1_length" class="form-control form-control-sm" ng-model="pagingInfo.itemsPerPage" ng-change="setItemsPerPage(pagingInfo.itemsPerPage)">
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select> entries
+                                    </label>
+                                    <img src="~/Content/dist/img/ajax-loader2.gif" ng-show="loading" />
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <form ng-submit="search()" role="form">
+                                    <div class="form-inline dataTables_filter">
+                                        <label>
+                                            Search:
+                                            <input type="search" class="form-control form-control-sm" placeholder="" ng-model="pagingInfo.search">
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="example1" class="table table-bordered table-striped dataTable dtr-inline" role="grid" aria-describedby="example1_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting" width="3%" ng-click="sort('Id')">Nos</th>
+                                            <th class="sorting" ng-click="sort('Description')">Description</th>
+                                            <th class="sorting" ng-click="sort('UserName')">Modified By</th>
+                                            <th class="sorting" ng-click="sort('CreatedDate')">Date Modified</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-if="pagingInfo.totalItems == 0">
+                                            <td colspan="4"><center>No data to display</center></td>
+                                        </tr>
+                                        <tr ng-if="pagingInfo.totalItems > 0" ng-repeat="log in ChangeLog">
+                                            <td class="text-center" ng-bind="(pagingInfo.itemsPerPage * (pagingInfo.page - 1)) + $index + 1"></td>
+                                            <td ng-bind="log.Description"></td>
+                                            <td ng-bind="log.UserName"></td>
+                                            <td class="text-center">{{ log.CreatedDate | date:'MM/dd/yyyy h:mma'}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-5">
+                                <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">Showing {{pagingInfo.page}} to {{pagingInfo.totalItems/pagingInfo.itemsPerPage | roundup }} of {{pagingInfo.totalItems}} entries</div>
+                            </div>
+                            <div class="col-sm-12 col-md-7">
+                                <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                                    <ul uib-pagination total-items="(10 * pagingInfo.totalItems)/pagingInfo.itemsPerPage" ng-model="pagingInfo.page" ng-change="selectPage(pagingInfo.page)" max-size="10" class="pagination-sm" boundary-links="true" force-ellipses="true"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+</div>
+
+@section scripts{
+    <script src="~/Scripts/ProjectScriptFile/UnitAcceptance.js"></script>
+    <script src="~/Scripts/ProjectScriptFile/ChangeLog.js"></script>
+}
+

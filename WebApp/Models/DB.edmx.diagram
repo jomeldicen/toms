@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="0ba3b94c3c504ae7aca1f144d6408840" Name="Diagram1" ZoomLevel="56">
+        <EntityTypeShape EntityType="WebAppModel.C__MigrationHistory" Width="1.5" PointX="13.125" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebAppModel.AspNetRole" Width="2.25" PointX="5.125" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebAppModel.AspNetUserClaim" Width="2.25" PointX="5.125" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebAppModel.AspNetUserLogin" Width="2.125" PointX="2.75" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebAppModel.AspNetUserRole" Width="2" PointX="2.75" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebAppModel.AspNetUser" Width="1.875" PointX="0.5" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebAppModel.AspNetUsersLoginHistory" Width="2.25" PointX="5.125" PointY="9.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebAppModel.AspNetUsersMenuPermission" Width="2.25" PointX="7.75" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebAppModel.AspNetUsersPageVisited" Width="2.25" PointX="5.125" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebAppModel.Setting" Width="2.375" PointX="10.125" PointY="0.5" IsExpanded="true" />
+        <AssociationConnector Association="WebAppModel.FK_AspNetUsersMenuPermission_AspNetRoles" ManuallyRouted="false" />
+        <AssociationConnector Association="WebAppModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" ManuallyRouted="false" />
+        <AssociationConnector Association="WebAppModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="WebAppModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="WebAppModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="WebAppModel.FK_AspNetUsersLoginHistory_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="WebAppModel.FK_AspNetUsersPageVisited_AspNetUsers" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="WebAppModel.AspNetUsersMenu" Width="2.125" PointX="2.75" PointY="3" />
+        <AssociationConnector Association="WebAppModel.FK_AspNetUsersMenu_AspNetUsersMenu" />
+        <AssociationConnector Association="WebAppModel.FK_AspNetUsersMenuPermission_AspNetUsersMenu" />
+        <EntityTypeShape EntityType="WebAppModel.Option" Width="2.25" PointX="7.75" PointY="7.125" />
+        <AssociationConnector Association="WebAppModel.FK_Options_AspNetUsersCreated" />
+        <AssociationConnector Association="WebAppModel.FK_Options_AspNetUsersModified" />
+        <EntityTypeShape EntityType="WebAppModel.AspNetUsersProject" Width="2.25" PointX="5.125" PointY="11.5" />
+        <AssociationConnector Association="WebAppModel.FK_AspNetUsersProject_AspNetUsers" />
+        <EntityTypeShape EntityType="WebAppModel.AspNetUsersMenuControl" Width="2.25" PointX="7.75" PointY="4.75" />
+        <AssociationConnector Association="WebAppModel.FK_AspNetUsersMenuControls_AspNetUsersMenu" />
+        <AssociationConnector Association="WebAppModel.FK_AspNetUsersMenuControls_Options" />
+        <AssociationConnector Association="WebAppModel.FK_AspNetUsersMenu_AspNetUsersCreated" />
+        <AssociationConnector Association="WebAppModel.FK_AspNetUsersMenu_AspNetUsersModified" />
+        <EntityTypeShape EntityType="WebAppModel.AspNetUsersMenuPermissionControl" Width="2.25" PointX="7.75" PointY="11" />
+        <AssociationConnector Association="WebAppModel.FK_AspNetUsersMenuPermissionControls_Options" />
+        <EntityTypeShape EntityType="WebAppModel.AspNetUsersProfile" Width="2.125" PointX="2.75" PointY="8" />
+        <AssociationConnector Association="WebAppModel.FK_AspNetUsersProfile_AspNetUsers" />
+        <EntityTypeShape EntityType="WebAppModel.ApprovalStage" Width="1.5" PointX="32.375" PointY="3.25" />
+        <EntityTypeShape EntityType="WebAppModel.ApprovalStagesAuthorizer" Width="1.5" PointX="34" PointY="0.875" />
+        <EntityTypeShape EntityType="WebAppModel.ApprovalTemplate" Width="1.5" PointX="30.375" PointY="3.25" />
+        <EntityTypeShape EntityType="WebAppModel.ApprovalTemplateModule" Width="1.5" PointX="30.75" PointY="0.875" />
+        <EntityTypeShape EntityType="WebAppModel.ApprovalTemplateOriginator" Width="1.5" PointX="29.125" PointY="0.875" />
+        <EntityTypeShape EntityType="WebAppModel.ApprovalTemplateStage" Width="1.5" PointX="32.375" PointY="0.875" />
+        <AssociationConnector Association="WebAppModel.FK_ApprovalStagesAuthorizer_ApprovalStages" />
+        <AssociationConnector Association="WebAppModel.FK_ApprovalTemplateStages_ApprovalStages" />
+        <AssociationConnector Association="WebAppModel.FK_ApprovalStagesAuthorizer_AspNetUsers" />
+        <AssociationConnector Association="WebAppModel.FK_ApprovalTemplateModule_ApprovalTemplate" />
+        <AssociationConnector Association="WebAppModel.FK_ApprovalTemplateOriginator_ApprovalTemplate" />
+        <AssociationConnector Association="WebAppModel.FK_ApprovalTemplateStages_ApprovalTemplate" />
+        <AssociationConnector Association="WebAppModel.FK_ApprovalTemplateModule_AspNetUsersMenu" />
+        <AssociationConnector Association="WebAppModel.FK_ApprovalTemplateOriginator_AspNetUsers" />
+        <EntityTypeShape EntityType="WebAppModel.ChangeLog" Width="2.25" PointX="5.125" PointY="13.5" />
+        <AssociationConnector Association="WebAppModel.FK_ChangeLog_AspNetUsers" />
+        <AssociationConnector Association="WebAppModel.FK_ChangeLog_AspNetUsersMenu" />
+        <EntityTypeShape EntityType="WebAppModel.VW_Projects" Width="1.5" PointX="35.875" PointY="16.875" />
+        <EntityTypeShape EntityType="WebAppModel.CustomerProfile" Width="1.5" PointX="19.875" PointY="8.25" />
+        <EntityTypeShape EntityType="WebAppModel.HolidayDimension" Width="1.5" PointX="21.5" PointY="1.375" />
+        <EntityTypeShape EntityType="WebAppModel.VW_UnitType" Width="1.5" PointX="32.625" PointY="18.625" />
+        <AssociationConnector Association="WebAppModel.FK_HolidayDimension_AspNetUsersModified" />
+        <AssociationConnector Association="WebAppModel.FK_HolidayDimension_HolidayDimensionCreated" />
+        <EntityTypeShape EntityType="WebAppModel.VW_Phase" Width="1.5" PointX="32.625" PointY="16.5" />
+        <EntityTypeShape EntityType="WebAppModel.VW_CustomerWithSO" Width="1.5" PointX="32.625" PointY="13.5" />
+        <EntityTypeShape EntityType="WebAppModel.EmailTemplate" Width="2.375" PointX="10.125" PointY="2.625" />
+        <AssociationConnector Association="WebAppModel.FK_EmailTemplate_AspNetUsersCreated" />
+        <AssociationConnector Association="WebAppModel.FK_EmailTemplate_AspNetUsersModified" />
+        <EntityTypeShape EntityType="WebAppModel.EmailSendingQueue" Width="1.625" PointX="16.125" PointY="1.25" />
+        <EntityTypeShape EntityType="WebAppModel.TurnoverOption" Width="1.5" PointX="23.125" PointY="1.375" />
+        <EntityTypeShape EntityType="WebAppModel.TurnoverStatu" Width="1.5" PointX="17.875" PointY="1.25" />
+        <AssociationConnector Association="WebAppModel.FK_TurnoverOption_AspNetUsersCreated" />
+        <AssociationConnector Association="WebAppModel.FK_TurnoverOption_AspNetUsersModified" />
+        <AssociationConnector Association="WebAppModel.FK_TurnoverStatus_AspNetUsersModified" />
+        <AssociationConnector Association="WebAppModel.FK_TurnoverStatus_TurnoverStatusCreated" />
+        <EntityTypeShape EntityType="WebAppModel.TurnoverStatusAcctType" Width="1.5" PointX="19.75" PointY="4.875" />
+        <EntityTypeShape EntityType="WebAppModel.PunchlistCategory" Width="1.5" PointX="19.625" PointY="1.25" />
+        <AssociationConnector Association="WebAppModel.FK_PunchlistCategory_AspNetUsersCreated" />
+        <AssociationConnector Association="WebAppModel.FK_PunchlistCategory_AspNetUsersModified" />
+        <EntityTypeShape EntityType="WebAppModel.UnitQD_Qualification" Width="1.5" PointX="15" PointY="8.25" />
+        <EntityTypeShape EntityType="WebAppModel.OccupancyPermit" Width="1.5" PointX="3.25" PointY="17.25" />
+        <AssociationConnector Association="WebAppModel.FK_OccupancyPermit_AspNetUsersCreated" />
+        <AssociationConnector Association="WebAppModel.FK_OccupancyPermit_AspNetUsersModified" />
+        <EntityTypeShape EntityType="WebAppModel.VW_OccupancyPermit" Width="1.5" PointX="35.875" PointY="13.25" />
+        <EntityTypeShape EntityType="WebAppModel.HttpClientLog" Width="1.5" PointX="5.125" PointY="17.125" />
+        <EntityTypeShape EntityType="WebAppModel.UnitID_DeemedAcceptance" Width="1.5" PointX="21.5" PointY="8.25" />
+        <EntityTypeShape EntityType="WebAppModel.UnitID_TOAcceptance" Width="1.5" PointX="13.375" PointY="8.25" />
+        <EntityTypeShape EntityType="WebAppModel.UnitQD_TOSchedule" Width="1.5" PointX="18.25" PointY="8.25" />
+        <EntityTypeShape EntityType="WebAppModel.UnitQD_NoticeTO" Width="1.5" PointX="16.625" PointY="8.25" />
+        <EntityTypeShape EntityType="WebAppModel.UnitAcceptance" Width="1.5" PointX="0.5" PointY="18.5" />
+        <AssociationConnector Association="WebAppModel.FK_UnitAcceptance_UnitAcceptanceCreated" />
+        <AssociationConnector Association="WebAppModel.FK_UnitAcceptance_UnitAcceptanceModified" />
+        <EntityTypeShape EntityType="WebAppModel.VW_InspectionAcceptance" Width="1.5" PointX="34.25" PointY="7.75" />
+        <EntityTypeShape EntityType="WebAppModel.VW_InspectionUnit" Width="1.5" PointX="36.125" PointY="7.125" />
+        <EntityTypeShape EntityType="WebAppModel.VW_SalesInventory" Width="1.5" PointX="29.375" PointY="13.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebAppModel.VW_UnitInventory" Width="1.5" PointX="29.375" PointY="7.875" />
+        <EntityTypeShape EntityType="WebAppModel.VW_QualifiedUnit" Width="1.5" PointX="32.625" PointY="7.5" />
+        <EntityTypeShape EntityType="WebAppModel.UnitHD_HistoricalData" Width="1.5" PointX="23.25" PointY="8.25" />
+        <EntityTypeShape EntityType="WebAppModel.VW_QualifiedTurnover" Width="1.5" PointX="31" PointY="7.875" />
+        <EntityTypeShape EntityType="WebAppModel.VW_HistoricalUnit" Width="1.5" PointX="27.75" PointY="7.875" />
+        <EntityTypeShape EntityType="WebAppModel.VW_QualifyList" Width="1.5" PointX="26.125" PointY="7.875" />
+        <EntityTypeShape EntityType="WebAppModel.TitlingLocation" Width="1.5" PointX="3.125" PointY="23.125" />
+        <AssociationConnector Association="WebAppModel.FK_TitlingLocation_AspNetUsersCreated" />
+        <AssociationConnector Association="WebAppModel.FK_TitlingLocation_AspNetUsersModified" />
+        <EntityTypeShape EntityType="WebAppModel.TitlingStatusRemark" Width="1.5" PointX="3" PointY="29.25" />
+        <EntityTypeShape EntityType="WebAppModel.ElectricMeterDocument" Width="1.5" PointX="17.375" PointY="15.75" />
+        <EntityTypeShape EntityType="WebAppModel.DocumentaryRequirement" Width="1.5" PointX="20.5" PointY="17.25" />
+        <AssociationConnector Association="WebAppModel.FK_ElectricMeterDocument_DocumentaryRequirement" />
+        <EntityTypeShape EntityType="WebAppModel.SystemParameter" Width="1.5" PointX="11.375" PointY="18.25" />
+        <EntityTypeShape EntityType="WebAppModel.SystemParameterLog" Width="1.5" PointX="8.375" PointY="14.25" />
+        <EntityTypeShape EntityType="WebAppModel.TitlingStatu" Width="1.5" PointX="5.375" PointY="22.625" />
+        <AssociationConnector Association="WebAppModel.FK_TitlingStatus_TitlingLocation" />
+        <AssociationConnector Association="WebAppModel.FK_TitlingStatusRemark_TitlingStatus" />
+        <EntityTypeShape EntityType="WebAppModel.VW_TitlingStatus" Width="1.5" PointX="26.125" PointY="13.125" />
+        <EntityTypeShape EntityType="WebAppModel.ProcessJob" Width="1.5" PointX="17.375" PointY="31.5" />
+        <EntityTypeShape EntityType="WebAppModel.ProcessTitlingStatusTemp" Width="1.5" PointX="22.75" PointY="21.5" />
+        <AssociationConnector Association="WebAppModel.FK_ProcessTitlingStatusTemp_ProcessJob" />
+        <EntityTypeShape EntityType="WebAppModel.VW_DashboardProcessingJob" Width="1.5" PointX="27.875" PointY="24.5" />
+        <EntityTypeShape EntityType="WebAppModel.ElectricMeterInvServiceDeposit" Width="1.5" PointX="0.75" PointY="23" />
+        <EntityTypeShape EntityType="WebAppModel.ElectricMeter" Width="1.5" PointX="13.5" PointY="19" />
+        <AssociationConnector Association="WebAppModel.FK_ElectricMeterDocument_ElectricMeter" />
+        <EntityTypeShape EntityType="WebAppModel.VW_ElectricMeterInvServiceDeposit" Width="1.5" PointX="32.625" PointY="20.875" />
+        <EntityTypeShape EntityType="WebAppModel.ProcessElectricMeterTemp" Width="1.5" PointX="21" PointY="21.5" />
+        <EntityTypeShape EntityType="WebAppModel.VW_DashboardProcessingJobElectric" Width="1.5" PointX="24.5" PointY="21.5" />
+        <AssociationConnector Association="WebAppModel.FK_ProcessElectricMeterTemp_ProcessJob" />
+        <EntityTypeShape EntityType="WebAppModel.VW_ElectricMeterStatus" Width="1.5" PointX="35.875" PointY="19.75" />
+        <EntityTypeShape EntityType="WebAppModel.VW_ChangeLog" Width="1.5" PointX="10.375" PointY="13.75" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

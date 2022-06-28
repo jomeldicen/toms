@@ -1,0 +1,236 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="UnitInventory" ng-init="init('@ViewBag.PageUrl')">
+    <section class="content" ng-init="GetUnitInventoryData()">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header card-gray card-outline">
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                                <div class="row mb-2">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="button" class="btn btn-danger btn-sm float-right" ng-if="Ctrl.wDelete" ng-click="DeleteData(UnitInventory)">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </button>
+                                        <button type="button" class="btn btn-info btn-sm float-right mr-1" data-toggle="modal" data-target="#createUnitInventoryModal" ng-if="Ctrl.wAdd" ng-click="AddData()">
+                                            <i class="fas fa-plus-circle"></i> Create
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm float-right mr-1" data-toggle="modal" data-target="#fetchUnitInventoryModal" ng-if="Ctrl.wFetch" ng-click="FetchData()">
+                                            <i class="fas fa-sync"></i> Fetch
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="dataTables_length form-inline" id="example1_length">
+                                            <label>
+                                                Show
+                                                <select name="example1_length" class="form-control form-control-sm" ng-model="pagingInfo.itemsPerPage" ng-change="setItemsPerPage(pagingInfo.itemsPerPage)">
+                                                    <option value="5">5</option>
+                                                    <option value="10">10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select> entries
+                                            </label>
+                                            <img src="~/Content/dist/img/ajax-loader2.gif" ng-show="loading" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <form ng-submit="search()" role="form">
+                                            <div class="form-inline dataTables_filter">
+                                                <label>
+                                                    Search:
+                                                    <input type="search" class="form-control form-control-sm" placeholder="" ng-model="pagingInfo.search">
+                                                </label>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="example1" class="table table-bordered table-striped dataTable dtr-inline" role="grid" aria-describedby="example1_info">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th width="4%">Nos</th>
+                                                    <th class="sorting" ng-click="sort('CompanyCode')">Company</th>
+                                                    <th class="sorting" ng-click="sort('ProjectCode')">Project Code</th>
+                                                    <th class="sorting" ng-click="sort('RefNos')">Unit Nos</th>
+                                                    <th class="sorting" ng-click="sort('UnitTypeDesc')">Unit Type</th>
+                                                    <th class="sorting" ng-click="sort('UnitArea')">Unit Area</th>
+                                                    <th class="sorting" ng-click="sort('UnitCategoryDesc')">Unit Category</th>
+                                                    <th class="sorting" ng-click="sort('Phase')">Floor</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-if="pagingInfo.totalItems == 0">
+                                                    <td colspan="9"><center>No data to display</center></td>
+                                                </tr>
+                                                <tr ng-if="pagingInfo.totalItems > 0" ng-repeat="ui in UnitInventory">
+                                                    <td ng-bind="(pagingInfo.itemsPerPage * (pagingInfo.page - 1)) + $index + 1"></td>
+                                                    <td ng-bind="ui.CompanyCode"></td>
+                                                    <td ng-bind="ui.ProjectCode"></td>
+                                                    <td ng-bind="ui.RefNos"></td>
+                                                    <td ng-bind="ui.UnitTypeDesc"></td>
+                                                    <td ng-bind="ui.UnitArea"></td>
+                                                    <td ng-bind="ui.UnitCategoryDesc"></td>
+                                                    <td ng-bind="ui.Phase"></td>                                                    
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-5">
+                                        <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">Showing {{pagingInfo.page}} to {{pagingInfo.totalItems/pagingInfo.itemsPerPage | roundup }} of {{pagingInfo.totalItems}} entries</div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-7">
+                                        <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                                            <ul uib-pagination total-items="(10 * pagingInfo.totalItems)/pagingInfo.itemsPerPage" ng-model="pagingInfo.page" ng-change="selectPage(pagingInfo.page)" max-size="10" class="pagination-sm" boundary-links="true" force-ellipses="true"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+    </section>
+
+    <div class="modal fade" id="fetchUnitInventoryModal">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Fetch Data</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form name="syncForm" novalidate role="form">
+                    <div class="modal-body js-loading-bar">
+                        <div class="row">
+                            <div class="col-12">
+                                <p>You are going to sync SAP Inventories data!</p>
+                                <p>Do you want to proceed?</p>
+                            </div>
+                            <div class="col-12 form-group has-feedback" show-errors>
+                                <label for="Id">Project</label>
+                                <select class="form-control form-control-sm" id="Id" name="Id" ng-disabled="ro" ng-model="data.Id" ng-required="true">
+                                    <option value="0">Select Please ...</option>
+                                    <option ng-repeat="pr in Projects" value="{{pr.Id}}">{{pr.BusinessEntity}}</option>
+                                </select>
+                                <div style="color:red" class="invalid-feedback" ng-if="syncForm.Id.$error.required">You can't leave this empty.</div>
+                            </div>
+                            <div class="col-12">
+                                <div class="progress progress-sm active">
+                                    <div class="progress-bar bg-primary progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                        <span class="sr-only">0% Complete</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="ClearData()">Close</button>
+                        <button type="button" class="btn btn-primary btn-sm" ng-disabled="ro" ng-click="FetchUnitInventory(data.Id)">Proceed</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <div class="modal fade" id="createUnitInventoryModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Unit Inventory</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form name="inventoryForm" novalidate role="form">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6 form-group has-feedback" show-errors>
+                                <label for="projectName">Project Name</label>
+                                <input type="text" class="form-control form-control-sm" id="projectName" name="projectName" ng-model="data.ProjectName" ng-required="true" placeholder="Project Name">
+                                <div style="color:red" class="invalid-feedback" ng-if="inventoryForm.projectName.$error.required">You can't leave this empty.</div>
+                            </div>
+                            <div class="col-6 form-group has-feedback" show-errors>
+                                <label for="projectCode">Project Code</label>
+                                <input type="text" class="form-control form-control-sm" id="projectCode" name="projectCode" ng-model="data.ProjectCode" ng-required="true" placeholder="Project Code">
+                                <div style="color:red" class="invalid-feedback" ng-if="inventoryForm.projectCode.$error.required">You can't leave this empty.</div>
+                            </div>
+                            <div class="col-6 form-group has-feedback" show-errors>
+                                <label for="unitNos">Unit Nos</label>
+                                <input type="text" class="form-control form-control-sm" id="unitNos" name="unitNos" ng-model="data.UnitNos" ng-required="true" placeholder="Unit Nos">
+                                <div style="color:red" class="invalid-feedback" ng-if="inventoryForm.unitNos.$error.required">You can't leave this empty.</div>
+                            </div>
+                            <div class="col-6 form-group has-feedback" show-errors>
+                                <label for="unitType">Unit Type</label>
+                                <input type="text" class="form-control form-control-sm" id="unitType" name="unitType" ng-model="data.UnitType" ng-required="true" placeholder="Unit Type">
+                                <div style="color:red" class="invalid-feedback" ng-if="inventoryForm.unitType.$error.required">You can't leave this empty.</div>
+                            </div>
+                            <div class="col-6 form-group has-feedback" show-errors>
+                                <label for="unitArea">Unit Area</label>
+                                <input type="text" class="form-control form-control-sm" id="unitArea" name="unitArea" ng-model="data.UnitArea" ng-required="true" placeholder="Unit Area">
+                                <div style="color:red" class="invalid-feedback" ng-if="inventoryForm.unitArea.$error.required">You can't leave this empty.</div>
+                            </div>
+                            <div class="col-6 form-group has-feedback" show-errors>
+                                <label for="zoneNos">Zone Nos</label>
+                                <input type="text" class="form-control form-control-sm" id="zoneNos" name="zoneNos" ng-model="data.ZoneNos" ng-required="true" placeholder="Zone Nos">
+                                <div style="color:red" class="invalid-feedback" ng-if="inventoryForm.zoneNos.$error.required">You can't leave this empty.</div>
+                            </div>
+                            <div class="col-6 form-group has-feedback" show-errors>
+                                <label for="zoneType">Zone Type</label>
+                                <input type="text" class="form-control form-control-sm" id="zoneType" name="zoneType" ng-model="data.ZoneType" ng-required="true" placeholder="Zone Type">
+                                <div style="color:red" class="invalid-feedback" ng-if="inventoryForm.zoneType.$error.required">You can't leave this empty.</div>
+                            </div>
+                            <div class="col-6 form-group has-feedback" show-errors>
+                                <label for="Floor">Floor</label>
+                                <input type="text" class="form-control form-control-sm" id="Floor" name="Floor" ng-model="data.Floor" ng-required="true" placeholder="Floor">
+                                <div style="color:red" class="invalid-feedback" ng-if="inventoryForm.Floor.$error.required">You can't leave this empty.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="ClearData()">Close</button>
+                        <button type="button" class="btn btn-secondary btn-sm" ng-click="SaveUnitInventory(data)">Save changes</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+</div>
+
+@section scripts{
+    <script src="~/Scripts/ProjectScriptFile/UnitInventory.js"></script>
+}

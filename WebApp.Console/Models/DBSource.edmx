@@ -1,0 +1,777 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="WebAPPv0MainEntitiesModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Company">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="Address" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="Published" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Adrnr" Type="varchar" MaxLength="50" />
+          <Property Name="CustomerName" Type="varchar" MaxLength="100" />
+          <Property Name="HouseNum" Type="varchar" MaxLength="100" />
+          <Property Name="Street" Type="varchar" MaxLength="100" />
+          <Property Name="City" Type="varchar" MaxLength="100" />
+          <Property Name="PostalCode" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="CustomerConPerson">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ContactPerson" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="CustomerContact">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Adrnr" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CustomerName" Type="varchar" MaxLength="100" />
+          <Property Name="TelNos" Type="varchar" MaxLength="250" />
+          <Property Name="ContactType" Type="char" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="CustomerEmail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Adrnr" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CustomerName" Type="varchar" MaxLength="100" />
+          <Property Name="EmailAdd" Type="varchar" MaxLength="250" />
+          <Property Name="FlagDefault" Type="char" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="Phase">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CompanyCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProjectCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Phase" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="Published" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Project">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CompanyCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProjectCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="BusinessEntity" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="ADRNR" Type="varchar" MaxLength="50" />
+          <Property Name="ProjectLocation" Type="varchar" MaxLength="250" />
+          <Property Name="Published" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SalesInventory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SalesDocNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="SalesDocNos2" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="QuotDocNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="SalesDocDate" Type="date" />
+          <Property Name="SalesDocStatus" Type="varchar" MaxLength="10" />
+          <Property Name="SalesDocReason" Type="varchar" MaxLength="50" />
+          <Property Name="SalesDocItem" Type="varchar" MaxLength="10" />
+          <Property Name="CustomerNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CustomerName1" Type="varchar" MaxLength="100" />
+          <Property Name="CustomerName2" Type="varchar" MaxLength="100" />
+          <Property Name="AddrNos" Type="varchar" MaxLength="20" />
+          <Property Name="AddrStreet" Type="varchar" MaxLength="100" />
+          <Property Name="AddrHouseNos" Type="varchar" MaxLength="50" />
+          <Property Name="AddrCity" Type="varchar" MaxLength="50" />
+          <Property Name="AddrPostal" Type="varchar" MaxLength="50" />
+          <Property Name="CompanyCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CompanyName" Type="varchar" MaxLength="50" />
+          <Property Name="ProjectCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="UnitNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="RefNos" Type="varchar" MaxLength="50" />
+          <Property Name="Phase" Type="varchar" MaxLength="50" />
+          <Property Name="UnitType" Type="varchar" MaxLength="50" />
+          <Property Name="UnitTypeDesc" Type="varchar" MaxLength="50" />
+          <Property Name="UnitTypeCode" Type="varchar" MaxLength="50" />
+          <Property Name="UnitArea" Type="varchar" MaxLength="50" />
+          <Property Name="UnitMsrmnt" Type="varchar" MaxLength="20" />
+          <Property Name="UnitCategoryCode" Type="varchar" MaxLength="50" />
+          <Property Name="UnitCategoryDesc" Type="varchar" MaxLength="50" />
+          <Property Name="SNKS" Type="varchar" MaxLength="50" />
+          <Property Name="Intreno" Type="varchar" MaxLength="50" />
+          <Property Name="TOAS" Type="date" />
+          <Property Name="TurnoverDate" Type="date" />
+        </EntityType>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="vSettingID" />
+          </Key>
+          <Property Name="vSettingID" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="vSettingName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="vSettingOption" Type="varchar(max)" />
+          <Property Name="vSettingGroup" Type="varchar" MaxLength="250" />
+          <Property Name="vSettingLabel" Type="varchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="UnitInventory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CompanyCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProjectCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="UnitNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="UnitType" Type="varchar" MaxLength="50" />
+          <Property Name="UnitTypeDesc" Type="varchar" MaxLength="250" />
+          <Property Name="UnitTypeCode" Type="varchar" MaxLength="50" />
+          <Property Name="UnitArea" Type="varchar" MaxLength="50" />
+          <Property Name="UnitMsrmnt" Type="varchar" MaxLength="20" />
+          <Property Name="UnitCategoryCode" Type="varchar" MaxLength="50" />
+          <Property Name="UnitCategoryDesc" Type="varchar" MaxLength="50" />
+          <Property Name="RefNos" Type="varchar" MaxLength="50" />
+          <Property Name="Phase" Type="varchar" MaxLength="50" />
+          <Property Name="SNKS" Type="varchar" MaxLength="50" />
+          <Property Name="Intreno" Type="varchar" MaxLength="50" />
+          <Property Name="Usr08" Type="varchar" MaxLength="10" />
+          <Property Name="Usr09" Type="varchar" MaxLength="10" />
+          <Property Name="ZoneNos" Type="varchar" MaxLength="50" />
+          <Property Name="ZoneType" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="UnitType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="UnitTypeDesc" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="UnitTypeDesc2" Type="varchar" MaxLength="50" />
+          <Property Name="UnitCategoryCode" Type="varchar" MaxLength="50" />
+          <Property Name="UnitCategoryDesc" Type="varchar" MaxLength="50" />
+          <Property Name="Published" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ZresCsHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SalesDocNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="SalesDocNos2" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="QuotDocNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CustomerNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CompanyCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProjectCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="UnitNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="RefNos" Type="varchar" MaxLength="50" />
+          <Property Name="UnitType" Type="varchar" MaxLength="50" />
+          <Property Name="Phase" Type="varchar" MaxLength="50" />
+          <Property Name="UnitArea" Type="varchar" MaxLength="50" />
+          <Property Name="PaymentTerm" Type="varchar" MaxLength="10" />
+          <Property Name="AccountTypeCode" Type="varchar" MaxLength="10" />
+          <Property Name="AccountTypeDesc" Type="varchar" MaxLength="50" />
+          <Property Name="TCP" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="GrossPrice" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="MatCost" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="DiscPer1" Type="numeric" Precision="18" Scale="3" />
+          <Property Name="DiscAmt1" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="DiscPer2" Type="numeric" Precision="18" Scale="3" />
+          <Property Name="DiscAmt2" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="DiscPer3" Type="numeric" Precision="18" Scale="3" />
+          <Property Name="DiscAmt3" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="DiscPer4" Type="numeric" Precision="18" Scale="3" />
+          <Property Name="DiscAmt4" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="DiscPer5" Type="numeric" Precision="18" Scale="3" />
+          <Property Name="DiscAmt5" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="AdjRestruct" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="NetSelling" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="GrossLessDisc" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="VatAmnt" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="NetInvestment" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="ResFee" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CusBalance" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="RestrucDate" Type="varchar" MaxLength="10" />
+          <Property Name="ResDate" Type="date" />
+        </EntityType>
+        <EntityType Name="ZresToExtend">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CompanyCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProjectCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="UnitNos" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="MsNos" Type="varchar" MaxLength="50" />
+          <Property Name="DeptAmnt" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="SupDate" Type="date" />
+          <Property Name="RfndDate" Type="date" />
+          <Property Name="rfndAmt" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CustNumPark" Type="varchar" MaxLength="50" />
+          <Property Name="DatPrinDate" Type="date" />
+          <Property Name="ParkSlotNos" Type="varchar" MaxLength="50" />
+          <Property Name="ParkingArea" Type="nvarchar" MaxLength="50" />
+          <Property Name="ConsDelDate" Type="date" />
+          <Property Name="LtoSaleDate" Type="date" />
+          <Property Name="QcdAcceptDate" Type="date" />
+          <Property Name="QcdHoverDate" Type="date" />
+          <Property Name="ProjtoverDate" Type="date" />
+          <Property Name="ProjtoverTime" Type="varchar" MaxLength="50" />
+          <Property Name="CmgUnitComDate" Type="date" />
+          <Property Name="OccPermitDate" Type="date" />
+          <Property Name="TagNoShow" Type="date" />
+          <Property Name="LtsComDate" Type="date" />
+          <Property Name="LtsExtDate" Type="date" />
+          <Property Name="OomAcceptDate" Type="date" />
+        </EntityType>
+        <EntityContainer Name="WebAPPv0MainEntitiesModelStoreContainer">
+          <EntitySet Name="Company" EntityType="Self.Company" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerConPerson" EntityType="Self.CustomerConPerson" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerContact" EntityType="Self.CustomerContact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerEmail" EntityType="Self.CustomerEmail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Phase" EntityType="Self.Phase" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Project" EntityType="Self.Project" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SalesInventory" EntityType="Self.SalesInventory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Setting" EntityType="Self.Setting" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UnitInventory" EntityType="Self.UnitInventory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UnitType" EntityType="Self.UnitType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ZresCsHeader" EntityType="Self.ZresCsHeader" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ZresToExtend" EntityType="Self.ZresToExtend" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="WebAPPv0MainEntitiesModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Company">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Published" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Adrnr" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HouseNum" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Street" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PostalCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="CustomerConPerson">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ContactPerson" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="CustomerContact">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Adrnr" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CustomerName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="TelNos" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="ContactType" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+        </EntityType>
+        <EntityType Name="CustomerEmail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Adrnr" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CustomerName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="EmailAdd" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="FlagDefault" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Phase">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CompanyCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProjectCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Phase1" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Published" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Project">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CompanyCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProjectCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="BusinessEntity" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ADRNR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ProjectLocation" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="Published" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SalesInventory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SalesDocNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SalesDocNos2" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="QuotDocNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SalesDocDate" Type="DateTime" Precision="0" />
+          <Property Name="SalesDocStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="SalesDocReason" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SalesDocItem" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CustomerName1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerName2" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AddrNos" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AddrStreet" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AddrHouseNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AddrCity" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AddrPostal" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CompanyCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CompanyName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ProjectCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UnitNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RefNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Phase" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitTypeDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitTypeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitArea" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitMsrmnt" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UnitCategoryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitCategoryDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SNKS" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Intreno" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TOAS" Type="DateTime" Precision="0" />
+          <Property Name="TurnoverDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="UnitInventory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CompanyCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProjectCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UnitNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UnitType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitTypeDesc" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="UnitTypeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitArea" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitMsrmnt" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UnitCategoryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitCategoryDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RefNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Phase" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SNKS" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Intreno" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Usr08" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Usr09" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ZoneNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ZoneType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="UnitType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UnitTypeDesc" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UnitTypeDesc2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitCategoryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitCategoryDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Published" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ZresCsHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SalesDocNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SalesDocNos2" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="QuotDocNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CustomerNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CompanyCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProjectCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UnitNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RefNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Phase" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UnitArea" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PaymentTerm" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="AccountTypeCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="AccountTypeDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TCP" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="GrossPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MatCost" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="DiscPer1" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="DiscAmt1" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="DiscPer2" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="DiscAmt2" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="DiscPer3" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="DiscAmt3" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="DiscPer4" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="DiscAmt4" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="DiscPer5" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="DiscAmt5" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="AdjRestruct" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="NetSelling" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="GrossLessDisc" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="VatAmnt" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="NetInvestment" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ResFee" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CusBalance" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="RestrucDate" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ResDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="ZresToExtend">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CompanyCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProjectCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UnitNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="MsNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DeptAmnt" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="SupDate" Type="DateTime" Precision="0" />
+          <Property Name="RfndDate" Type="DateTime" Precision="0" />
+          <Property Name="rfndAmt" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CustNumPark" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DatPrinDate" Type="DateTime" Precision="0" />
+          <Property Name="ParkSlotNos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ParkingArea" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ConsDelDate" Type="DateTime" Precision="0" />
+          <Property Name="LtoSaleDate" Type="DateTime" Precision="0" />
+          <Property Name="QcdAcceptDate" Type="DateTime" Precision="0" />
+          <Property Name="QcdHoverDate" Type="DateTime" Precision="0" />
+          <Property Name="ProjtoverDate" Type="DateTime" Precision="0" />
+          <Property Name="ProjtoverTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CmgUnitComDate" Type="DateTime" Precision="0" />
+          <Property Name="OccPermitDate" Type="DateTime" Precision="0" />
+          <Property Name="TagNoShow" Type="DateTime" Precision="0" />
+          <Property Name="LtsComDate" Type="DateTime" Precision="0" />
+          <Property Name="LtsExtDate" Type="DateTime" Precision="0" />
+          <Property Name="OomAcceptDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityContainer Name="WebAPPv0MainEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Companies" EntityType="Self.Company" />
+          <EntitySet Name="Customers" EntityType="Self.Customer" />
+          <EntitySet Name="CustomerConPersons" EntityType="Self.CustomerConPerson" />
+          <EntitySet Name="CustomerContacts" EntityType="Self.CustomerContact" />
+          <EntitySet Name="CustomerEmails" EntityType="Self.CustomerEmail" />
+          <EntitySet Name="Phases" EntityType="Self.Phase" />
+          <EntitySet Name="Projects" EntityType="Self.Project" />
+          <EntitySet Name="SalesInventories" EntityType="Self.SalesInventory" />
+          <EntitySet Name="UnitInventories" EntityType="Self.UnitInventory" />
+          <EntitySet Name="UnitTypes" EntityType="Self.UnitType" />
+          <EntitySet Name="ZresCsHeaders" EntityType="Self.ZresCsHeader" />
+          <EntitySet Name="ZresToExtends" EntityType="Self.ZresToExtend" />
+          <EntitySet Name="Settings" EntityType="WebAPPv0MainEntitiesModel.Setting" />
+        </EntityContainer>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="vSettingID" />
+          </Key>
+          <Property Name="vSettingID" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="vSettingName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="vSettingOption" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="vSettingGroup" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="vSettingLabel" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="WebAPPv0MainEntitiesModelStoreContainer" CdmEntityContainer="WebAPPv0MainEntities">
+          <EntitySetMapping Name="Companies">
+            <EntityTypeMapping TypeName="WebAPPv0MainEntitiesModel.Company">
+              <MappingFragment StoreEntitySet="Company">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Published" ColumnName="Published" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="WebAPPv0MainEntitiesModel.Customer">
+              <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CustomerNos" ColumnName="CustomerNos" />
+                <ScalarProperty Name="Adrnr" ColumnName="Adrnr" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="HouseNum" ColumnName="HouseNum" />
+                <ScalarProperty Name="Street" ColumnName="Street" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="PostalCode" ColumnName="PostalCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerConPersons">
+            <EntityTypeMapping TypeName="WebAPPv0MainEntitiesModel.CustomerConPerson">
+              <MappingFragment StoreEntitySet="CustomerConPerson">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CustomerNos" ColumnName="CustomerNos" />
+                <ScalarProperty Name="ContactPerson" ColumnName="ContactPerson" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerContacts">
+            <EntityTypeMapping TypeName="WebAPPv0MainEntitiesModel.CustomerContact">
+              <MappingFragment StoreEntitySet="CustomerContact">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CustomerNos" ColumnName="CustomerNos" />
+                <ScalarProperty Name="Adrnr" ColumnName="Adrnr" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="TelNos" ColumnName="TelNos" />
+                <ScalarProperty Name="ContactType" ColumnName="ContactType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerEmails">
+            <EntityTypeMapping TypeName="WebAPPv0MainEntitiesModel.CustomerEmail">
+              <MappingFragment StoreEntitySet="CustomerEmail">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CustomerNos" ColumnName="CustomerNos" />
+                <ScalarProperty Name="Adrnr" ColumnName="Adrnr" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="EmailAdd" ColumnName="EmailAdd" />
+                <ScalarProperty Name="FlagDefault" ColumnName="FlagDefault" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Phases">
+            <EntityTypeMapping TypeName="WebAPPv0MainEntitiesModel.Phase">
+              <MappingFragment StoreEntitySet="Phase">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CompanyCode" ColumnName="CompanyCode" />
+                <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
+                <ScalarProperty Name="Phase1" ColumnName="Phase" />
+                <ScalarProperty Name="Published" ColumnName="Published" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Projects">
+            <EntityTypeMapping TypeName="WebAPPv0MainEntitiesModel.Project">
+              <MappingFragment StoreEntitySet="Project">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CompanyCode" ColumnName="CompanyCode" />
+                <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
+                <ScalarProperty Name="BusinessEntity" ColumnName="BusinessEntity" />
+                <ScalarProperty Name="ADRNR" ColumnName="ADRNR" />
+                <ScalarProperty Name="ProjectLocation" ColumnName="ProjectLocation" />
+                <ScalarProperty Name="Published" ColumnName="Published" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SalesInventories">
+            <EntityTypeMapping TypeName="WebAPPv0MainEntitiesModel.SalesInventory">
+              <MappingFragment StoreEntitySet="SalesInventory">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="SalesDocNos" ColumnName="SalesDocNos" />
+                <ScalarProperty Name="SalesDocNos2" ColumnName="SalesDocNos2" />
+                <ScalarProperty Name="QuotDocNos" ColumnName="QuotDocNos" />
+                <ScalarProperty Name="SalesDocDate" ColumnName="SalesDocDate" />
+                <ScalarProperty Name="SalesDocStatus" ColumnName="SalesDocStatus" />
+                <ScalarProperty Name="SalesDocReason" ColumnName="SalesDocReason" />
+                <ScalarProperty Name="SalesDocItem" ColumnName="SalesDocItem" />
+                <ScalarProperty Name="CustomerNos" ColumnName="CustomerNos" />
+                <ScalarProperty Name="CustomerName1" ColumnName="CustomerName1" />
+                <ScalarProperty Name="CustomerName2" ColumnName="CustomerName2" />
+                <ScalarProperty Name="AddrNos" ColumnName="AddrNos" />
+                <ScalarProperty Name="AddrStreet" ColumnName="AddrStreet" />
+                <ScalarProperty Name="AddrHouseNos" ColumnName="AddrHouseNos" />
+                <ScalarProperty Name="AddrCity" ColumnName="AddrCity" />
+                <ScalarProperty Name="AddrPostal" ColumnName="AddrPostal" />
+                <ScalarProperty Name="CompanyCode" ColumnName="CompanyCode" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
+                <ScalarProperty Name="UnitNos" ColumnName="UnitNos" />
+                <ScalarProperty Name="RefNos" ColumnName="RefNos" />
+                <ScalarProperty Name="Phase" ColumnName="Phase" />
+                <ScalarProperty Name="UnitType" ColumnName="UnitType" />
+                <ScalarProperty Name="UnitTypeDesc" ColumnName="UnitTypeDesc" />
+                <ScalarProperty Name="UnitTypeCode" ColumnName="UnitTypeCode" />
+                <ScalarProperty Name="UnitArea" ColumnName="UnitArea" />
+                <ScalarProperty Name="UnitMsrmnt" ColumnName="UnitMsrmnt" />
+                <ScalarProperty Name="UnitCategoryCode" ColumnName="UnitCategoryCode" />
+                <ScalarProperty Name="UnitCategoryDesc" ColumnName="UnitCategoryDesc" />
+                <ScalarProperty Name="SNKS" ColumnName="SNKS" />
+                <ScalarProperty Name="Intreno" ColumnName="Intreno" />
+                <ScalarProperty Name="TOAS" ColumnName="TOAS" />
+                <ScalarProperty Name="TurnoverDate" ColumnName="TurnoverDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UnitInventories">
+            <EntityTypeMapping TypeName="WebAPPv0MainEntitiesModel.UnitInventory">
+              <MappingFragment StoreEntitySet="UnitInventory">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CompanyCode" ColumnName="CompanyCode" />
+                <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
+                <ScalarProperty Name="UnitNos" ColumnName="UnitNos" />
+                <ScalarProperty Name="UnitType" ColumnName="UnitType" />
+                <ScalarProperty Name="UnitTypeDesc" ColumnName="UnitTypeDesc" />
+                <ScalarProperty Name="UnitTypeCode" ColumnName="UnitTypeCode" />
+                <ScalarProperty Name="UnitArea" ColumnName="UnitArea" />
+                <ScalarProperty Name="UnitMsrmnt" ColumnName="UnitMsrmnt" />
+                <ScalarProperty Name="UnitCategoryCode" ColumnName="UnitCategoryCode" />
+                <ScalarProperty Name="UnitCategoryDesc" ColumnName="UnitCategoryDesc" />
+                <ScalarProperty Name="RefNos" ColumnName="RefNos" />
+                <ScalarProperty Name="Phase" ColumnName="Phase" />
+                <ScalarProperty Name="SNKS" ColumnName="SNKS" />
+                <ScalarProperty Name="Intreno" ColumnName="Intreno" />
+                <ScalarProperty Name="Usr08" ColumnName="Usr08" />
+                <ScalarProperty Name="Usr09" ColumnName="Usr09" />
+                <ScalarProperty Name="ZoneNos" ColumnName="ZoneNos" />
+                <ScalarProperty Name="ZoneType" ColumnName="ZoneType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UnitTypes">
+            <EntityTypeMapping TypeName="WebAPPv0MainEntitiesModel.UnitType">
+              <MappingFragment StoreEntitySet="UnitType">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="UnitTypeDesc" ColumnName="UnitTypeDesc" />
+                <ScalarProperty Name="UnitTypeDesc2" ColumnName="UnitTypeDesc2" />
+                <ScalarProperty Name="UnitCategoryCode" ColumnName="UnitCategoryCode" />
+                <ScalarProperty Name="UnitCategoryDesc" ColumnName="UnitCategoryDesc" />
+                <ScalarProperty Name="Published" ColumnName="Published" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZresCsHeaders">
+            <EntityTypeMapping TypeName="WebAPPv0MainEntitiesModel.ZresCsHeader">
+              <MappingFragment StoreEntitySet="ZresCsHeader">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="SalesDocNos" ColumnName="SalesDocNos" />
+                <ScalarProperty Name="SalesDocNos2" ColumnName="SalesDocNos2" />
+                <ScalarProperty Name="QuotDocNos" ColumnName="QuotDocNos" />
+                <ScalarProperty Name="CustomerNos" ColumnName="CustomerNos" />
+                <ScalarProperty Name="CompanyCode" ColumnName="CompanyCode" />
+                <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
+                <ScalarProperty Name="UnitNos" ColumnName="UnitNos" />
+                <ScalarProperty Name="RefNos" ColumnName="RefNos" />
+                <ScalarProperty Name="UnitType" ColumnName="UnitType" />
+                <ScalarProperty Name="Phase" ColumnName="Phase" />
+                <ScalarProperty Name="UnitArea" ColumnName="UnitArea" />
+                <ScalarProperty Name="PaymentTerm" ColumnName="PaymentTerm" />
+                <ScalarProperty Name="AccountTypeCode" ColumnName="AccountTypeCode" />
+                <ScalarProperty Name="AccountTypeDesc" ColumnName="AccountTypeDesc" />
+                <ScalarProperty Name="TCP" ColumnName="TCP" />
+                <ScalarProperty Name="GrossPrice" ColumnName="GrossPrice" />
+                <ScalarProperty Name="MatCost" ColumnName="MatCost" />
+                <ScalarProperty Name="DiscPer1" ColumnName="DiscPer1" />
+                <ScalarProperty Name="DiscAmt1" ColumnName="DiscAmt1" />
+                <ScalarProperty Name="DiscPer2" ColumnName="DiscPer2" />
+                <ScalarProperty Name="DiscAmt2" ColumnName="DiscAmt2" />
+                <ScalarProperty Name="DiscPer3" ColumnName="DiscPer3" />
+                <ScalarProperty Name="DiscAmt3" ColumnName="DiscAmt3" />
+                <ScalarProperty Name="DiscPer4" ColumnName="DiscPer4" />
+                <ScalarProperty Name="DiscAmt4" ColumnName="DiscAmt4" />
+                <ScalarProperty Name="DiscPer5" ColumnName="DiscPer5" />
+                <ScalarProperty Name="DiscAmt5" ColumnName="DiscAmt5" />
+                <ScalarProperty Name="AdjRestruct" ColumnName="AdjRestruct" />
+                <ScalarProperty Name="NetSelling" ColumnName="NetSelling" />
+                <ScalarProperty Name="GrossLessDisc" ColumnName="GrossLessDisc" />
+                <ScalarProperty Name="VatAmnt" ColumnName="VatAmnt" />
+                <ScalarProperty Name="NetInvestment" ColumnName="NetInvestment" />
+                <ScalarProperty Name="ResFee" ColumnName="ResFee" />
+                <ScalarProperty Name="CusBalance" ColumnName="CusBalance" />
+                <ScalarProperty Name="RestrucDate" ColumnName="RestrucDate" />
+                <ScalarProperty Name="ResDate" ColumnName="ResDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZresToExtends">
+            <EntityTypeMapping TypeName="WebAPPv0MainEntitiesModel.ZresToExtend">
+              <MappingFragment StoreEntitySet="ZresToExtend">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CompanyCode" ColumnName="CompanyCode" />
+                <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
+                <ScalarProperty Name="UnitNos" ColumnName="UnitNos" />
+                <ScalarProperty Name="MsNos" ColumnName="MsNos" />
+                <ScalarProperty Name="DeptAmnt" ColumnName="DeptAmnt" />
+                <ScalarProperty Name="SupDate" ColumnName="SupDate" />
+                <ScalarProperty Name="RfndDate" ColumnName="RfndDate" />
+                <ScalarProperty Name="rfndAmt" ColumnName="rfndAmt" />
+                <ScalarProperty Name="CustNumPark" ColumnName="CustNumPark" />
+                <ScalarProperty Name="DatPrinDate" ColumnName="DatPrinDate" />
+                <ScalarProperty Name="ParkSlotNos" ColumnName="ParkSlotNos" />
+                <ScalarProperty Name="ParkingArea" ColumnName="ParkingArea" />
+                <ScalarProperty Name="ConsDelDate" ColumnName="ConsDelDate" />
+                <ScalarProperty Name="LtoSaleDate" ColumnName="LtoSaleDate" />
+                <ScalarProperty Name="QcdAcceptDate" ColumnName="QcdAcceptDate" />
+                <ScalarProperty Name="QcdHoverDate" ColumnName="QcdHoverDate" />
+                <ScalarProperty Name="ProjtoverDate" ColumnName="ProjtoverDate" />
+                <ScalarProperty Name="ProjtoverTime" ColumnName="ProjtoverTime" />
+                <ScalarProperty Name="CmgUnitComDate" ColumnName="CmgUnitComDate" />
+                <ScalarProperty Name="OccPermitDate" ColumnName="OccPermitDate" />
+                <ScalarProperty Name="TagNoShow" ColumnName="TagNoShow" />
+                <ScalarProperty Name="LtsComDate" ColumnName="LtsComDate" />
+                <ScalarProperty Name="LtsExtDate" ColumnName="LtsExtDate" />
+                <ScalarProperty Name="OomAcceptDate" ColumnName="OomAcceptDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Settings">
+            <EntityTypeMapping TypeName="WebAPPv0MainEntitiesModel.Setting">
+              <MappingFragment StoreEntitySet="Setting">
+                <ScalarProperty Name="vSettingLabel" ColumnName="vSettingLabel" />
+                <ScalarProperty Name="vSettingGroup" ColumnName="vSettingGroup" />
+                <ScalarProperty Name="vSettingOption" ColumnName="vSettingOption" />
+                <ScalarProperty Name="vSettingName" ColumnName="vSettingName" />
+                <ScalarProperty Name="vSettingID" ColumnName="vSettingID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

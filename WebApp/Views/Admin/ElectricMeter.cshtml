@@ -1,0 +1,742 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div ng-controller="ElectricMeter" ng-init="init('@ViewBag.PageUrl', '@ViewBag.Variable')">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3" ng-init="GetSearchData()">
+                    <div class="card">
+                        <div class="card-header card-gray card-outline">
+                            <h3 class="card-title">
+                                <i class="fas fa-bars mr-1"></i>Search
+                            </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form name="UnitQualification" novalidate role="form" ng-submit="$event.preventDefault()">
+                                <div class="row">
+                                    <div class="col-12 form-group mb-2 has-feedback">
+                                        <label class="mb-1" for="SProjectCode">Project Name</label>
+                                        <md-autocomplete ng-disabled="false" md-no-cache="true" md-selected-item="selectedProject" md-search-text-change="searchTextChange(searchProject, 'Project')"
+                                                         md-search-text="searchProject" md-selected-item-change="selectedItemChange(item, 'Project')" md-items="item in querySearch(searchProject, 'Project')"
+                                                         md-item-text="item.ProjectCodeName" md-min-length="0" placeholder="Ex. Bay Garden" input-aria-labelledby="favoriteStateLabel"
+                                                         md-menu-class="autocomplete-custom-template" md-menu-container-class="custom-container">
+                                            <md-item-template>
+                                                <span class="item-title">
+                                                    <i class="fas fa-building"></i>
+                                                    <span md-highlight-text="searchProject" md-highlight-flags="i">{{item.CompanyCode}} : {{item.ProjectCode}} </span>
+                                                </span>
+                                                <span class="item-metadata">
+                                                    <span md-highlight-text="searchProject" md-highlight-flags="i">{{item.BusinessEntity}}</span>
+                                                </span>
+                                            </md-item-template>
+                                            <md-not-found>
+                                                No states matching "{{searchProject}}" were found.
+                                            </md-not-found>
+                                        </md-autocomplete>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-2 has-feedback">
+                                        <label class="mb-1" for="SProjectLocation">Project Location</label>
+                                        <textarea class="form-control form-control-sm" id="SProjectLocation" name="SProjectLocation" rows="2" ng-model="paramInfo.ProjectLocation" placeholder="Location" readonly="readonly"></textarea>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-2 has-feedback">
+                                        <label class="mb-1" for="SUnitNos">Unit Nos</label>
+                                        <md-autocomplete ng-disabled="false" md-no-cache="true" md-selected-item="selectedUnit" md-search-text-change="searchTextChange(searchUnit, 'Unit')"
+                                                         md-search-text="searchUnit" md-selected-item-change="selectedItemChange(item, 'Unit')" md-items="item in querySearch(searchUnit, 'Unit')"
+                                                         md-item-text="item.RefNos" md-min-length="0" placeholder="Ex. 1A" input-aria-labelledby="favoriteStateLabel">
+                                            <md-item-template>
+                                                <span md-highlight-text="searchUnit" md-highlight-flags="^i">{{item.RefNos}}</span>
+                                            </md-item-template>
+                                            <md-not-found>
+                                                No states matching "{{searchUnit}}" were found.
+                                            </md-not-found>
+                                        </md-autocomplete>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-3 has-feedback">
+                                        <label class="mb-1" for="SCustomerNos">Customer Nos</label>
+                                        <md-autocomplete ng-disabled="false" md-no-cache="true" md-selected-item="selectedCustomer" md-search-text-change="searchTextChange(searchCustomer, 'Customer')"
+                                                         md-search-text="searchCustomer" md-selected-item-change="selectedItemChange(item, 'Customer')" md-items="item in querySearch(searchCustomer, 'Customer')"
+                                                         md-item-text="item.CustomerNos" md-min-length="0" placeholder="Ex. 0000000001" input-aria-labelledby="favoriteStateLabel">
+                                            <md-item-template>
+                                                <span class="item-title">
+                                                    <span md-highlight-text="searchCustomer" md-highlight-flags="^i">{{item.CustomerNos}}</span>
+                                                    <small>- {{item.CustomerName1}}</small>
+                                                </span>
+                                            </md-item-template>
+                                            <md-not-found>
+                                                No states matching "{{searchCustomer}}" were found.
+                                            </md-not-found>
+                                        </md-autocomplete>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-0">
+                                        <button type="button" class="btn btn-default btn-sm float-right" data-dismiss="modal" ng-click="clearSearch()">
+                                            <i class="fas fa-times-circle"></i> Clear
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm float-right  mr-1" ng-click="GetUnitInspectData()">
+                                            <i class="fas fa-search"></i> Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-9">
+                    <div class="loading" ng-if="loading">Loading &#8230;</div>
+                    <div class="card">
+                        <div class="card-header card-gray card-outline">
+                            <h3 class="card-title">
+                                <i class="fas fa-th mr-1"></i> Unit Details
+                            </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="UnitNos" class="col-sm-5 col-form-label">Unit Nos</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="UnitNos" name="UnitNos" ng-model="SalesInfo.RefNos" placeholder="0" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="CustomerNos" class="col-sm-5 col-form-label">Customer Nos</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="CustomerNos" name="CustomerNos" ng-model="SalesInfo.CustomerNos" placeholder="0" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="CustomerName" class="col-sm-5 col-form-label">Customer Name</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="CustomerName" name="CustomerName" ng-model="SalesInfo.CustomerName1" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="SalesDocNos" class="col-sm-5 col-form-label">Contract/SO No.</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="SalesDocNos" name="SalesDocNos" ng-model="SalesInfo.SalesDocNos" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="CompanyCode" class="col-sm-5 col-form-label font-weight-normal">Company Code</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="CompanyCode" name="CompanyCode" ng-model="SalesInfo.CompanyCode" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="CompanyName" class="col-sm-5 col-form-label font-weight-normal">Company Name</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="CompanyName" name="CompanyName" ng-model="SalesInfo.CompanyName" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="ProjectCode" class="col-sm-5 col-form-label font-weight-normal">Project Code</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="ProjectCode" name="ProjectCode" ng-model="SalesInfo.ProjectCode" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="ProjectName" class="col-sm-5 col-form-label font-weight-normal">Project Name</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="ProjectName" name="ProjectName" ng-model="SalesInfo.BusinessEntity" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="ProjectLocation" class="col-sm-5 col-form-label font-weight-normal">Project Location</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="ProjectLocation" name="ProjectLocation" ng-model="SalesInfo.ProjectLocation" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="FloorNos" class="col-sm-5 col-form-label font-weight-normal">Floor Nos</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="FloorNos" name="FloorNos" ng-model="SalesInfo.Phase" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="UnitTypeCode" class="col-sm-5 col-form-label font-weight-normal">Unit Type Code</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="UnitTypeCode" name="UnitTypeCode" ng-model="SalesInfo.UnitType" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="UnitDescription" class="col-sm-5 col-form-label font-weight-normal">Unit Description</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="UnitDescription" name="UnitDescription" ng-model="SalesInfo.UnitTypeDesc" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="UnitCategory" class="col-sm-5 col-form-label font-weight-normal">Unit Category</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="UnitCategory" name="UnitCategory" ng-model="SalesInfo.UnitCategoryDesc" placeholder="" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="UnitArea" class="col-sm-5 col-form-label font-weight-normal">Unit Area (sqm)</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="UnitArea" name="UnitArea" ng-model="SalesInfo.UnitArea" placeholder="0" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <div class="form-group row mb-0">
+                                        <label for="AccountType" class="col-sm-5 col-form-label font-weight-normal">Account Type</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control form-control-sm" id="AccountType" name="AccountType" ng-model="SalesInfo.AccountTypeDesc" placeholder="0" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-0">
+                                <div class="col-12">
+                                    <div class="card card-gray card-tabs">
+                                        <div class="card-header p-0 pt-1">
+                                            <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" id="custom-a-tab1" data-toggle="pill" href="#custom-tab1" role="tab" aria-controls="custom-tab1" aria-selected="true" ng-click="ResetElectricMeterFields()">Document Requirements & Application Status</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="custom-b-tab2" data-toggle="pill" href="#custom-tab2" role="tab" aria-controls="custom-tab2" aria-selected="false" ng-click="CheckRFP()">RFP Status</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="custom-c-tab3" data-toggle="pill" href="#custom-tab3" role="tab" aria-controls="custom-tab3" aria-selected="false" ng-click="ResetElectricMeterFields()">Meralco Service Transfer Status</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="tab-content" id="custom-content-below-tabContent">
+                                                <div class="tab-pane fade show active" id="custom-tab1" role="tabpanel" aria-labelledby="custom-tab1">
+                                                    <form name="docreqForm" novalidate role="form">     
+                                                        <p class="mb-2"><strong>Note: </strong><em>Please take note that posted date for Electric Meter and Service Deposit status on SAP will be synched &amp; reflected to TOMS on 12 midnight</em></p>               
+
+                                                        <p class="font-weight-bold mt-2 mb-2"><u>Electric Meter and Service Deposit Details</u></p>
+                                                        <div class="row">
+                                                            <div class="col-md-5 col-sm-12">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="MeterDepositAmount" class="col-md-6 col-form-label font-weight-normal">Meter Deposit Amount</label>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" class="form-control form-control-sm" id="MeterDepositAmount" name="MeterDepositAmount" ng-model="ElectricMeter.MeterDepositAmount" placeholder="" ng-disabled="true">
+                                                                    </div>
+                                                                </div>
+                                                            </div> <!--./col-->
+
+                                                            <div class="col-md-7 col-sm-12">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="ApplicationProcessStatus" class="col-md-5 col-form-label font-weight-normal">Application Process Status</label>
+                                                                    <div class="col-md-7">
+                                                                        <input type="text" class="form-control form-control-sm text-xs font-italic" id="ApplicationProcessStatus" name="ApplicationProcessStatus" ng-model="ElectricMeter.ApplicationProcessStatus" placeholder="" ng-disabled="true">
+                                                                    </div>
+                                                                </div>
+                                                            </div> <!--./col-->
+                                                        </div>
+
+                                                        <div ng-if="Documents.length > 0">
+                                                            <p class="font-weight-bold mt-2 mb-2"><u>Document Requirements Status</u></p>
+                                                            <div class="row">
+                                                                <div class="col-sm-6 offset-sm-1">
+                                                                    <div class="form-group mb-3">
+                                                                        <div class="custom-control custom-checkbox" ng-repeat="dc in Documents">
+                                                                            <input type="checkbox" id="customCheckbox{{$index + 1}}" class="custom-control-input" ng-model="dc.isChecked" ng-disabled="SalesInfo === null || dc.isDisabled">
+                                                                            <label for="customCheckbox{{$index + 1}}" class="custom-control-label font-weight-normal">{{dc.DocumentName}}</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div> <!--./col-->
+                                                                <div class="col-sm-5">
+                                                                    <div class="form-group row mb-5">
+                                                                        <label for="DocumentaryCompletedDate" class="col-md-6 col-form-label font-weight-normal">Date Completed</label>
+                                                                        <div class="col-md-6">
+                                                                            <input type="date" class="form-control form-control-sm text-xs font-italic" id="DocumentaryCompletedDate" name="DocumentaryCompletedDate" ng-model="ElectricMeter.DocumentaryCompletedDate" placeholder="Auto-populated" ng-disabled="true">
+                                                                        </div>
+                                                                    </div>
+                                                                    <br/><br />
+                                                                    <div class="form-group row mb-0" ng-if="SalesInfo !== null && ElectricMeter.DocumentaryLastModifedDate !== null">
+                                                                        <label for="DocumentaryLastModifedDate" class="col-md-6 col-form-label font-weight-normal">Last Date Modified</label>
+                                                                        <div class="col-md-6">
+                                                                            <input type="date" class="form-control form-control-sm text-xs font-italic" id="DocumentaryLastModifedDate" name="DocumentaryLastModifedDate" ng-model="ElectricMeter.DocumentaryLastModifedDate" placeholder="Auto-populated" ng-disabled="true">
+                                                                        </div>
+                                                                    </div>
+                                                                </div> <!--./col-->
+                                                            </div> <!--./row-->
+
+                                                            <div class="row">
+                                                                <div class="col-sm-11 offset-sm-1">
+                                                                    <div class="form-group row">
+                                                                        <label for="DocumentaryRemarks" class="col-md-2 col-form-label font-weight-normal">Remarks</label>
+                                                                        <div class="col-md-10">
+                                                                            <textarea class="form-control form-control-sm text-xs font-italic" id="DocumentaryRemarks" rows="2" name="DocumentaryRemarks" ng-model="ElectricMeter.DocumentaryRemarks" placeholder="" ng-disabled="!DASFields.DocumentaryRemarks"></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div> <!--./col-->
+                                                            </div> <!--./row-->
+                                                        </div>
+                                                        
+                                                        <div class="row mb-0 mt-1" ng-if="Ctrl">
+                                                            <div class="col-sm-12">
+                                                                <button type="button" class="btn btn-default btn-sm float-right" ng-click="CancelButtonModal()" ng-disabled="disableButton || DASButtons.CancelButton">
+                                                                    <i class="fas fa-ban"></i> Cancel
+                                                                </button>
+                                                                <button type="button" class="btn btn-success btn-sm float-right mr-1" ng-if="Ctrl.wAdd" ng-click="SaveDocReqModal('Document Status')" ng-disabled="disableButton || DASButtons.AddButton">
+                                                                    <i class="fas fa-check"></i> Apply
+                                                                </button>
+                                                                <button type="button" class="btn btn-secondary btn-sm float-right mr-1" ng-if="Ctrl.wEdit" ng-click="EnableElectricMeterAction()" ng-disabled="disableButton || DASButtons.EditButton">
+                                                                    <i class="fas fa-pencil-alt"></i> Update
+                                                                </button>
+                                                            </div> <!--./col-->
+                                                        </div> <!--./row-->
+                                                    </form>
+                                                </div> <!-- /.custom-tab1 -->
+
+                                                <div class="tab-pane fade" id="custom-tab2" role="tabpanel" aria-labelledby="custom-tab2">
+                                                    <form name="rfpForm" novalidate role="form">
+                                                        <p class="mb-2"><strong>Note: </strong><em>Please take note that posted date for Electric Meter and Service Deposit status on SAP will be synched &amp; reflected to TOMS on 12 midnight</em></p>               
+                                                        <p class="font-weight-bold mt-2 mb-2"><u>Request for Payment Details</u></p>
+                                                        <div class="row">
+                                                            <div class="col-md-7 col-sm-12">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="RFPRushTicketNos" class="col-md-6 col-form-label font-weight-normal">RFP Rush Ticket No. <span ng-if="ElectricMeter.RFPRushTicketDate != null" class="text-danger font-weight-bold">*</span></label>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" class="form-control form-control-sm" id="RFPRushTicketNos" name="RFPRushTicketNos" ng-model="ElectricMeter.RFPRushTicketNos" placeholder="" ng-required="ElectricMeter.RFPRushTicketDate != null" ng-change="EnableRFPield(ElectricMeter.RFPRushTicketNos)" ng-disabled="!TASFields.RFPRushTicketNos">
+                                                                        <div style="color:red" class="invalid-feedback" ng-if="(ElectricMeter.LiquidationEndorsedDate != null)? rfpForm.RFPRushTicketNos.$error.required : ''">You can't leave this empty.</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row mb-0 has-feedback" show-errors>
+                                                                    <label for="RFPRushTicketDate" class="col-md-6 col-form-label font-weight-normal">RFP Rush Ticket Date <span ng-if="ElectricMeter.RFPRushTicketNos != null" class="text-danger font-weight-bold">*</span></label>
+                                                                    <div class="col-md-6">
+                                                                        <div class="input-group mb-0">
+                                                                            <input type="text" name="RFPRushTicketDate" id="RFPRushTicketDate" class="form-control form-control-sm" @*onkeydown="return false"*@ alt-input-formats="altInputFormats"
+                                                                                   uib-datepicker-popup="{{dateFormat}}" ng-model="ElectricMeter.RFPRushTicketDate" is-open="popup1.opened" datepicker-options="dateOptionsCurrent"
+                                                                                   ng-click="open1()" placeholder="mm/dd/yyyy" close-text="Close" ng-disabled="!TASFields.RFPRushTicketDate" ng-change="EnableRFPield(ElectricMeter.RFPRushTicketDate)"
+                                                                                   ng-required="ElectricMeter.RFPRushTicketNos != null" />
+                                                                            <div class="input-group-append">
+                                                                                <div class="input-group-text" ng-click="open1()">
+                                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div style="color:red" class="invalid-feedback" ng-if="(ElectricMeter.RFPRushTicketNos != null)? rfpForm.RFPRushTicketDate.$error.required : ''">You can't leave this empty.</div>
+                                                                        <div style="color:red" class="invalid-feedback" ng-if="!rfpForm.RFPRushTicketDate.$valid">Date format should be (MM/dd/yyyy)</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div> <!--./col-->
+
+                                                            <div class="col-md-5 col-sm-12">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="RFPRushTicketRemarks" class="col-md-4 col-form-label font-weight-normal">Remarks</label>
+                                                                    <div class="col-md-8">
+                                                                        <textarea class="form-control form-control-sm text-xs font-italic" id="RFPRushTicketRemarks" rows="3" name="RFPRushTicketRemarks" ng-model="ElectricMeter.RFPRushTicketRemarks" placeholder="" ng-disabled="!TASFields.RFPRushTicketRemarks"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div> <!--./col-->                                                                
+                                                        </div> <!--./row-->
+
+                                                        <div class="row mt-2">
+                                                            <div class="col-md-4 col-sm-12">
+                                                                <div class="form-group mb-1">
+                                                                    <div class="custom-control custom-checkbox">
+                                                                        <input class="custom-control-input" type="checkbox" id="IsReceivedCheck" ng-model="ElectricMeter.IsReceivedCheck" ng-checked="ElectricMeter.IsReceivedCheck" ng-disabled="!TASFields.IsReceivedCheck">
+                                                                        <label for="IsReceivedCheck" class="custom-control-label"><u>Received Check?</u></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div> <!--./col-->
+                                                        </div> <!--./row-->
+
+                                                        <div class="row">
+                                                            <div class="col-md-12 col-sm-12">
+                                                                <div class="form-group row mb-1">
+                                                                    <label for="ReceivedCheckRemarks" class="col-md-2 col-form-label font-weight-normal">Remarks </label>
+                                                                    <div class="col-md-10">
+                                                                        <textarea class="form-control form-control-sm text-xs font-italic" id="ReceivedCheckRemarks" rows="2" name="ReceivedCheckRemarks" ng-model="ElectricMeter.ReceivedCheckRemarks" placeholder="" ng-disabled="!TASFields.ReceivedCheckRemarks"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div> <!--./col-->
+                                                        </div> <!--./row-->
+
+                                                        <div class="row mb-0 mt-2" ng-if="Ctrl">
+                                                            <div class="col-12">
+                                                                <button type="button" class="btn btn-default btn-sm float-right" ng-click="CancelButtonModal()" ng-disabled="disableButton || TASButtons.CancelButton">
+                                                                    <i class="fas fa-ban"></i> Cancel
+                                                                </button>
+                                                                <button type="button" class="btn btn-success btn-sm float-right mr-1" ng-if="Ctrl.wAdd" ng-click="SaveRFPModal('RFP Status')" ng-disabled="disableButton || TASButtons.AddButton">
+                                                                    <i class="fas fa-check"></i> Apply
+                                                                </button>
+                                                                <button type="button" class="btn btn-secondary btn-sm float-right mr-1" ng-if="Ctrl.wEdit" ng-click="EnableElectricMeterAction()" ng-disabled="disableButton || TASButtons.EditButton">
+                                                                    <i class="fas fa-pencil-alt"></i> Update
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div> <!-- /.custom-tab2 -->
+
+                                                <div class="tab-pane fade" id="custom-tab3" role="tabpanel" aria-labelledby="custom-tab3">
+                                                    <form name="electrictransferForm" novalidate role="form">
+                                                        <p class="mb-2"><strong>Note: </strong><em>Please take note that posted date for Electric Meter and Service Deposit status on SAP will be synched &amp; reflected to TOMS on 12 midnight</em></p>               
+                                                        <p class="font-weight-bold mt-2 mb-2"><u>Electric Meter &amp; Deposit Application Details</u></p>
+                                                        <div class="row">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="TitleLocationID" class="col-md-4 col-form-label font-weight-normal">With Unpaid Bills</label>
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group clearfix">
+                                                                            <div class="icheck-primary d-inline mr-2"> 
+                                                                                <input type="radio" id="WithUnpaidBills1" name="r1" ng-model="ElectricMeter.WithUnpaidBills" value="true" ng-checked="ElectricMeter.WithUnpaidBills === true" ng-disabled="!RASFields.WithUnpaidBills" ng-click="ChangeWithUnpaidBills(true)">
+                                                                                <label for="WithUnpaidBills1" class="font-weight-normal">
+                                                                                    Yes
+                                                                                </label>
+                                                                            </div>
+                                                                            <div class="icheck-primary d-inline">
+                                                                                <input type="radio" id="WithUnpaidBills2" name="r1" ng-model="ElectricMeter.WithUnpaidBills" value="false" ng-checked="ElectricMeter.WithUnpaidBills === false" ng-disabled="!RASFields.WithUnpaidBills" ng-click="ChangeWithUnpaidBills(false)">
+                                                                                <label for="WithUnpaidBills2" class="font-weight-normal">
+                                                                                    No
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <span class="badge badge-dark font-weight-normal font-italic" ng-if="ElectricMeter.UnpaidBillPostedDate != null">Posting: {{ElectricMeter.UnpaidBillPostedDate | date: 'MM/dd/yyyy'}}</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group pl-3">
+                                                                    <div class="custom-control custom-checkbox">
+                                                                        <input class="custom-control-input" type="checkbox" id="IsPaidSettled" ng-model="ElectricMeter.IsPaidSettled" ng-checked="ElectricMeter.IsPaidSettled" ng-disabled="!RASFields.IsPaidSettled">
+                                                                        <label for="IsPaidSettled" class="custom-control-label font-weight-normal">Paid/ Settled (for unpaid bills)?</label>
+                                                                        <span class="ml-2 badge badge-dark font-weight-normal font-italic" ng-if="ElectricMeter.IsPaidSettled">Posting: {{ElectricMeter.PaidSettledPostedDate | date: 'MM/dd/yyyy'}}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="DepositApplicationRemarks" class="col-md-4 col-form-label font-weight-normal">Remarks </label>
+                                                                    <div class="col-md-8">
+                                                                        <textarea class="form-control form-control-sm text-xs font-italic" id="DepositApplicationRemarks" rows="2" name="DepositApplicationRemarks" ng-model="ElectricMeter.DepositApplicationRemarks" placeholder="" ng-disabled="!RASFields.DepositApplicationRemarks"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div> <!--./col-->
+                                                        </div> <!--./row-->
+
+                                                        <div class="row">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <div class="form-group row mb-0 has-feedback" show-errors>
+                                                                    <label for="MeralcoSubmittedDate" class="col-md-6 col-form-label font-weight-normal">Date Application Submitted to Meralco</label>
+                                                                    <div class="col-md-6">
+                                                                        <div class="input-group mb-0">
+                                                                            <input type="text" name="MeralcoSubmittedDate" id="MeralcoSubmittedDate" class="form-control form-control-sm" @*onkeydown="return false"*@ alt-input-formats="altInputFormats"
+                                                                                   uib-datepicker-popup="{{dateFormat}}" ng-model="ElectricMeter.MeralcoSubmittedDate" is-open="popup2.opened" datepicker-options="dateApplicationMeralco"
+                                                                                   ng-click="open2()" placeholder="mm/dd/yyyy" close-text="Close" ng-disabled="!RASFields.MeralcoSubmittedDate" ng-change="EnableMeralcoApplication(ElectricMeter.MeralcoSubmittedDate)" />
+                                                                            <div class="input-group-append">
+                                                                                <div class="input-group-text" ng-click="open2()">
+                                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div style="color:red" class="invalid-feedback" ng-if="!electrictransferForm.MeralcoSubmittedDate.$valid">Date format should be (MM/dd/yyyy)</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div> <!--./col-->
+
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="MeralcoSubmittedRemarks" class="col-md-4 col-form-label font-weight-normal">Remarks</label>
+                                                                    <div class="col-md-8">
+                                                                        <textarea class="form-control form-control-sm text-xs font-italic" id="MeralcoSubmittedRemarks" rows="2" name="MeralcoSubmittedRemarks" ng-model="ElectricMeter.MeralcoSubmittedRemarks" placeholder="" ng-disabled="!RASFields.MeralcoSubmittedRemarks"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div> <!--./col-->
+                                                        </div> <!--./row-->
+
+
+                                                        <p class="font-weight-bold mt-2 mb-2"><u>New Service Contract Receipt Details</u></p>
+                                                        <div class="row">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="MeralcoReceiptDate" class="col-md-5 col-form-label font-weight-normal">Date Receipt from Meralco</label>
+                                                                    <div class="col-md-7">
+                                                                        <div class="input-group mb-0">
+                                                                            <input type="text" name="MeralcoReceiptDate" id="MeralcoReceiptDate" class="form-control form-control-sm" @*onkeydown="return false"*@ alt-input-formats="altInputFormats"
+                                                                                   uib-datepicker-popup="{{dateFormat}}" ng-model="ElectricMeter.MeralcoReceiptDate" is-open="popup3.opened" datepicker-options="dateReceiptMeralco"
+                                                                                   ng-click="open3()" placeholder="mm/dd/yyyy" close-text="Close" ng-disabled="!RASFields.MeralcoReceiptDate" ng-change="EnableMeralcoApplication(ElectricMeter.MeralcoSubmittedDate)"/>
+                                                                            <div class="input-group-append">
+                                                                                <div class="input-group-text" ng-click="open3()">
+                                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div style="color:red" class="invalid-feedback" ng-if="!electrictransferForm.MeralcoReceiptDate.$valid">Date format should be (MM/dd/yyyy)</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <div class="form-group row mb-1">
+                                                                    <label for="MeralcoReceiptRemarks" class="col-md-4 col-form-label font-weight-normal">Remarks </label>
+                                                                    <div class="col-md-8">
+                                                                        <textarea class="form-control form-control-sm text-xs font-italic" id="MeralcoReceiptRemarks" rows="2" name="MeralcoReceiptRemarks" ng-model="ElectricMeter.MeralcoReceiptRemarks" placeholder="" ng-disabled="!RASFields.MeralcoReceiptRemarks"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div> <!--./col-->
+                                                        </div> <!--./row-->
+
+                                                        <p class="font-weight-bold mt-2 mb-2"><u>New Service Contract Receipt of Unit Owner Details</u></p>
+                                                        <div class="row">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="UnitOwnerReceiptDate" class="col-md-5 col-form-label font-weight-normal">Date Receipt of Unit Owner</label>
+                                                                    <div class="col-md-7">
+                                                                        <div class="input-group mb-0">
+                                                                            <input type="text" name="UnitOwnerReceiptDate" id="UnitOwnerReceiptDate" class="form-control form-control-sm" @*onkeydown="return false"*@ alt-input-formats="altInputFormats"
+                                                                                   uib-datepicker-popup="{{dateFormat}}" ng-model="ElectricMeter.UnitOwnerReceiptDate" is-open="popup4.opened" datepicker-options="dateReceiptUnitOwner"
+                                                                                   ng-click="open4()" placeholder="mm/dd/yyyy" close-text="Close" ng-disabled="!RASFields.UnitOwnerReceiptDate" />
+                                                                            <div class="input-group-append">
+                                                                                <div class="input-group-text" ng-click="open4()">
+                                                                                    <span class="fas fa-calendar-alt"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div style="color:red" class="invalid-feedback" ng-if="!electrictransferForm.UnitOwnerReceiptDate.$valid">Date format should be (MM/dd/yyyy)</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <div class="form-group row mb-0">
+                                                                    <label for="UnitOwnerReceiptRemarks" class="col-md-4 col-form-label font-weight-normal">Remarks </label>
+                                                                    <div class="col-md-8">
+                                                                        <textarea class="form-control form-control-sm text-xs font-italic" id="UnitOwnerReceiptRemarks" rows="2" name="UnitOwnerReceiptRemarks" ng-model="ElectricMeter.UnitOwnerReceiptRemarks" placeholder="" ng-disabled="!RASFields.UnitOwnerReceiptRemarks"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div> <!--./col-->
+                                                        </div> <!--./row-->
+
+                                                        <div class="row mb-0 mt-2" ng-if="Ctrl">
+                                                            <div class="col-12">
+                                                                <button type="button" class="btn btn-default btn-sm float-right" ng-click="CancelButtonModal()" ng-disabled="disableButton || RASButtons.CancelButton">
+                                                                    <i class="fas fa-ban"></i> Cancel
+                                                                </button>
+                                                                <button type="button" class="btn btn-success btn-sm float-right mr-1" ng-if="Ctrl.wAdd" ng-click="SaveElectricTransferModal('Electric Status')" ng-disabled="disableButton || RASButtons.AddButton">
+                                                                    <i class="fas fa-check"></i> Apply
+                                                                </button>
+                                                                <button type="button" class="btn btn-secondary btn-sm float-right mr-1" ng-if="Ctrl.wEdit" ng-click="EnableElectricMeterAction()" ng-disabled="disableButton || RASButtons.EditButton">
+                                                                    <i class="fas fa-pencil-alt"></i> Update
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div> <!-- /.custom-tab4 -->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div> <!-- /.row -->
+
+                            <div class="row mb-0">
+                                <div class="col-12 text-right">
+                                    <a href="#" class="mt-2 text-xs" ng-click="GetTransactionLog()"><u> transaction logs</u></a>
+                                </div>
+                            </div> <!-- /.row -->
+                        </div> <!-- /.card-body -->
+                    </div>  <!-- /.card -->
+                </div> <!-- /.col -->
+            </div> <!-- /.row -->
+        </div> <!-- /.container-fluid -->
+
+        <div class="modal fade" id="applyChangesModal1a">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">System Message Validation</h5>
+                    </div>
+                    <form name="ReasonForm" novalidate role="form">
+                        <div class="modal-body">
+                            <h6>Please ensure all information provided is correct.</h6>
+                            <p class="mb-2">Click OK to confirm the information provided.</p>
+                            <div class="form-group has-feedback" show-errors ng-if="ShowReasonChange">
+                                <label for="ReasonForChange">Reason for Changes</label>
+                                <textarea class="form-control form-control-sm" id="ReasonForChange" name="ReasonForChange" ng-model="ElectricMeter.ReasonForChange" ng-required="ShowReasonChange" rows="3"></textarea>
+                                <div style="color:red" class="invalid-feedback" ng-if="(ShowReasonChange)? ReasonForm.ReasonForChange.$error.required : ''">You can't leave this empty.</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success btn-sm" ng-click="SaveElectricMeter(ElectricMeter)"><i class="fas fa-check"></i> OK</button>
+                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
+        <div class="modal fade" id="applyChangesModal1b">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">System Message Confirmation</h5>
+                    </div>
+                    <div class="modal-body">
+                        <h6>Are you sure you want to CANCEL the transaction?</h6>
+                        <p class="mb-0">Clicking OK button means any information provided will not be considered or will be void.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success btn-sm" ng-click="CancelButton()"><i class="fas fa-check"></i> OK</button>
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                    </div>
+                </div> <!-- /.modal-content -->
+            </div> <!-- /.modal-dialog -->
+        </div>  <!-- /.modal --> <!-- End Title Transfer and Tax Dec Modal -->
+
+    </section>
+
+    <div class="modal fade" id="changeLogModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" ng-controller="ChangeLog">
+                <div class="modal-header">
+                    <h4 class="modal-title">Transaction Logs</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" ng-init="searchObjectType('ElectricmeterController')">
+                    <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4 changelog">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_length form-inline">
+                                    <label>
+                                        Show
+                                        <select name="example1_length" class="form-control form-control-sm" ng-model="pagingInfo.itemsPerPage" ng-change="setItemsPerPage(pagingInfo.itemsPerPage)">
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select> entries
+                                    </label>
+                                    <img src="~/Content/dist/img/ajax-loader2.gif" ng-show="loading" />
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <form ng-submit="search()" role="form">
+                                    <div class="form-inline dataTables_filter">
+                                        <label>
+                                            Search:
+                                            <input type="search" class="form-control form-control-sm" placeholder="" ng-model="pagingInfo.search">
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="example1" class="table table-bordered table-striped dataTable dtr-inline" role="grid" aria-describedby="example1_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting" width="3%" ng-click="sort('Id')">Nos</th>
+                                            <th class="sorting" ng-click="sort('Description')">Description</th>
+                                            <th class="sorting" width="50%" ng-click="sort('ContentDetail')">Content Detail</th>
+                                            <th class="sorting" ng-click="sort('UserName')">Modified By</th>
+                                            <th class="sorting" ng-click="sort('CreatedDate')">Date Modified</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-if="pagingInfo.totalItems == 0">
+                                            <td colspan="5"><center>No data to display</center></td>
+                                        </tr>
+                                        <tr ng-if="pagingInfo.totalItems > 0" ng-repeat="log in ChangeLog">
+                                            <td class="text-center" ng-bind="(pagingInfo.itemsPerPage * (pagingInfo.page - 1)) + $index + 1"></td>
+                                            <td ng-bind="log.Description"></td>
+                                            <td class="text-center">
+                                                <textarea class="form-control form-control-sm text-xs font-italic" style="height: 80px;" name="ContentDetail" ng-model="log.ContentDetail" ng-disabled="true"></textarea>
+                                            </td>
+                                            <td ng-bind="log.UserName"></td>
+                                            <td class="text-center">{{ log.CreatedDate | date:'MM/dd/yyyy h:mma'}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-5">
+                                <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">Showing {{pagingInfo.page}} to {{pagingInfo.totalItems/pagingInfo.itemsPerPage | roundup }} of {{pagingInfo.totalItems}} entries</div>
+                            </div>
+                            <div class="col-sm-12 col-md-7">
+                                <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+                                    <ul uib-pagination total-items="(10 * pagingInfo.totalItems)/pagingInfo.itemsPerPage" ng-model="pagingInfo.page" ng-change="selectPage(pagingInfo.page)" max-size="10" class="pagination-sm" boundary-links="true" force-ellipses="true"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancel</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+</div>
+
+@section scripts{
+    <script src="~/Scripts/ProjectScriptFile/ElectricMeter.js"></script>
+    <script src="~/Scripts/ProjectScriptFile/ChangeLog.js"></script>
+}
+
